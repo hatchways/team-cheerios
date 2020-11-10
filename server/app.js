@@ -3,7 +3,7 @@ const express = require("express");
 const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-
+const winston = require("winston");
 const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 
@@ -36,4 +36,6 @@ app.use(function(err, req, res, next) {
   res.json({ error: err });
 });
 
-module.exports = app;
+const port = process.env.PORT || 5000;
+const server  = app.listen(port, () => winston.info(`Server is running on port ${port}`));
+module.exports = server;
