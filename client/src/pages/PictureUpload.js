@@ -1,36 +1,33 @@
 import React, { useState } from "react";
-import { Button, Grid, TextField } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import axios from "axios";
 
 const UploadPicture = () => {
   //const retrieveURL = (event) => {};
-  const [fileName, setFileName] = useState('');
-  const [file, setFile] = useState('');
-
-  const uploadFile = (e) => {
-    console.log("Uploading...");
-    const formData = new FormData();
-    formData.append("image", file);
-
-    axios
-      .post("http://localhost:3001/upload", formData)
-      .then((res) => {
-        if (!res.data.error) {
-          setFile("");
-          setFileName("");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const [file, setFile] = useState(null);
 
   const handleFileChange = (e) => {
     console.log("File changed to :" + e.target.value);
-    setFileName(e.target.files[0]);
+    setFile(e.target.files[0]);
     console.log(e.target.files[0]);
   };
 
+  const uploadFile = (e) => {
+    console.log("Uploading...");
+    let formData = new FormData();
+    formData.append("image", file);
+    const url = "http://localhost:3001/uploading";
+    axios
+      .post(url, formData)
+      .then(
+        (response) => {
+          console.log(response);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
   return (
     <>
       <Grid
@@ -42,11 +39,7 @@ const UploadPicture = () => {
         style={{ minHeight: "100vh" }}
       >
         <Grid>
-          <input
-            onChange={handleFileChange}
-            name="upload-photo"
-            type="file"            
-          />
+          <input onChange={handleFileChange} name="upload-photo" type="file" />
           <Button onClick={uploadFile}>Upload!</Button>
         </Grid>
       </Grid>
