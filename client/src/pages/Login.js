@@ -13,12 +13,20 @@ export default function Login() {
   const handleClick = (e) => {
     e.preventDefault();
 
-    dispatch({ type: SET_USER, payload: { user: { name: "Hatchway" } } });
+    dispatch({
+      type: SET_USER,
+      payload: {
+        user: {
+          name: "Hatchway",
+          image: "",
+        },
+      },
+    });
     history.push("/");
   };
 
   return (
-    <div>
+    <div style={{ height: "100vh" }}>
       <h1>This is our Login page.</h1>
 
       <button onClick={handleClick}>authenticate</button>

@@ -3,12 +3,9 @@ import { MuiThemeProvider } from "@material-ui/core";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { UserProvider } from "./contexts/UserContext";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Signup from "./pages/Signup";
 import { theme } from "./themes/theme";
 import PrivateRoute from "./utils/PrivateRoute";
-import "./App.css";
+import routes from "./routes";
 
 function App() {
   return (
@@ -16,9 +13,23 @@ function App() {
       <UserProvider>
         <BrowserRouter>
           <Switch>
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-            <PrivateRoute exact path="/" component={Dashboard} />
+            {routes.map((route, i) =>
+              route.auth ? (
+                <PrivateRoute
+                  exact
+                  path={route.path}
+                  component={route.component}
+                  key={`route-${i}`}
+                />
+              ) : (
+                <Route
+                  exact
+                  path={route.path}
+                  component={route.component}
+                  key={`route-${i}`}
+                />
+              )
+            )}
           </Switch>
         </BrowserRouter>
       </UserProvider>
