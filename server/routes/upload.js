@@ -2,36 +2,41 @@ const express = require("express");
 const router = express.Router();
 const AWS = require("aws-sdk");
 const multer = require("multer");
-
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ID,
-  secretAccessKey: process.env.AWS_SECRET,
-});
 const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-//Upload Profile picture
-const upload = multer({
-  storage: multer.memoryStorage(),
-  // file size limitation in bytes
-  limits: { fileSize: 52428800 },
+router.post("/upload", upload.single("image"), function(req, res) {
+  const file = req.file;
+  //const s3FileURL = process.env.AWS_Uploaded_File_URL_LINK;
+
+  let s3bucket = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  });
+
+  // console.log(process.env.AWS_ACCESS_KEY_ID);
+  // console.log(process.env.AWS_SECRET_ACCESS_KEY);
+
+  //Where you want to store your file
+  console.log("Received request for /upload");
+  console.log(process.env);
+  var params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: file.originalname,
+    Body: file.buffer,
+    ACL: "public-read"
+  };
+
+  s3bucket.upload(params, function(err, data) {
+    if (err) {
+      res.status(500).json({ error: true, Message: err });
+    } else {
+      res.status(200).json("sucess");
+    }
+  });
 });
 
-router.post("/upload", upload.single("image"), (req, res) => {
-  //TODO : Extract URL after 
-  //TODO : Upload image to s3 bucket 
-  s3.putObject(
-    {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: "your-key-name",
-      Body: req.file.buffer,
-      ACL: "public-read", // your permisions
-    },
-    (err) => {
-      if (err) return res.status(400).send(err);
-      res.statusCode(200).send("File uploaded to S3");
-    }
-  );
-  
+module.exports = router;
 //   const getUrlFromBucket = (s3Bucket, fileName) => {
 //     return (
 //       "https://" +
@@ -42,6 +47,6 @@ router.post("/upload", upload.single("image"), (req, res) => {
 //       fileName
 //     );
 //   };
-});
 
-module.exports = router;
+
+
