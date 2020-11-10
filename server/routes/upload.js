@@ -5,14 +5,12 @@ const multer = require("multer");
 
 const storage = multer.memoryStorage();
 
-
 const upload = multer({ storage: storage });
 router.post("/uploading", upload.single("image"), function (req, res) {
   console.log("POST Request obtained...");
   //console.log(req.file);
 
   const s3bucket = new AWS.S3({
-    
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   });
@@ -35,4 +33,3 @@ router.post("/uploading", upload.single("image"), function (req, res) {
 });
 
 module.exports = router;
-

@@ -6,7 +6,7 @@ const logger = require("morgan");
 const cors = require("cors");
 
 const uploadRouter = require("./routes/upload");
-const getRouter = require("./routes/get")
+const getRouter = require("./routes/get");
 const { json, urlencoded } = express;
 
 var app = express();
@@ -17,12 +17,8 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
-
-
-app.use("/",uploadRouter);
+app.use("/", uploadRouter);
 app.use(getRouter);
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
