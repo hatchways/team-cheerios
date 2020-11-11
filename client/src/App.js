@@ -1,7 +1,7 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-
+import PictureUpload from './pages/PictureUpload'
 import { UserProvider } from "./contexts/UserContext";
 import { theme } from "./themes/theme";
 import PrivateRoute from "./utils/PrivateRoute";
@@ -12,6 +12,8 @@ function App() {
     <UserProvider>
       <MuiThemeProvider theme={theme}>
         <BrowserRouter>
+        <Route path="/picture" component={PictureUpload} />
+
           <Switch>
             {routes.map((route, i) =>
               route.auth ? (
