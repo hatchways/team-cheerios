@@ -9,8 +9,8 @@ const pingRouter = require("./routes/ping");
 const pollRouter = require("./routes/pollRoutes");
 const friendsListRouter = require("./routes/friendsListRoutes");
 const uploadRouter = require("./routes/upload");
-const mongoose = require('mongoose');
-const cors = require('cors');
+const mongoose = require("mongoose");
+const cors = require("cors");
 
 const { json, urlencoded } = express;
 
@@ -28,23 +28,20 @@ app.use("/ping", pingRouter);
 app.use("/", pollRouter);
 app.use("/", friendsListRouter);
 
-
-
-
 // mongo connection
 const uri = process.env.ATLAS_URI;
 mongoose.Promise = global.Promise;
 mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
 const connection = mongoose.connection;
-connection.once('open', ()=>{
-  console.log('connected')
-})
+connection.once("open", () => {
+  console.log("connected");
+});
 
-  app.use(cors());
+app.use(cors());
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
