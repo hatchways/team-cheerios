@@ -9,7 +9,7 @@ const uploadRouter = require("./routes/upload");
 const getRouter = require("./routes/get");
 const { json, urlencoded } = express;
 
-var app = express();
+const app = express();
 app.use(cors());
 app.use(logger("dev"));
 app.use(json());
