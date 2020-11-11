@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid , Avatar } from "@material-ui/core";
 import axios from "axios";
 
 const UploadPicture = () => {
   //const retrieveURL = (event) => {};
   const [file, setFile] = useState(null);
-
+  const [url, setUrl] = useState("");
   const handleFileChange = (e) => {
     console.log("File changed to :" + e.target.value);
     setFile(e.target.files[0]);
@@ -19,14 +19,11 @@ const UploadPicture = () => {
     const url = "http://localhost:3001/uploading";
     axios
       .post(url, formData)
-      .then(
-        (response) => {
-          console.log(response);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+      .then((response) => {
+        console.log(response.data);
+        setUrl(response.data);
+      })
+      .catch((err) => console.log(err));
   };
   return (
     <>
@@ -41,6 +38,7 @@ const UploadPicture = () => {
         <Grid>
           <input onChange={handleFileChange} name="upload-photo" type="file" />
           <Button onClick={uploadFile}>Upload!</Button>
+          <Avatar alt="doggo" src= {url} />
         </Grid>
       </Grid>
     </>
