@@ -38,7 +38,7 @@ export default function Login() {
 
       {/* for checking */}
       <button onClick={handleClick}>authenticate</button>
-      <button onClick={handleLoading}>loading</button>
+      <button onClick={handleLoading}>loading(skeleton)</button>
     </div>
   );
 }

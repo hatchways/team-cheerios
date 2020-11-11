@@ -13,16 +13,17 @@ const useStyles = makeStyles((theme) =>
     root: {
       background: "#FAFBFE",
       height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
-      overflow: "hidden",
     },
     leftPane: {
       padding: theme.spacing(5),
       background: "#ffffff",
+      height: "100%",
       overflow: "scroll",
     },
     rightPane: {
       flexGrow: 1,
       padding: theme.spacing(5),
+      height: "100%",
       overflow: "scroll",
     },
   })
