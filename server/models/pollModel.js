@@ -19,6 +19,10 @@ const PollSchema = new Schema({
           ref: "userModel"
         } 
       ],
+      numOfVotes: {
+        type: Number,
+        default: 0
+    },
     });
 
     module.exports = mongoose.model('Poll', PollSchema );
