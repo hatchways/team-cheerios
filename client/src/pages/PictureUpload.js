@@ -3,7 +3,6 @@ import { Button, Grid , Avatar } from "@material-ui/core";
 import axios from "axios";
 
 const UploadPicture = () => {
-  //const retrieveURL = (event) => {};
   const [file, setFile] = useState(null);
   const [url, setUrl] = useState("");
   const handleFileChange = (e) => {
