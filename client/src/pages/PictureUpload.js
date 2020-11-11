@@ -6,9 +6,7 @@ const UploadPicture = () => {
   const [file, setFile] = useState(null);
   const [url, setUrl] = useState("");
   const handleFileChange = (e) => {
-    console.log("File changed to :" + e.target.value);
     setFile(e.target.files[0]);
-    console.log(e.target.files[0]);
   };
 
   const uploadFile = (e) => {
@@ -19,7 +17,6 @@ const UploadPicture = () => {
     axios
       .post(url, formData)
       .then((response) => {
-        console.log(response.data);
         setUrl(response.data);
       })
       .catch((err) => console.log(err));

@@ -20,10 +20,8 @@ router.post("/uploading", upload, function (req, res) {
 
   s3bucket.upload(params, function (err, data) {
     if (err) {
-      console.log("Error sending to s3....");
       res.status(400).send(err);
     } else {
-      console.log("Uploaded.. URL is at : " + data.Location);
       res.status(200).send(data.Location);
     }
   });
