@@ -10,9 +10,7 @@ export default function Login() {
 
   if (state.authenticated) history.push("/");
 
-  const handleClick = (e) => {
-    e.preventDefault();
-
+  const handleClick = () => {
     dispatch({
       type: SET_USER,
       payload: {

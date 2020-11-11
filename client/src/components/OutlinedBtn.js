@@ -17,7 +17,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export default function CreateBtn({ to, children, ...rest }) {
+export default function OutlinedBtn({ to, children, ...rest }) {
   const classes = useStyles();
 
   return (
