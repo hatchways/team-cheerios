@@ -9,8 +9,8 @@ import routes from "./routes";
 
 function App() {
   return (
-    <MuiThemeProvider theme={theme}>
-      <UserProvider>
+    <UserProvider>
+      <MuiThemeProvider theme={theme}>
         <BrowserRouter>
           <Switch>
             {routes.map((route, i) =>
@@ -32,8 +32,8 @@ function App() {
             )}
           </Switch>
         </BrowserRouter>
-      </UserProvider>
-    </MuiThemeProvider>
+      </MuiThemeProvider>
+    </UserProvider>
   );
 }
 

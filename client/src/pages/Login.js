@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-import { SET_USER } from "../contexts/types";
+import { LOADING_USER, SET_AUTHENTICATED, SET_USER } from "../contexts/types";
 import { UserContext } from "../contexts/UserContext";
 
 export default function Login() {
@@ -22,6 +22,15 @@ export default function Login() {
         },
       },
     });
+
+    history.push("/");
+  };
+
+  // for checking purpose
+  const handleLoading = () => {
+    dispatch({ type: SET_AUTHENTICATED });
+    dispatch({ type: LOADING_USER });
+
     history.push("/");
   };
 
@@ -29,7 +38,9 @@ export default function Login() {
     <div style={{ height: "100vh" }}>
       <h1>This is our Login page.</h1>
 
+      {/* for checking */}
       <button onClick={handleClick}>authenticate</button>
+      <button onClick={handleLoading}>loading</button>
     </div>
   );
 }

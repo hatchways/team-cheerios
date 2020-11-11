@@ -14,8 +14,11 @@ import ProfileBtn from "./ProfileBtn";
 
 const useStyles = makeStyles(() =>
   createStyles({
+    root: {
+      boxShadow: "0px 0px 30px rgba(230, 235, 248, 0.4)",
+    },
     toolbar: {
-      background: "#ffffff",
+      background: "#FFFFFF",
       minHeight: NAVBAR_HEIGHT,
     },
     spacer: {
@@ -31,13 +34,13 @@ const useStyles = makeStyles(() =>
 export default function Navbar() {
   const classes = useStyles();
   const {
-    state: { authenticated, user },
+    state: { authenticated, user, loading },
   } = React.useContext(UserContext);
 
   if (!authenticated) return null;
 
   return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" elevation={0} className={classes.root}>
       <Toolbar className={classes.toolbar}>
         <Link to="/">
           <Logo />
@@ -53,7 +56,7 @@ export default function Navbar() {
           create pool
         </CreateBtn>
 
-        <ProfileBtn user={user} />
+        <ProfileBtn user={user} loading={loading} />
       </Toolbar>
     </AppBar>
   );

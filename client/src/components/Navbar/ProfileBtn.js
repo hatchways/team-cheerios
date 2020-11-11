@@ -2,16 +2,18 @@ import React from "react";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
 
+import UserSkeleton from "../Skeletons/UserSkeleton";
 import ProfileMenu from "./ProfileMenu";
-import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
       display: "flex",
       alignItems: "center",
-      margin: theme.spacing(5),
+      marginRight: theme.spacing(5),
+      marginLeft: theme.spacing(5),
       cursor: "pointer",
       height: 50,
     },
@@ -28,7 +30,7 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-export default function ProfileBtn({ user, ...rest }) {
+export default function ProfileBtn({ user, loading, ...rest }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -39,6 +41,8 @@ export default function ProfileBtn({ user, ...rest }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  if (loading) return <UserSkeleton />;
 
   return (
     <>
