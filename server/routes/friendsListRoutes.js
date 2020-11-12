@@ -7,8 +7,6 @@ const {
     getFriendList,
 } = require('../controllers/friendsListControllers');
 
-
-
     getFriendList
     router.get("/friendsList", getFriendList);
     router.post("/friendsList", addNewFriendsList);

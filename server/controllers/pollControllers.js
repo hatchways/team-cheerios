@@ -21,7 +21,7 @@ exports.getPoll = (req, res) => {
 };
 
 exports.getPollWithID = (req, res) => {
-    Poll.findById(req.params.PollId,(err, Poll) => {
+    Poll.findById({ _id: req.params.id},(err, Poll) => {
         if (err) {
             res.send(err);
         }

@@ -9,12 +9,22 @@ const {
     deletePoll
 } = require('../controllers/pollControllers');
 
+const { 
+    addNewVote,
+    getVotes
+} = require('../controllers/votesControllers');
+
 router.get("/polls", getPoll);
 router.post("/polls", addNewPoll);
 
-router.get("/poll/:pollId", getPollWithID);
-router.put("/poll/:pollId", UpdatePoll);
-router.delete("/poll/:pollId", deletePoll);
+router.get("/polls/vote", getVotes);
+router.get("/polls/vote", addNewVote);
+
+
+
+router.get("/polls/:id", getPollWithID);
+router.put("/polls/:id", UpdatePoll);
+router.delete("/polls/:id", deletePoll);
 
 
 module.exports = router;
