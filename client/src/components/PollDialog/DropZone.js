@@ -4,9 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(() => ({
   imageDiv: {
-    width: "10%",
-    height: "10%",
-    backgroundSize: "contain"
+    maxWidth: "1%",
+    maxHeight: "1%",
 
   },
 }));
@@ -26,8 +25,8 @@ export default function MyDropzone() {
       <input {...getInputProps()} />
       <div className={classes.imageDiv}>
         <img
-          src="https://www.w3schools.com/images/picture.jpg"
-          alt="Mountain"
+          src="https://i.ibb.co/rF1P2WT/drop.png"
+          alt="Drag and Drop"
         />
       </div>
     </div>

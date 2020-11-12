@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
   dropControlBot: {
     position: "absolute",
-    bottom: "2rem",
+    top: "20rem",
     right: "4rem",
   },
 }));

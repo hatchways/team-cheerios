@@ -5,9 +5,6 @@ import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(() =>
   createStyles({
-    root: {
-      textDecoration: "none",
-    },
     btn: {
       margin: "0 1rem",
       borderRadius: 25,
@@ -21,10 +18,9 @@ export default function OutlinedBtn({ children, ...rest }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root} {...rest}>
-      <Button variant="outlined" className={classes.btn}>
+      <Button variant="outlined" className={classes.btn} {...rest}>
         {children}
       </Button>
-    </div>
+  
   );
 }

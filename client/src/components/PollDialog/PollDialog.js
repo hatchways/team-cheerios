@@ -36,20 +36,19 @@ const useStyles = makeStyles(() => ({
   },
   closeButton: {
     position: "absolute",
-    top: "1.5rem",
-    right: "1.5rem",
+    top: "1rem",
+    right: "1rem",
   },
 }));
 
 export default function Poll({ open, handleClose, ...rest }) {
   const classes = useStyles();
 
-  const handleClick = (event) => {
+  const handleSubmitPoll = (event) => {
     //TODO: Poll creation
 
     handleClose();
   };
-
   return (
       <Dialog
         open={open}
@@ -72,7 +71,7 @@ export default function Poll({ open, handleClose, ...rest }) {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClick} className={classes.btn}>
+          <Button onClick={handleSubmitPoll} className={classes.btn}>
             Create
           </Button>
         </DialogActions>
