@@ -36,6 +36,8 @@ app.use(function(err, req, res, next) {
   res.json({ error: err });
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3001;
 const server  = app.listen(port, () => winston.info(`Server is running on port ${port}`));
 module.exports = server;
+
+// module.exports = app;
