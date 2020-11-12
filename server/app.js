@@ -11,7 +11,7 @@ const friendsListRouter = require("./routes/friendsListRoutes");
 const users = require("./routes/users");
 const auth = require("./routes/auth");
 const connect = require("./connect");
-const cors = require('cors');
+const cors = require("cors");
 
 const { json, urlencoded } = express;
 
@@ -23,26 +23,23 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
-app.use('/api/users',users);
-app.use('/api/auth',auth);
+app.use("/api/users", users);
+app.use("/api/auth", auth);
 
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/", pollRouter);
 app.use("/", friendsListRouter);
 
-
-
-
-  app.use(cors());
+app.use(cors());
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
@@ -52,6 +49,4 @@ app.use(function(err, req, res, next) {
   res.json({ error: err });
 });
 
-const port = process.env.PORT || 3001;
-const server  = app.listen(port, console.log(`Server is running on port ${port}`));
 module.exports = server;
