@@ -8,7 +8,9 @@ const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 const pollRouter = require("./routes/pollRoutes");
 const friendsListRouter = require("./routes/friendsListRoutes");
-const mongoose = require('mongoose');
+const users = require("./routes/users");
+const auth = require("./routes/auth");
+const connect = require("./connect");
 const cors = require('cors');
 
 const { json, urlencoded } = express;
@@ -21,6 +23,9 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
+app.use('/api/users',users);
+app.use('/api/auth',auth);
+
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/", pollRouter);
@@ -28,19 +33,6 @@ app.use("/", friendsListRouter);
 
 
 
-
-// mongo connection
-const uri = process.env.ATLAS_URI;
-mongoose.Promise = global.Promise;
-mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-
-const connection = mongoose.connection;
-connection.once('open', ()=>{
-  console.log('connected')
-})
 
   app.use(cors());
 
@@ -60,4 +52,6 @@ app.use(function(err, req, res, next) {
   res.json({ error: err });
 });
 
-module.exports = app;
+const port = process.env.PORT || 3001;
+const server  = app.listen(port, console.log(`Server is running on port ${port}`));
+module.exports = server;
