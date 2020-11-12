@@ -6,6 +6,12 @@ const logger = require("morgan");
 const winston = require("winston");
 const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
+const pollRouter = require("./routes/pollRoutes");
+const friendsListRouter = require("./routes/friendsListRoutes");
+const users = require("./routes/users");
+const auth = require("./routes/auth");
+const connect = require("./connect");
+const cors = require('cors');
 
 const { json, urlencoded } = express;
 
@@ -17,8 +23,18 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
+app.use('/api/users',users);
+app.use('/api/auth',auth);
+
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
+app.use("/", pollRouter);
+app.use("/", friendsListRouter);
+
+
+
+
+  app.use(cors());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -37,7 +53,5 @@ app.use(function(err, req, res, next) {
 });
 
 const port = process.env.PORT || 3001;
-const server  = app.listen(port, () => winston.info(`Server is running on port ${port}`));
+const server  = app.listen(port, console.log(`Server is running on port ${port}`));
 module.exports = server;
-
-// module.exports = app;
