@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-export default function Friend({ name, image }) {
+export default function User({ name, image }) {
   const classes = useStyles();
 
   return (

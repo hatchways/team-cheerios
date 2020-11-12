@@ -76,13 +76,10 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
   const friends = [];
   const loading = true;
 
-  const handleAdd = (user) => {
-    setFriendsList([...friendsList, user]);
-  };
+  const handleAdd = (user) => setFriendsList([...friendsList, user]);
 
   const handleDelete = (user) => {
     const newList = friendsList.filter((friend) => friend.name !== user.name);
-
     setFriendsList(newList);
   };
 
@@ -146,7 +143,7 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
             friends.map((user, i) => (
               <Friend
                 user={user}
-                list={friendsList}
+                friendsList={friendsList}
                 handleAdd={handleAdd}
                 handleDelete={handleDelete}
                 key={`friend-${i}`}

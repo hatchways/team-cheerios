@@ -31,10 +31,10 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-export default function Friend({ user, list, handleAdd, handleDelete }) {
+export default function Friend({ user, friendsList, handleAdd, handleDelete }) {
   const classes = useStyles();
 
-  const added = list.some((item) => item.name === user.name);
+  const added = friendsList.some((friend) => friend.name === user.name);
 
   return (
     <Grid container className={classes.root}>
