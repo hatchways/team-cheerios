@@ -1,5 +1,5 @@
 const Friends = require("../models/friendsModel");
-const ObjectId = require("mongoose").Types.ObjectId;
+const User = require("../models/userModel");
 
 exports.getYourFollowers = async (req, res) => {
   const { userId } = req.body;
@@ -35,16 +35,28 @@ exports.followFriend = async (req, res) => {
   try {
     const friends = await Friends.findOne({ userId });
 
+    const friendInfo = await User.findOne({ _id: friendId });
+    if (!friendInfo) throw new Error("User not Found");
+
+    const newFriend = {
+      friendId,
+      name: friendInfo.name,
+      image: friendInfo.image,
+      status: "sent",
+    };
+
     if (!friends) {
       await new Friends({
         userId,
-        followings: [friendId],
+        followings: [newFriend],
       }).save();
     } else {
-      const isAlreadyFollow = friends.followings.includes(ObjectId(friendId));
-      if (isAlreadyFollow) throw new Error("Already follow");
+      const isAlreadyFollow = friends.followings.filter(
+        (obj) => obj.friendId.toString() === friendId
+      );
+      if (isAlreadyFollow.length !== 0) throw new Error("Already follow");
 
-      await Friends.update({ userId }, { $push: { followings: friendId } });
+      await Friends.update({ userId }, { $push: { followings: newFriend } });
     }
 
     const updatedFriends = await Friends.findOne({ userId });
@@ -61,11 +73,11 @@ exports.unfollowFriend = async (req, res) => {
   try {
     const friends = await Friends.findOne({
       userId,
-      followings: { $in: [friendId] },
+      "followings.friendId": friendId,
     });
     if (!friends) throw new Error("Not following");
 
-    await Friends.update({ userId }, { $pull: { followings: friendId } });
+    await Friends.update({ userId }, { $pull: { followings: { friendId } } });
 
     const updatedFriends = await Friends.findOne({ userId });
     res.json({ friends: updatedFriends });

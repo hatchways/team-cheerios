@@ -8,14 +8,20 @@ const friendsSchema = new Schema({
   },
   followers: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      _id: false,
+      friendId: Schema.Types.ObjectId,
+      name: String,
+      image: String,
+      status: String,
     },
   ],
   followings: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      _id: false,
+      friendId: Schema.Types.ObjectId,
+      name: String,
+      image: String,
+      status: String,
     },
   ],
 });
