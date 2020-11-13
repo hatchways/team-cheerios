@@ -4,14 +4,15 @@ const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const winston = require("winston");
+const cors = require("cors");
 const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 const pollRouter = require("./routes/pollRoutes");
 const friendsListRouter = require("./routes/friendsListRoutes");
 const users = require("./routes/users");
 const auth = require("./routes/auth");
+const friendsRoutes = require("./routes/friendsRoutes");
 const connect = require("./connect");
-const cors = require("cors");
 
 const { json, urlencoded } = express;
 
@@ -30,7 +31,7 @@ app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/", pollRouter);
 app.use("/", friendsListRouter);
-app.use("/friends", require("./routes/friendsRoutes"));
+app.use("/friends", friendsRoutes);
 
 app.use(cors());
 

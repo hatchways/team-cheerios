@@ -1,5 +1,5 @@
 const Friends = require("../models/friendsModel");
-const User = require("../models/userModel");
+const { User } = require("../models/userModel");
 
 exports.getYourFollowers = async (req, res) => {
   const { userId } = req.body;
