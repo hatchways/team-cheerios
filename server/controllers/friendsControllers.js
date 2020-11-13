@@ -1,14 +1,7 @@
 const Friends = require("../models/friendsModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
-exports.getSuggestedFriends = async (req, res) => {
-  // get suggested friends (random) - search query (search by name)
-  // 1. display randomly picked users (around 10?)
-  //    how to pick random user??
-  // 2. search by name : filter by name + #1 func
-};
-
-exports.getYourFollowers = async (req, res, next) => {
+exports.getYourFollowers = async (req, res) => {
   const { userId } = req.body;
 
   try {
