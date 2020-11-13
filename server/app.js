@@ -30,6 +30,7 @@ app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/", pollRouter);
 app.use("/", friendsListRouter);
+app.use("/friends", require("./routes/friendsRoutes"));
 
 app.use(cors());
 
