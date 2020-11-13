@@ -62,7 +62,6 @@ export default function Poll({ open, handleClose, ...rest }) {
   const [selectedOption , setSelectedOption] = React.useState("");
 
   const onChangeList = (newList) =>{
-    console.log(newList);
     setSelectedOption(newList);
   }
   const OnChangeText = (newText) => {
@@ -85,7 +84,6 @@ export default function Poll({ open, handleClose, ...rest }) {
       //TODO: Submit Poll
       
     }
-    console.log("Submitting new poll....");
     handleClose();
   };
   return (
