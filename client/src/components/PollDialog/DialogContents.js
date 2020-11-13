@@ -1,5 +1,4 @@
 import React from "react";
-import DropZone from "./DropZone";
 
 import { TextField, FormControl, InputLabel, Select } from "@material-ui/core";
 
@@ -12,24 +11,22 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     width: "40%",
   },
-  dropControlTop: {
-    position: "absolute",
-    top: "3rem",
-    right: "4rem",
-  },
-  dropControlBot: {
-    position: "absolute",
-    top: "20rem",
-    right: "4rem",
-  },
+  
 }));
 
-export default function DialogContent({ handleClose, ...rest }) {
+export default function DialogContent({ onChangeList,onChangeText,...rest }) {
   const classes = useStyles();
   const [friendListName, setFriendListName] = React.useState("");
 
-  const handleChange = (event) => {
-    setFriendListName(event.target.value);
+
+  const handleChangeText = (event) => {
+    onChangeText(event.target.value);
+  }
+
+  const handleChangeList = (event) => {
+    const option = event.target.value;
+    setFriendListName(option);
+    onChangeList(option);
   };
 
   return (
@@ -40,27 +37,24 @@ export default function DialogContent({ handleClose, ...rest }) {
           id="outlined-basic"
           label="Text Here"
           variant="outlined"
+          onChange = {handleChangeText}
           style={{ width: "40%" }}
         />
       </form>
-      <div className={classes.dropControlTop}>
-        <DropZone accept="image/*" />
-      </div>
+      
 
       <h3>Friend list: </h3>
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel htmlFor="outlined-age-native-simple">Select</InputLabel>
-        <Select native value={friendListName} onChange={handleChange}>
+        <Select native value={friendListName} onChange={handleChangeList}>
           <option aria-label="None" value="" />
-          <option value={10}>List 1</option>
-          <option value={20}>List 2</option>
-          <option value={30}>List 3</option>
+          <option value={"List 1"}>List 1</option>
+          <option value={"List 2"}>List 2</option>
+          <option value={"List 3"}>List 3</option>
         </Select>
       </FormControl>
 
-      <div className={classes.dropControlBot}>
-        <DropZone accept="image/*" />
-      </div>
+     
     </div>
   );
 }

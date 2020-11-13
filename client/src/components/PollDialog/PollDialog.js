@@ -3,6 +3,9 @@ import DialogContents from "./DialogContents";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import DropZone from "./DropZone";
+import Divider from "@material-ui/core/Divider";
+import SubmitPoll from "../../utils/SubmitPoll";
 
 import {
   Dialog,
@@ -39,42 +42,92 @@ const useStyles = makeStyles(() => ({
     top: "1rem",
     right: "1rem",
   },
+  dropControlTop: {
+    position: "absolute",
+    top: "3rem",
+    right: "4rem",
+  },
+  dropControlBot: {
+    position: "absolute",
+    top: "17rem",
+    right: "4rem",
+  },
 }));
 
 export default function Poll({ open, handleClose, ...rest }) {
   const classes = useStyles();
+  const [topImage, setTopImage] = React.useState(null);
+  const [botImage, setBotImage] = React.useState(null);
+  const [text , setText] = React.useState("");
+  const [selectedOption , setSelectedOption] = React.useState("");
+
+  const onChangeList = (newList) =>{
+    console.log(newList);
+    setSelectedOption(newList);
+  }
+  const OnChangeText = (newText) => {
+    setText(newText);
+  }
+
+  const handleChangeTop = (newFile) => {
+    setTopImage(newFile);
+  };
+  const handleChangeBot = (newFile) => {
+    setBotImage(newFile);
+  };
 
   const handleSubmitPoll = (event) => {
-    //TODO: Poll creation
-
+    event.preventDefault();
+    if (topImage && botImage && text && selectedOption) {
+      let formData = new FormData();
+      formData.append("image", topImage);
+      formData.append("image",botImage);
+      //TODO: Submit Poll
+      
+    }
+    console.log("Submitting new poll....");
     handleClose();
   };
   return (
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        fullWidth={true}
-        maxWidth={"md"}
-        {...rest}
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth={true}
+      maxWidth={"md"}
+      {...rest}
+    >
+      <DialogTitle className={classes.title}>Create a Poll</DialogTitle>
+      <IconButton
+        aria-label="close"
+        className={classes.closeButton}
+        onClick={handleClose}
       >
-        <DialogTitle className={classes.title}>Create a Poll</DialogTitle>
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={handleClose}
-        >
-          <CloseIcon />
-        </IconButton>
+        <CloseIcon />
+      </IconButton>
 
-        <DialogContent>
-          <DialogContents handleClose={handleClose} />
-        </DialogContent>
+      <DialogContent>
+        <DialogContents onChangeList = {onChangeList} onChangeText = {OnChangeText} />
+      </DialogContent>
 
+      <DialogContent>
+        <div className={classes.dropControlTop}>
+          <DropZone onChange={handleChangeTop} accept="image/*" />
+          <Divider variant="middle" />
+        </div>
+      </DialogContent>
+
+      <DialogContent>
+        <div className={classes.dropControlBot}>
+          <DropZone onChange={handleChangeBot} accept="image/*" />
+        </div>
+      </DialogContent>
+      <DialogContent>
         <DialogActions>
           <Button onClick={handleSubmitPoll} className={classes.btn}>
             Create
           </Button>
         </DialogActions>
-      </Dialog>
+      </DialogContent>
+    </Dialog>
   );
 }
