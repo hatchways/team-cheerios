@@ -2,19 +2,35 @@ const Friends = require("../models/friendsModel");
 const { User } = require("../models/userModel");
 
 exports.getSuggestedFriends = async (req, res) => {
-  const searchKeyword = req.body.keyword;
+  const { userId, keyword } = req.body;
 
   try {
-    const friends = await User.find({
-      name: {
-        $regex: searchKeyword,
-        $options: "i",
+    const myFriends = await Friends.findOne({ userId });
+    const myFollowings = myFriends.followings.map(
+      (followings) => followings.friendId
+    );
+
+    let query = {
+      _id: {
+        $nin: myFollowings,
       },
-    })
+    };
+
+    if (keyword) {
+      query = {
+        ...query,
+        name: {
+          $regex: keyword,
+          $options: "i",
+        },
+      };
+    }
+
+    const suggestions = await User.find(query)
       .sort({ createdAt: -1 })
       .limit(15);
 
-    res.json({ friends });
+    res.json({ suggestions });
   } catch (err) {
     console.error(err);
     res.status(400).json(err.toString());
@@ -22,19 +38,14 @@ exports.getSuggestedFriends = async (req, res) => {
 };
 
 exports.getYourFollowers = async (req, res) => {
-  const { userId, searchKeyword } = req.body;
+  const { userId, keyword } = req.body;
 
   try {
     const friends = await Friends.findOne({ userId });
     if (!friends) throw new Error("Friends not found");
 
     let followers = friends.followers;
-
-    if (searchKeyword) {
-      followers = followers.filter((follower) =>
-        follower.name.toLowerCase().includes(searchKeyword.toLowerCase())
-      );
-    }
+    if (keyword) followers = searchByName(followers, keyword);
 
     res.json({ followers });
   } catch (err) {
@@ -44,19 +55,14 @@ exports.getYourFollowers = async (req, res) => {
 };
 
 exports.getYourFollowings = async (req, res) => {
-  const { userId, searchKeyword } = req.body;
+  const { userId, keyword } = req.body;
 
   try {
     const friends = await Friends.findOne({ userId });
     if (!friends) throw new Error("Friends not found");
 
     let followings = friends.followings;
-
-    if (searchKeyword) {
-      followings = followings.filter((following) =>
-        following.name.toLowerCase().includes(searchKeyword.toLowerCase())
-      );
-    }
+    if (keyword) followings = searchByName(followings, keyword);
 
     res.json({ followings });
   } catch (err) {
@@ -96,7 +102,7 @@ exports.followFriend = async (req, res) => {
     }
 
     const updatedFriends = await Friends.findOne({ userId });
-    res.json({ friends: updatedFriends });
+    res.json({ followings: updatedFriends.followings });
   } catch (err) {
     console.error(err);
     res.status(400).json(err.toString());
@@ -116,7 +122,7 @@ exports.unfollowFriend = async (req, res) => {
     await Friends.update({ userId }, { $pull: { followings: { friendId } } });
 
     const updatedFriends = await Friends.findOne({ userId });
-    res.json({ friends: updatedFriends });
+    res.json({ followings: updatedFriends.followings });
   } catch (err) {
     console.error(err);
     res.status(400).json(err.toString());
@@ -138,3 +144,9 @@ exports.deleteFriends = async (req, res) => {
     res.status(404).json(err.toString());
   }
 };
+
+const searchByName = (list, name) =>
+  list.filter((friend) =>
+    friend.name.toLowerCase().includes(name.toLowerCase())
+  );
+
