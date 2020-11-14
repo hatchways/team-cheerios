@@ -1,6 +1,17 @@
 const Friends = require("../models/friendsModel");
 const { User } = require("../models/userModel");
 
+exports.getSuggestedFriends = async (_, res) => {
+  try {
+    const friends = await User.find().sort({ createdAt: -1 }).limit(15);
+
+    res.json({ friends });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err.toString());
+  }
+};
+
 exports.getYourFollowers = async (req, res) => {
   const { userId } = req.body;
 
@@ -10,7 +21,7 @@ exports.getYourFollowers = async (req, res) => {
 
     res.json({ followers: friends.followers });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(404).json(err.toString());
   }
 };
@@ -24,7 +35,7 @@ exports.getYourFollowings = async (req, res) => {
 
     res.json({ followings: friends.followings });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(404).json(err.toString());
   }
 };
@@ -84,5 +95,21 @@ exports.unfollowFriend = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(400).json(err.toString());
+  }
+};
+
+exports.deleteFriends = async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    const friends = await Friends.findOne({ userId });
+    if (!friends) throw new Error("Friends not found");
+
+    await friends.deleteOne();
+
+    res.json({ message: "Friends deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(404).json(err.toString());
   }
 };
