@@ -1,25 +1,42 @@
 const Friends = require("../models/friendsModel");
 const { User } = require("../models/userModel");
 
-exports.getSuggestedFriends = async (_, res) => {
+exports.getSuggestedFriends = async (req, res) => {
+  const searchKeyword = req.body.keyword;
+
   try {
-    const friends = await User.find().sort({ createdAt: -1 }).limit(15);
+    const friends = await User.find({
+      name: {
+        $regex: searchKeyword,
+        $options: "i",
+      },
+    })
+      .sort({ createdAt: -1 })
+      .limit(15);
 
     res.json({ friends });
   } catch (err) {
     console.error(err);
-    res.status(500).json(err.toString());
+    res.status(400).json(err.toString());
   }
 };
 
 exports.getYourFollowers = async (req, res) => {
-  const { userId } = req.body;
+  const { userId, searchKeyword } = req.body;
 
   try {
     const friends = await Friends.findOne({ userId });
     if (!friends) throw new Error("Friends not found");
 
-    res.json({ followers: friends.followers });
+    let followers = friends.followers;
+
+    if (searchKeyword) {
+      followers = followers.filter((follower) =>
+        follower.name.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+    }
+
+    res.json({ followers });
   } catch (err) {
     console.error(err);
     res.status(404).json(err.toString());
@@ -27,13 +44,21 @@ exports.getYourFollowers = async (req, res) => {
 };
 
 exports.getYourFollowings = async (req, res) => {
-  const { userId } = req.body;
+  const { userId, searchKeyword } = req.body;
 
   try {
     const friends = await Friends.findOne({ userId });
     if (!friends) throw new Error("Friends not found");
 
-    res.json({ followings: friends.followings });
+    let followings = friends.followings;
+
+    if (searchKeyword) {
+      followings = followings.filter((following) =>
+        following.name.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+    }
+
+    res.json({ followings });
   } catch (err) {
     console.error(err);
     res.status(404).json(err.toString());
