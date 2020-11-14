@@ -43,7 +43,7 @@ export default function MyDropzone({onChange}) {
     );
 
     setDropped(true);
-  }, [onChange]);
+  }, []);
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (

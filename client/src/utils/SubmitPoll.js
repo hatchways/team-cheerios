@@ -2,16 +2,21 @@ import axios from "axios";
 
 const imageUrl = "http://localhost:3001/upload";
 const pollUrl = "http://localhost:3001/polls";
-const SubmitPoll = (files, question, selectedOption) => {
-  axios.post(imageUrl, files).then((response) => {
-    const newPoll = {
-      question: question,
-      images: response.data.locationArray,
-      friendList: selectedOption,
-    };
 
-    return newPoll;
-    //TODO: Submit Poll when friendList has necessary parameters
+const imageUrls = (files) => {
+  return axios.post(imageUrl, files).then((response) => {
+    return response.data.locationArray;
+  });
+};
+
+const SubmitPoll = (files, question, selectedOption) => {
+  imageUrls(files).then((urls) => {
+    return axios.post(pollUrl, {
+      question: question,
+      images: urls,
+      //using a temp id for now
+      friendList: "562b2649b2e70464f113c04e",
+    });
   });
 };
 

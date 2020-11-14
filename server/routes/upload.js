@@ -18,7 +18,6 @@ var upload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      console.log(file);
       cb(null, Date.now().toString());
     },
   }),
@@ -30,7 +29,6 @@ router.post("/upload", function (req, res, next) {
       res.status(500).json({ status: "fail", error: error });
     } else {
       if (req.files === undefined) {
-        console.log("uploadProductsImages Error: No File Selected!");
         res.status(500).json({
           status: "fail",
           message: "Error: No File Selected",

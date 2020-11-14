@@ -58,15 +58,15 @@ export default function Poll({ open, handleClose, ...rest }) {
   const classes = useStyles();
   const [topImage, setTopImage] = React.useState(null);
   const [botImage, setBotImage] = React.useState(null);
-  const [text , setText] = React.useState("");
-  const [selectedOption , setSelectedOption] = React.useState("");
+  const [text, setText] = React.useState("");
+  const [selectedOption, setSelectedOption] = React.useState("");
 
-  const onChangeList = (newList) =>{
+  const onChangeList = (newList) => {
     setSelectedOption(newList);
-  }
+  };
   const OnChangeText = (newText) => {
     setText(newText);
-  }
+  };
 
   const handleChangeTop = (newFile) => {
     setTopImage(newFile);
@@ -77,12 +77,12 @@ export default function Poll({ open, handleClose, ...rest }) {
 
   const handleSubmitPoll = (event) => {
     event.preventDefault();
+
     if (topImage && botImage && text && selectedOption) {
       let formData = new FormData();
       formData.append("image", topImage);
-      formData.append("image",botImage);
-      //TODO: Submit Poll
-      
+      formData.append("image", botImage);
+      SubmitPoll(formData, text, selectedOption);
     }
     handleClose();
   };
@@ -104,7 +104,10 @@ export default function Poll({ open, handleClose, ...rest }) {
       </IconButton>
 
       <DialogContent>
-        <DialogContents onChangeList = {onChangeList} onChangeText = {OnChangeText} />
+        <DialogContents
+          onChangeList={onChangeList}
+          onChangeText={OnChangeText}
+        />
       </DialogContent>
 
       <DialogContent>
