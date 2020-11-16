@@ -13,7 +13,7 @@ const createNewFriends = async (userId) => {
 };
 
 exports.getSuggestedFriends = async (req, res) => {
-  const { userId, keyword } = req.body;
+  const userId = req.params.userId; // req.user._id
 
   try {
     let myFriends = await Friends.findOne({ userId });
@@ -30,11 +30,11 @@ exports.getSuggestedFriends = async (req, res) => {
       },
     };
 
-    if (keyword) {
+    if (req.query.search) {
       query = {
         ...query,
         name: {
-          $regex: keyword,
+          $regex: req.query.search,
           $options: "i",
         },
       };
@@ -52,7 +52,8 @@ exports.getSuggestedFriends = async (req, res) => {
 };
 
 exports.getYourFollowers = async (req, res) => {
-  const { userId, keyword } = req.body;
+  const userId = req.params.userId; // req.user._id
+  const keyword = req.query.search;
 
   try {
     let friends = await Friends.findOne({ userId });
@@ -69,7 +70,8 @@ exports.getYourFollowers = async (req, res) => {
 };
 
 exports.getYourFollowings = async (req, res) => {
-  const { userId, keyword } = req.body;
+  const userId = req.params.userId; // req.user._id
+  const keyword = req.query.search;
 
   try {
     let friends = await Friends.findOne({ userId });
@@ -85,9 +87,14 @@ exports.getYourFollowings = async (req, res) => {
   }
 };
 
+const searchByName = (list, name) =>
+  list.filter((friend) =>
+    friend.name.toLowerCase().includes(name.toLowerCase())
+  );
+
 exports.followFriend = async (req, res) => {
-  const { userId } = req.body;
-  const friendId = req.params.userId;
+  const userId = req.params.userId; // req.user._id
+  const friendId = req.params.friendId;
 
   try {
     // change user's followings status
@@ -138,8 +145,8 @@ exports.followFriend = async (req, res) => {
 };
 
 exports.unfollowFriend = async (req, res) => {
-  const { userId } = req.body;
-  const friendId = req.params.userId;
+  const userId = req.params.userId; // req.user._id
+  const friendId = req.params.friendId;
 
   try {
     // remove friend from user's followings
@@ -174,7 +181,7 @@ exports.unfollowFriend = async (req, res) => {
 };
 
 exports.deleteFriends = async (req, res) => {
-  const { userId } = req.body;
+  const userId = req.params.userId;
 
   try {
     const friends = await Friends.findOne({ userId });
@@ -189,14 +196,9 @@ exports.deleteFriends = async (req, res) => {
   }
 };
 
-const searchByName = (list, name) =>
-  list.filter((friend) =>
-    friend.name.toLowerCase().includes(name.toLowerCase())
-  );
-
 exports.acceptRequest = async (req, res) => {
-  const { userId } = req.body;
-  const friendId = req.params.userId;
+  const userId = req.params.userId; // req.user._id
+  const friendId = req.params.friendId;
 
   try {
     // update user's status to "follower"

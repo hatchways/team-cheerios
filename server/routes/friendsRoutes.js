@@ -11,12 +11,12 @@ const {
 
 const router = Router();
 
-router.get("/", getSuggestedFriends);
-router.get("/followers", getYourFollowers);
-router.get("/followings", getYourFollowings);
-router.post("/follow/:userId", followFriend);
-router.post("/unfollow/:userIid", unfollowFriend);
-router.post("/accept/:userId", acceptRequest);
-router.delete("/", deleteFriends);
+// TODO: remove userId (except delete)
+router.get("/:userId", getSuggestedFriends);
+router.get("/followers/:userId", getYourFollowers);
+router.get("/followings/:userId", getYourFollowings);
+router.post("/follow/:userId/:friendId", followFriend);
+router.post("/unfollow/:userId/:friendId", unfollowFriend);
+router.post("/accept/:userId/:friendId", acceptRequest);
 
 module.exports = router;

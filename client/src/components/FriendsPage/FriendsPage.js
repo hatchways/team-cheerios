@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -11,6 +12,7 @@ import TabPanel from "./TabPanel";
 import TabPanelContent from "./TabPanelContent";
 
 const categories = ["suggestions", "followers", "followings"];
+const userId = "5faf39b3c8460de1ebdf3e42";
 
 const Paper = withStyles({
   root: {
@@ -29,32 +31,74 @@ export default function FriendsPage() {
   const [fetchedFriends, setFetchedFriends] = React.useState([]);
 
   React.useEffect(() => {
-    // TODO: fetch suggestions
-    setFetchedFriends(initData);
-    setLoading(false);
-  }, []);
+    let url = `/friends/${userId}`;
 
-  React.useEffect(() => {
-    // TODO: search user
-    console.log({ keywords });
+    if (keywords[0] !== "") url += `/?search=${keywords[0]}`;
+
+    try {
+      axios
+        .get(url)
+        .then((res) => res.data?.suggestions)
+        .then((list) => {
+          setFetchedFriends(list);
+          setLoading(false);
+        });
+    } catch (error) {
+      console.error(error);
+    }
   }, [keywords]);
 
   const handleChange = (newTab) => {
     setLoading(true);
+    let query = "";
 
     switch (newTab) {
       case 1:
-        // TODO: fetch followers
+        if (keywords[1] !== "") query = `?search=${keywords[1]}`;
+
+        try {
+          axios
+            .get(`/friends/followers/${userId}/${query}`)
+            .then((res) => res.data?.followers)
+            .then((list) => {
+              setFetchedFriends(list);
+              setLoading(false);
+            });
+        } catch (error) {
+          console.error(error);
+        }
         break;
       case 2:
-        // TODO: fetch followings
+        if (keywords[2] !== "") query = `?search=${keywords[2]}`;
+
+        try {
+          axios
+            .get(`/friends/followings/${userId}/${query}`)
+            .then((res) => res.data?.followings)
+            .then((list) => {
+              setFetchedFriends(list);
+              setLoading(false);
+            });
+        } catch (error) {
+          console.error(error);
+        }
         break;
       default:
-        // TODO: fetch suggestions
+        if (keywords[0] !== "") query = `?search=${keywords[0]}`;
+
+        try {
+          axios
+            .get(`/friends/${userId}/${query}`)
+            .then((res) => res.data?.suggestions)
+            .then((list) => {
+              setFetchedFriends(list);
+              setLoading(false);
+            });
+        } catch (error) {
+          console.error(error);
+        }
         break;
     }
-    setFetchedFriends(initData);
-    setLoading(false);
     setSelectedTab(newTab);
   };
 
@@ -104,15 +148,3 @@ export default function FriendsPage() {
     </Paper>
   );
 }
-
-// temp data
-const initData = [
-  { name: "Emma K", status: "following", friendId: "1" },
-  { name: "Mary P", status: "", friendId: "2" },
-  { name: "Brandon W", status: "sent", friendId: "3" },
-  { name: "Mark J", status: "following", friendId: "4" },
-  { name: "Sal K", status: "", friendId: "5" },
-  { name: "Sarah K", status: "following", friendId: "6" },
-  { name: "Stan L", status: "", friendId: "7" },
-  { name: "Brittany P", status: "sent", friendId: "8" },
-];

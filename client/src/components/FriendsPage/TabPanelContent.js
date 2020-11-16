@@ -32,8 +32,10 @@ export default function TabPanelContent({
     setKeywords(newKeywords);
   };
 
-  return (
-    <div>
+  return !friends.length ? (
+    <p>No Friends yet</p>
+  ) : (
+    <>
       <TextField
         id={`friend-search-${index}`}
         fullWidth
@@ -52,6 +54,6 @@ export default function TabPanelContent({
           />
         ))}
       </div>
-    </div>
+    </>
   );
 }
