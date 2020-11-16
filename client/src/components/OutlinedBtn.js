@@ -14,13 +14,12 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export default function OutlinedBtn({ children, ...rest }) {
+export default function OutlinedBtn({ children, ...props }) {
   const classes = useStyles();
 
   return (
-      <Button variant="outlined" className={classes.btn} {...rest}>
-        {children}
-      </Button>
-  
+    <Button variant="outlined" className={classes.btn} {...props}>
+      {children}
+    </Button>
   );
 }

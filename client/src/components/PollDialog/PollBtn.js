@@ -3,7 +3,7 @@ import OutlinedBtn from "../OutlinedBtn";
 import PollDialog from "./PollDialog";
 import UserSkeleton from "../Skeletons/UserSkeleton";
 
-export default function PollBtn({ loading, ...rest }) {
+export default function PollBtn({ loading, ...props }) {
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
@@ -19,7 +19,7 @@ export default function PollBtn({ loading, ...rest }) {
   return (
     <OutlinedBtn disabled={open} onClick={handleClick}>
       Create Poll
-      <PollDialog open={open} handleClose={handleClose} {...rest} />
+      <PollDialog open={open} handleClose={handleClose} {...props} />
     </OutlinedBtn>
   );
 }
