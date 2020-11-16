@@ -7,10 +7,10 @@ import Toolbar from "@material-ui/core/Toolbar";
 
 import { UserContext } from "../../contexts/UserContext";
 import { NAVBAR_HEIGHT } from "../../utils/constants";
-import OutlinedBtn from "../OutlinedBtn";
 import Logo from "../Logo";
 import MenuBtn from "./MenuBtn";
 import ProfileBtn from "./ProfileBtn";
+import PollBtn from "../PollDialog/PollBtn";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -52,9 +52,7 @@ export default function Navbar() {
         <MenuBtn to="/friends-pools" text="Friends pools" />
         <MenuBtn to="/opinions" text="Opinions" />
 
-        <OutlinedBtn onClick={() => console.log("open dialog")}>
-          create pool
-        </OutlinedBtn>
+        <PollBtn loading = {loading} />
 
         <ProfileBtn user={user} loading={loading} />
       </Toolbar>

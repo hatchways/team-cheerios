@@ -8,6 +8,7 @@ const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 const pollRouter = require("./routes/pollRoutes");
 const friendsListRouter = require("./routes/friendsListRoutes");
+const uploadRouter = require("./routes/upload")
 const users = require("./routes/users");
 const auth = require("./routes/auth");
 const connect = require("./connect");
@@ -26,6 +27,7 @@ app.use(express.static(join(__dirname, "public")));
 app.use("/api/users", users);
 app.use("/api/auth", auth);
 
+app.use("/",uploadRouter);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/", pollRouter);
