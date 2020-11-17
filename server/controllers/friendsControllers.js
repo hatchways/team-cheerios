@@ -13,7 +13,7 @@ const createNewFriends = async (userId) => {
 };
 
 exports.getSuggestedFriends = async (req, res) => {
-  const userId = req.params.userId; // req.user._id
+  const userId = req.user._id;
 
   try {
     let myFriends = await Friends.findOne({ userId });
@@ -52,7 +52,7 @@ exports.getSuggestedFriends = async (req, res) => {
 };
 
 exports.getYourFollowers = async (req, res) => {
-  const userId = req.params.userId; // req.user._id
+  const userId = req.user._id;
   const keyword = req.query.search;
 
   try {
@@ -70,7 +70,7 @@ exports.getYourFollowers = async (req, res) => {
 };
 
 exports.getYourFollowings = async (req, res) => {
-  const userId = req.params.userId; // req.user._id
+  const userId = req.user._id;
   const keyword = req.query.search;
 
   try {
@@ -93,7 +93,7 @@ const searchByName = (list, name) =>
   );
 
 exports.followFriend = async (req, res) => {
-  const userId = req.params.userId; // req.user._id
+  const userId = req.user._id;
   const friendId = req.params.friendId;
 
   try {
@@ -145,7 +145,7 @@ exports.followFriend = async (req, res) => {
 };
 
 exports.unfollowFriend = async (req, res) => {
-  const userId = req.params.userId; // req.user._id
+  const userId = req.user._id;
   const friendId = req.params.friendId;
 
   try {
@@ -197,7 +197,7 @@ exports.deleteFriends = async (req, res) => {
 };
 
 exports.acceptRequest = async (req, res) => {
-  const userId = req.params.userId; // req.user._id
+  const userId = req.user._id;
   const friendId = req.params.friendId;
 
   try {

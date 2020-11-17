@@ -12,13 +12,7 @@ import TabPanel from "./TabPanel";
 import TabPanelContent from "./TabPanelContent";
 
 const categories = ["suggestions", "followers", "followings"];
-// TODO: get id from context, remove userIds from apis
-const userId = "5faf39b3c8460de1ebdf3e42";
-const apis = [
-  `/friends/${userId}`,
-  `/friends/followers/${userId}`,
-  `/friends/followings/${userId}`,
-];
+const apis = [`/friends`, `/friends/followers`, `/friends/followings`];
 
 const Paper = withStyles({
   root: {
@@ -60,12 +54,13 @@ export default function FriendsPage() {
         console.error(error);
       }
     },
+    // eslint-disable-next-line
     [keywords]
   );
 
   React.useEffect(() => {
     fetchData(selectedTab);
-  }, [fetchData]);
+  }, [fetchData, selectedTab]);
 
   const handleChange = (newTab) => {
     setLoading(true);
@@ -76,21 +71,15 @@ export default function FriendsPage() {
   const handleClick = (id, type) => {
     switch (type) {
       case "follow":
-        axios
-          .post(`friends/follow/${userId}/${id}`)
-          .then(() => fetchData(selectedTab));
+        axios.post(`friends/follow/${id}`).then(() => fetchData(selectedTab));
         break;
       case "unfollow":
       case "ignore":
       case "cancel":
-        axios
-          .post(`friends/unfollow/${userId}/${id}`)
-          .then(() => fetchData(selectedTab));
+        axios.post(`friends/unfollow/${id}`).then(() => fetchData(selectedTab));
         break;
       case "accept":
-        axios
-          .post(`friends/accept/${userId}/${id}`)
-          .then(() => fetchData(selectedTab));
+        axios.post(`friends/accept/${id}`).then(() => fetchData(selectedTab));
         break;
       default:
         return null;

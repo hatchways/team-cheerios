@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const auth = require("../middleware/auth");
 const {
   getSuggestedFriends,
   getYourFollowers,
@@ -11,13 +12,12 @@ const {
 
 const router = Router();
 
-// TODO: remove userId (except delete)
-router.get("/:userId", getSuggestedFriends);
-router.get("/followers/:userId", getYourFollowers);
-router.get("/followings/:userId", getYourFollowings);
-router.post("/follow/:userId/:friendId", followFriend);
-router.post("/unfollow/:userId/:friendId", unfollowFriend);
-router.post("/accept/:userId/:friendId", acceptRequest);
-router.delete("/:userId", deleteFriends);
+router.get("/", auth, getSuggestedFriends);
+router.get("/followers", auth, getYourFollowers);
+router.get("/followings", auth, getYourFollowings);
+router.post("/follow/:friendId", auth, followFriend);
+router.post("/unfollow/:friendId", auth, unfollowFriend);
+router.post("/accept/:friendId", auth, acceptRequest);
+router.delete("/:userId", auth, deleteFriends);
 
 module.exports = router;
