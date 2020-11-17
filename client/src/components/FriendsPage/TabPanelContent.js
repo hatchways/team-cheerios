@@ -2,28 +2,39 @@ import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
+import PersonIcon from "@material-ui/icons/PermIdentity";
 
 import FriendCard from "./FriendCard";
+import { Typography } from "@material-ui/core";
 
-const useStyles = makeStyles({
-  list: {
+const useStyles = makeStyles((theme) => ({
+  cardWrapper: {
     margin: "0 auto",
     height: "60vh",
     overflow: "scroll",
   },
-});
+  noFriends: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "60vh",
+  },
+  personIcon: {
+    width: "5rem",
+    height: "5rem",
+    color: theme.palette.text.secondary,
+  },
+}));
 
 export default function TabPanelContent({
   friends,
   index,
   keywords,
   setKeywords,
+  handleClick,
 }) {
   const classes = useStyles();
-
-  const handleClick = (id) => {
-    console.log(`change friendId:${id} status`);
-  };
 
   const handleChange = (e) => {
     const newKeywords = [...keywords];
@@ -33,7 +44,12 @@ export default function TabPanelContent({
   };
 
   return !friends.length ? (
-    <p>No Friends yet</p>
+    <div className={classes.noFriends}>
+      <PersonIcon className={classes.personIcon} />
+      <Typography variant="h6" component="p" color="textSecondary">
+        No Friends Yet
+      </Typography>
+    </div>
   ) : (
     <>
       <TextField
@@ -45,7 +61,7 @@ export default function TabPanelContent({
         onChange={handleChange}
       />
 
-      <div className={classes.list}>
+      <div className={classes.cardWrapper}>
         {friends.map((friend, i) => (
           <FriendCard
             {...friend}

@@ -32,7 +32,7 @@ const StyledButton = withStyles({
   },
 })(MuiButton);
 
-const RequestSentButton = withStyles({
+const CancelRequestButton = withStyles({
   root: {
     background: "#E0E0E0",
     color: "#333333",
@@ -51,7 +51,16 @@ const UnfollowButton = withStyles({
   },
 })(StyledButton);
 
+const AcceptButton = withStyles({
+  root: { width: "50%" },
+})(UnfollowButton);
+
+const IgnoreButton = withStyles({
+  root: { width: "50%" },
+})(CancelRequestButton);
+
 export default function FriendCard({
+  _id,
   name,
   image,
   friendId,
@@ -60,14 +69,51 @@ export default function FriendCard({
 }) {
   const classes = useStyles();
 
-  const Button = ({ ...props }) => {
+  const Button = (props) => {
     switch (status) {
       case "sent":
-        return <RequestSentButton {...props}>cancel request</RequestSentButton>;
+        return (
+          <CancelRequestButton
+            onClick={() => handleClick(friendId, "cancel")}
+            {...props}
+          >
+            cancel request
+          </CancelRequestButton>
+        );
       case "following":
-        return <UnfollowButton {...props}>unfollow</UnfollowButton>;
+        return (
+          <UnfollowButton
+            onClick={() => handleClick(friendId, "unfollow")}
+            {...props}
+          >
+            unfollow
+          </UnfollowButton>
+        );
+      case "received":
+        return (
+          <>
+            <AcceptButton
+              onClick={() => handleClick(friendId, "accept")}
+              {...props}
+            >
+              accept
+            </AcceptButton>
+            <IgnoreButton
+              onClick={() => handleClick(friendId, "ignore")}
+              {...props}
+            >
+              ignore
+            </IgnoreButton>
+          </>
+        );
+      case "follower":
+        return <CancelRequestButton disabled>follower</CancelRequestButton>;
       default:
-        return <StyledButton {...props}>follow</StyledButton>;
+        return (
+          <StyledButton onClick={() => handleClick(_id, "follow")} {...props}>
+            follow
+          </StyledButton>
+        );
     }
   };
 
@@ -77,8 +123,8 @@ export default function FriendCard({
         <User name={name} image={image} />
       </Grid>
 
-      <Grid item xs={4}>
-        <Button onClick={() => handleClick(friendId)} />
+      <Grid item xs={5} sm={4}>
+        <Button />
       </Grid>
     </Grid>
   );

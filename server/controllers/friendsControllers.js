@@ -44,7 +44,7 @@ exports.getSuggestedFriends = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(15);
 
-    res.json({ suggestions });
+    res.json({ friends: suggestions });
   } catch (err) {
     console.error(err);
     res.status(400).json(err.toString());
@@ -62,7 +62,7 @@ exports.getYourFollowers = async (req, res) => {
     let followers = friends.followers;
     if (keyword) followers = searchByName(followers, keyword);
 
-    res.json({ followers });
+    res.json({ friends: followers });
   } catch (err) {
     console.error(err);
     res.status(404).json(err.toString());
@@ -80,7 +80,7 @@ exports.getYourFollowings = async (req, res) => {
     let followings = friends.followings;
     if (keyword) followings = searchByName(followings, keyword);
 
-    res.json({ followings });
+    res.json({ friends: followings });
   } catch (err) {
     console.error(err);
     res.status(404).json(err.toString());

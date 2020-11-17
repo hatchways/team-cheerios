@@ -7,12 +7,18 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
 import { theme } from "../../themes/theme";
-import UserSkeleton from "../Skeletons/UserSkeleton";
+import FriendsListSkeleton from "../Skeletons/FriendsListSkeleton";
 import TabPanel from "./TabPanel";
 import TabPanelContent from "./TabPanelContent";
 
 const categories = ["suggestions", "followers", "followings"];
+// TODO: get id from context, remove userIds from apis
 const userId = "5faf39b3c8460de1ebdf3e42";
+const apis = [
+  `/friends/${userId}`,
+  `/friends/followers/${userId}`,
+  `/friends/followings/${userId}`,
+];
 
 const Paper = withStyles({
   root: {
@@ -24,82 +30,68 @@ const Paper = withStyles({
 
 export default function FriendsPage() {
   const [selectedTab, setSelectedTab] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
+  const [fetchedFriends, setFetchedFriends] = React.useState(
+    new Array(categories.length).fill([])
+  );
   const [keywords, setKeywords] = React.useState(
     new Array(categories.length).fill("")
   );
-  const [loading, setLoading] = React.useState(true);
-  const [fetchedFriends, setFetchedFriends] = React.useState([]);
 
-  React.useEffect(() => {
-    let url = `/friends/${userId}`;
-
-    if (keywords[0] !== "") url += `/?search=${keywords[0]}`;
+  const fetchData = React.useCallback((index) => {
+    let url = apis[index];
+    if (keywords[index] && keywords[index] !== "")
+      url += `/?search=${keywords[index]}`;
 
     try {
       axios
         .get(url)
-        .then((res) => res.data?.suggestions)
+        .then((res) => res.data?.friends)
         .then((list) => {
-          setFetchedFriends(list);
+          let newList = [...fetchedFriends];
+          newList[index] = list;
+
+          setFetchedFriends(newList);
           setLoading(false);
         });
     } catch (error) {
       console.error(error);
     }
-  }, [keywords]);
+  }, []);
+
+  React.useEffect(() => {
+    fetchData(0);
+  }, [fetchData]);
 
   const handleChange = (newTab) => {
     setLoading(true);
-    let query = "";
+    fetchData(newTab);
+    setSelectedTab(newTab);
+  };
 
-    switch (newTab) {
-      case 1:
-        if (keywords[1] !== "") query = `?search=${keywords[1]}`;
-
-        try {
-          axios
-            .get(`/friends/followers/${userId}/${query}`)
-            .then((res) => res.data?.followers)
-            .then((list) => {
-              setFetchedFriends(list);
-              setLoading(false);
-            });
-        } catch (error) {
-          console.error(error);
-        }
+  const handleClick = (id, type) => {
+    switch (type) {
+      case "follow":
+        axios
+          .post(`friends/follow/${userId}/${id}`)
+          .then(() => fetchData(selectedTab));
         break;
-      case 2:
-        if (keywords[2] !== "") query = `?search=${keywords[2]}`;
-
-        try {
-          axios
-            .get(`/friends/followings/${userId}/${query}`)
-            .then((res) => res.data?.followings)
-            .then((list) => {
-              setFetchedFriends(list);
-              setLoading(false);
-            });
-        } catch (error) {
-          console.error(error);
-        }
+      case "unfollow":
+      case "ignore":
+      case "cancel":
+        axios
+          .post(`friends/unfollow/${userId}/${id}`)
+          .then(() => fetchData(selectedTab));
+        break;
+      case "accept":
+        axios
+          .post(`friends/accept/${userId}/${id}`)
+          .then(() => fetchData(selectedTab));
         break;
       default:
-        if (keywords[0] !== "") query = `?search=${keywords[0]}`;
-
-        try {
-          axios
-            .get(`/friends/${userId}/${query}`)
-            .then((res) => res.data?.suggestions)
-            .then((list) => {
-              setFetchedFriends(list);
-              setLoading(false);
-            });
-        } catch (error) {
-          console.error(error);
-        }
-        break;
+        return null;
     }
-    setSelectedTab(newTab);
+    fetchData(selectedTab);
   };
 
   return (
@@ -130,17 +122,14 @@ export default function FriendsPage() {
           key={`panel-${i}`}
         >
           {loading ? (
-            <>
-              <UserSkeleton />
-              <UserSkeleton />
-              <UserSkeleton />
-            </>
+            <FriendsListSkeleton />
           ) : (
             <TabPanelContent
-              friends={fetchedFriends}
+              friends={fetchedFriends[i]}
               index={i}
               keywords={keywords}
               setKeywords={setKeywords}
+              handleClick={handleClick}
             />
           )}
         </TabPanel>
