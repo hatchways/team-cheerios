@@ -61,7 +61,6 @@ export default function FriendsPage() {
 
   const handleChange = (newTab) => {
     setLoading(true);
-    fetchData(newTab);
     setSelectedTab(newTab);
   };
 
