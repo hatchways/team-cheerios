@@ -44,20 +44,17 @@ export default function FriendsPage() {
         url += `/?search=${keywords[index]}`;
       }
 
-      try {
-        axios
-          .get(url)
-          .then((res) => res.data?.friends)
-          .then((list) => {
-            let newList = [...fetchedFriends];
-            newList[index] = list;
+      axios
+        .get(url)
+        .then((res) => res.data?.friends)
+        .then((list) => {
+          let newList = [...fetchedFriends];
+          newList[index] = list;
 
-            setFetchedFriends(newList);
-            setLoading(false);
-          });
-      } catch (error) {
-        console.error(error);
-      }
+          setFetchedFriends(newList);
+          setLoading(false);
+        })
+        .catch((error) => console.error(error));
     },
     // eslint-disable-next-line
     [keywords]
@@ -76,15 +73,24 @@ export default function FriendsPage() {
   const handleClick = (id, type) => {
     switch (type) {
       case "follow":
-        axios.post(`friends/follow/${id}`).then(() => fetchData(selectedTab));
+        axios
+          .post(`friends/follow/${id}`)
+          .then(() => fetchData(selectedTab))
+          .catch((error) => console.error(error));
         break;
       case "unfollow":
       case "ignore":
       case "cancel":
-        axios.post(`friends/unfollow/${id}`).then(() => fetchData(selectedTab));
+        axios
+          .post(`friends/unfollow/${id}`)
+          .then(() => fetchData(selectedTab))
+          .catch((error) => console.error(error));
         break;
       case "accept":
-        axios.post(`friends/accept/${id}`).then(() => fetchData(selectedTab));
+        axios
+          .post(`friends/accept/${id}`)
+          .then(() => fetchData(selectedTab))
+          .catch((error) => console.error(error));
         break;
       default:
         return null;
