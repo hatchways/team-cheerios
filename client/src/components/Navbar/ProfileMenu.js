@@ -17,6 +17,8 @@ const useStyles = makeStyles(() =>
 export default function ProfileMenu({ anchorEl, handleClose }) {
   const classes = useStyles();
   let history = useHistory();
+  const [open , setOpen] = React.useState(false);
+
 
   const handleLogout = () => {
     // TODO: logout

@@ -1,3 +1,4 @@
+const { string } = require('joi');
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
@@ -21,6 +22,10 @@ const User = mongoose.model('User',new mongoose.Schema(
       type: String,
       minlength: 6,
       required: true
+    },
+    image : {
+      type: String,
+      ref: "imageModel"
     },
     isActive : {
       type:Boolean,

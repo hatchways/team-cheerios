@@ -35,7 +35,9 @@ export default function Navbar() {
   const classes = useStyles();
   const {
     state: { authenticated, user, loading },
+    dispatch
   } = React.useContext(UserContext);
+  const [openOptions , setOpenOptions] = React.useState(false);
 
   if (!authenticated) return null;
 
@@ -52,7 +54,7 @@ export default function Navbar() {
         <MenuBtn to="/friends-pools" text="Friends pools" />
         <MenuBtn to="/opinions" text="Opinions" />
 
-        <PollBtn loading = {loading} />
+        <PollBtn user = {user} loading = {loading} />
 
         <ProfileBtn user={user} loading={loading} />
       </Toolbar>

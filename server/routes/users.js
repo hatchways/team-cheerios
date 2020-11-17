@@ -37,6 +37,15 @@ router.post('/', async (req, res) => {
   }
 });
 
+//to change user picture
+router.post('/change-picture', async (req,res)=>{
+  const validation_error = validate_request(req);
+  if(validation_error.error){
+    res.status(400).send(validation_error.error.details[0].message);
+    return;
+  }
+});
+
 
 /* Input validation for user registration */
 const validate_request = (req) =>{
