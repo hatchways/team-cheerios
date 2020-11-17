@@ -38,29 +38,33 @@ export default function FriendsPage() {
     new Array(categories.length).fill("")
   );
 
-  const fetchData = React.useCallback((index) => {
-    let url = apis[index];
-    if (keywords[index] && keywords[index] !== "")
-      url += `/?search=${keywords[index]}`;
+  const fetchData = React.useCallback(
+    (index) => {
+      let url = apis[index];
+      if (keywords[index] !== "") {
+        url += `/?search=${keywords[index]}`;
+      }
 
-    try {
-      axios
-        .get(url)
-        .then((res) => res.data?.friends)
-        .then((list) => {
-          let newList = [...fetchedFriends];
-          newList[index] = list;
+      try {
+        axios
+          .get(url)
+          .then((res) => res.data?.friends)
+          .then((list) => {
+            let newList = [...fetchedFriends];
+            newList[index] = list;
 
-          setFetchedFriends(newList);
-          setLoading(false);
-        });
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+            setFetchedFriends(newList);
+            setLoading(false);
+          });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [keywords]
+  );
 
   React.useEffect(() => {
-    fetchData(0);
+    fetchData(selectedTab);
   }, [fetchData]);
 
   const handleChange = (newTab) => {
