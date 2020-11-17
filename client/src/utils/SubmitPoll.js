@@ -1,7 +1,7 @@
 import axios from "axios";
 import uploadtoS3 from "./uploadtoS3";
 
-const pollUrl = "http://localhost:3001/polls";
+const pollUrl = "/polls";
 
 const SubmitPoll = (files, question, selectedOption) => {
   uploadtoS3(files).then((urls) => {

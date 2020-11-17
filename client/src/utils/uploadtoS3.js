@@ -1,5 +1,5 @@
 import axios from 'axios';
-const imageUrl = "http://localhost:3001/upload";
+const imageUrl = "/upload";
 
 const uploadtoS3 = (files) => {
   return axios.post(imageUrl, files).then((response) => {
