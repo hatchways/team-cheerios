@@ -7,17 +7,12 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
 import { theme } from "../../themes/theme";
-import { ENDPOINT } from "../../utils/config";
 import FriendsListSkeleton from "../Skeletons/FriendsListSkeleton";
 import TabPanel from "./TabPanel";
 import TabPanelContent from "./TabPanelContent";
 
 const categories = ["suggestions", "followers", "followings"];
-const apis = [
-  `${ENDPOINT}/friends`,
-  `${ENDPOINT}/friends/followers`,
-  `${ENDPOINT}/friends/followings`,
-];
+const apis = ["/friends", "/friends/followers", "/friends/followings"];
 
 const Paper = withStyles({
   root: {
