@@ -10,7 +10,7 @@ const friendsListSchema = new Schema({
   user: [
     {
       type: String,
-      ref: "userModule"
+      ref: "userModel"
     }
   ],
 });
