@@ -43,6 +43,7 @@ export default function MyDropzone({ onChange }) {
     );
 
     setDropped(true);
+    // eslint-disable-next-line
   }, []);
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 

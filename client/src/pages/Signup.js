@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp() {
+  //const { state, dispatch } = React.useContext(UserContext);
   const [name, setName] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -47,7 +48,6 @@ export default function SignUp() {
       email: email,
       password: password,
     };
-    //console.log(newUser);
     axios
       .post("/api/users",user)
       .then((res) => console.log(res.data))
