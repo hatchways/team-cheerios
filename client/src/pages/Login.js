@@ -8,7 +8,7 @@ export default function Login() {
   const { state, dispatch } = React.useContext(UserContext);
   let history = useHistory();
 
-  if (state.authenticated) history.push("/");
+  if (state.authenticated) history.push("/dashboard");
 
   const handleClick = () => {
     dispatch({
@@ -21,7 +21,7 @@ export default function Login() {
       },
     });
 
-    history.push("/");
+    history.push("/dashboard");
   };
 
   // for checking purpose
@@ -29,7 +29,7 @@ export default function Login() {
     dispatch({ type: SET_AUTHENTICATED });
     dispatch({ type: LOADING_USER });
 
-    history.push("/");
+    history.push("/dashboard");
   };
 
   return (

@@ -7,7 +7,7 @@ export default function Signup() {
   const { state } = React.useContext(UserContext);
   let history = useHistory();
 
-  if (state.authenticated) history.push("/");
+  if (state.authenticated) history.push("/dashboard");
 
   return (
     <div>

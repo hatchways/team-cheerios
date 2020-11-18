@@ -24,10 +24,6 @@ const useStyles = makeStyles(() =>
     spacer: {
       flexGrow: 1,
     },
-    poolBtn: {
-      padding: "0.5rem 1rem",
-      borderRadius: "",
-    },
   })
 );
 
@@ -42,7 +38,7 @@ export default function Navbar() {
   return (
     <AppBar position="fixed" elevation={0} className={classes.root}>
       <Toolbar className={classes.toolbar}>
-        <Link to="/">
+        <Link to="/dashboard">
           <Logo />
         </Link>
 
@@ -52,7 +48,7 @@ export default function Navbar() {
         <MenuBtn to="/friends-pools" text="Friends pools" />
         <MenuBtn to="/opinions" text="Opinions" />
 
-        <PollBtn loading = {loading} />
+        <PollBtn loading={loading} />
 
         <ProfileBtn user={user} loading={loading} />
       </Toolbar>
