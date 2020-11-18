@@ -18,6 +18,10 @@ const useStyles = makeStyles(() => ({
     top: "1rem",
     right: "1rem",
   },
+  uploadButton: {
+    position: "absolute",
+    top: "8.5rem",
+  },
 }));
 
 export default function Profile({ open, handleCloseDialog }) {
@@ -48,7 +52,7 @@ export default function Profile({ open, handleCloseDialog }) {
       })
       .then((url) => {
         axios
-          .put("/change-picture",{ email: user.email, image: url })
+          .put("/change-picture", { email: user.email, image: url })
           .then((res) => setImage(url))
           .then((err) => console.log(err));
       });
@@ -87,7 +91,11 @@ export default function Profile({ open, handleCloseDialog }) {
               />
             </IconButton>
           </label>
-          <Button onClick={uploadFile}>Upload!</Button>
+        </DialogContent>
+        <DialogContent>
+          <Button className={classes.uploadButton} onClick={uploadFile}>
+            Upload!
+          </Button>
         </DialogContent>
       </Dialog>
     </div>
