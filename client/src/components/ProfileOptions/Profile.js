@@ -1,21 +1,95 @@
-import React from 'react';
-import {UserContext} from "../../contexts/UserContext"
-import {Dialog, DialogContent, DialogTitle} from "@material-ui/core"
+import React from "react";
+import axios from "axios";
+import { UserContext } from "../../contexts/UserContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Avatar,
+  Button,
+} from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import { makeStyles } from "@material-ui/core/styles";
+import CloseIcon from "@material-ui/icons/Close";
+import uploadtoS3 from "../../utils/uploadtoS3";
+const useStyles = makeStyles(() => ({
+  closeButton: {
+    position: "absolute",
+    top: "1rem",
+    right: "1rem",
+  },
+}));
 
-export default function Profile (){
-    //const {state,dispatch} = React.useContext(UserContext);
-    return (
-        <div>
-            <Dialog>
-                <DialogTitle>
-                    Profile Options
-                </DialogTitle>
-                <DialogContent>
-                    Profile
-                </DialogContent>
+export default function Profile({ open, handleCloseDialog }) {
+  const {
+    state: { user },
+    dispatch,
+  } = React.useContext(UserContext);
+  const classes = useStyles();
 
-            </Dialog>
+  const [image, setImage] = React.useState(user.image);
+  const [file, setFile] = React.useState(null);
 
-        </div>
-    );
+  const uploadFile = (e) => {
+    let formData = new FormData();
+    formData.append("image", file);
+    uploadtoS3(formData)
+      .then((url) => {
+        dispatch({
+          type: "SET_USER",
+          payload: {
+            user: {
+              ...user,
+              image: url[0],
+            },
+          },
+        });
+        return url[0];
+      })
+      .then((url) => {
+        axios
+          .put("/change-picture",{ email: user.email, image: url })
+          .then((res) => setImage(url))
+          .then((err) => console.log(err));
+      });
+  };
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+  return (
+    <div>
+      <Dialog open={open} onClose={handleCloseDialog}>
+        <DialogTitle>Profile Options</DialogTitle>
+        <DialogContent>
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={handleCloseDialog}
+          >
+            <CloseIcon />
+          </IconButton>
+          <input
+            accept="image/*"
+            id="contained-button-file"
+            type="file"
+            onChange={handleFileChange}
+          />
+          <label htmlFor="contained-button-file">
+            <IconButton>
+              <Avatar
+                src={image}
+                style={{
+                  margin: "10px",
+                  width: "60px",
+                  height: "60px",
+                }}
+              />
+            </IconButton>
+          </label>
+          <Button onClick={uploadFile}>Upload!</Button>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
