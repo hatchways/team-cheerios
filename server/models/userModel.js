@@ -1,42 +1,44 @@
-const { string } = require('joi');
-const mongoose = require('mongoose');
+const { string } = require("joi");
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const User = mongoose.model('User',new mongoose.Schema(
-  {
+const User = mongoose.model(
+  "User",
+  new mongoose.Schema({
     name: {
       type: String,
       required: true,
       minlength: 3,
-      maxlength: 10
+      maxlength: 10,
     },
     email: {
       type: String,
       required: true,
       lowercase: true,
       unique: true,
-      maxlength : 256
+      maxlength: 256,
     },
     password: {
       type: String,
       minlength: 6,
-      required: true
+      required: true,
     },
-    image : {
+    image: {
       type: String,
-      ref: "imageModel"
+      default: "",
     },
-    isActive : {
-      type:Boolean,
-      default: true
+    isActive: {
+      type: Boolean,
+      default: true,
     },
     // Will serve a flag as a hard delete on the database
     // Once updated never gonna be updated twice
-    isDeleted : {
+    isDeleted: {
       type: Boolean,
-      default: false
-    }
-  }));
+      default: false,
+    },
+  })
+);
 
 exports.User = User;
