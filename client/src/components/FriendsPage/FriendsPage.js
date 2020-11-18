@@ -25,9 +25,7 @@ const Paper = withStyles({
 export default function FriendsPage() {
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
-  const [fetchedFriends, setFetchedFriends] = React.useState(
-    new Array(categories.length).fill([])
-  );
+  const [fetchedFriends, setFetchedFriends] = React.useState([]);
   const [keywords, setKeywords] = React.useState(
     new Array(categories.length).fill("")
   );
@@ -43,15 +41,11 @@ export default function FriendsPage() {
         .get(url)
         .then((res) => res.data?.friends)
         .then((list) => {
-          let newList = [...fetchedFriends];
-          newList[index] = list;
-
-          setFetchedFriends(newList);
+          setFetchedFriends(list);
           setLoading(false);
         })
         .catch((error) => console.error(error));
     },
-    // eslint-disable-next-line
     [keywords]
   );
 
@@ -123,7 +117,7 @@ export default function FriendsPage() {
             <FriendsListSkeleton />
           ) : (
             <TabPanelContent
-              friends={fetchedFriends[i]}
+              friends={fetchedFriends}
               index={i}
               keywords={keywords}
               setKeywords={setKeywords}
