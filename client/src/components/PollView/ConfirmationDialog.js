@@ -37,7 +37,7 @@ export default function ConfirmationDialog({
           Cancel
         </Button>
         <Button onClick={handleChange} color="primary">
-          Yes, Change the vote
+          Yes, change my vote
         </Button>
       </DialogActions>
     </Dialog>

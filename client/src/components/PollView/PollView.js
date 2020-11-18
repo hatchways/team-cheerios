@@ -82,8 +82,10 @@ export default function PollView({ id }) {
   const [vote, setVote] = React.useState(null);
 
   // TODO: Fetch Poll Data
-  console.log(`fetch poll data id:${id}`);
   const { question, images, friendsList, numOfVotes } = initData;
+  React.useEffect(() => {
+    console.log(`fetch poll data id:${id}`);
+  }, []);
 
   const totalVotes = numOfVotes.reduce((a, b) => a + b, 0);
 
