@@ -10,7 +10,7 @@ export default function Dashboard() {
   const {
     state: { loading },
   } = React.useContext(UserContext);
-  const [openFriendDialog, setOpenFriendDialog] = React.useState(true);
+  const [openFriendDialog, setOpenFriendDialog] = React.useState(false);
 
   return (
     <DashboardLayout>

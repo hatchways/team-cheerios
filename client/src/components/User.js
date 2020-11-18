@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) =>
       height: 40,
     },
     userName: {
-      fontSize: 18,
+      fontSize: "1rem",
       textTransform: "none",
       color: "black",
     },
