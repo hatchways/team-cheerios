@@ -19,14 +19,16 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children, ...props }) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <Navbar />
 
-      <div className={classes.children}>{children}</div>
+      <div className={classes.children} {...props}>
+        {children}
+      </div>
     </div>
   );
 }
