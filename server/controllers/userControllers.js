@@ -8,11 +8,11 @@ exports.changeProfilePicture = async (req, res) => {
     {
       image: newImage,
     },
-    function (err, affected, res) {
+    function (err, affected, resp) {
       if (err) {
         console.log(err);
       }
-      res.status(201).send(res);
+      res.status(201).send(resp);
     }
   );
 };
