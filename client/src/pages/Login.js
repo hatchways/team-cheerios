@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { useHistory } from "react-router-dom";
-
+import MuiAlert from "@material-ui/lab/Alert";
 import { SET_USER } from "../contexts/types";
 import { UserContext } from "../contexts/UserContext";
 import {
@@ -10,18 +10,30 @@ import {
   TextField,
   Link,
   Button,
+  Snackbar,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Logo from "../components/Logo";
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const useStyles = makeStyles((theme) => ({
+  snackbar: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+  },
   root: {
     height: "100vh",
   },
   image: {
-    backgroundImage: "url(https://i.ibb.co/YRBjvKT/f1d2e32ad77c9c983af281c12eee46567109a4f6.png)",
+    backgroundImage:
+      "url(https://i.ibb.co/YRBjvKT/f1d2e32ad77c9c983af281c12eee46567109a4f6.png)",
     backgroundRepeat: "no-repeat",
     backgroundColor:
       theme.palette.type === "light"
@@ -37,12 +49,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   avatar: {
-    position : "absolute",
-    marginTop : "2rem",
+    position: "absolute",
+    marginTop: "2rem",
     marginLeft: "2rem",
   },
   form: {
-    width: "50%", // Fix IE 11 issue.
+    width: "50%",
     marginTop: theme.spacing(5),
     marginLeft: theme.spacing(1),
   },
@@ -66,32 +78,56 @@ export default function Login() {
   const classes = useStyles();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const {dispatch } = React.useContext(UserContext);
+  const { dispatch } = React.useContext(UserContext);
+  const [errEmail, setErrEmail] = React.useState("");
+  const [open, setOpen] = React.useState(false);
   let history = useHistory();
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const validate = () => {
+    let isError = false;
+    if (email === "" || email.indexOf("@") === -1) {
+      setErrEmail("Please enter a valid email");
+      isError = true;
+    }
+    return isError;
+  };
 
   const handleClick = (e) => {
     e.preventDefault();
+    const err = validate();
+    if (!err) {
+      const newUser = {
+        email,
+        password,
+      };
 
-    const newUser = {
-      email,
-      password,
-    };
-
-    loginUser(newUser)
-      .then((user) => {
-        dispatch({
-          type: SET_USER,
-          payload: {
-            user: {
-              name: user.name,
-              image: user.image,
-              email: user.email,
-            },
-          },
-        });
-        history.push("/");
-      })
-      .catch((err) => console.log(err));
+      loginUser(newUser)
+        .then((user) => {
+          if (user) {
+            dispatch({
+              type: SET_USER,
+              payload: {
+                user: {
+                  name: user.name,
+                  image: user.image,
+                  email: user.email,
+                },
+              },
+            });
+            history.push("/");
+          } else {
+            setOpen(true);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   return (
@@ -100,11 +136,11 @@ export default function Login() {
 
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
-        <Logo className = {classes.avatar}/>
+          <Logo className={classes.avatar} />
           <Typography component="h1" variant="h3">
             Log In
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -114,6 +150,8 @@ export default function Login() {
               label="Email Address"
               name="email"
               autoComplete="email"
+              error={errEmail !== ""}
+              helperText={errEmail}
               autoFocus
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -136,7 +174,7 @@ export default function Login() {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick = {handleClick}
+              onClick={handleClick}
             >
               Sign In
             </Button>
@@ -149,8 +187,16 @@ export default function Login() {
             </Grid>
           </form>
         </div>
+        <div className={classes.snackbar}>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error">
+            Error ! Your email or password is incorrect !
+          </Alert>
+        </Snackbar>
+      </div>
       </Grid>
       <Grid item xs={false} sm={1} md={7} className={classes.image} />
+      
     </Grid>
   );
 }
@@ -158,6 +204,7 @@ export default function Login() {
 const loginUser = async (user) => {
   try {
     const res = await axios.post("/api/auth", user);
+    console.log(res);
     setAuth(res.data.token);
     return res.data.user;
   } catch (err) {
