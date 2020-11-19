@@ -14,12 +14,13 @@ const useStyles = makeStyles(() => ({
     background: "#FFFFFF",
     boxShadow: "0px 0px 20px rgba(221, 224, 233, 0.5)",
     width: 340,
-    maxWidth: 340,
+    height: 340,
     textDecoration: "none",
   },
   header: {
     borderBottom: "1px solid #E8EBF6",
     padding: "1.5rem",
+    width: "100%",
     height: 90,
   },
   title: {

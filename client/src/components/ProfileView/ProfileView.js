@@ -80,7 +80,9 @@ export default function ProfileView() {
         </div>
         <div className={classes.cards}>
           {friendsLists.map((list, i) => (
-            <FriendsListCard {...list} key={`friends-list-card-${i}`} />
+            <div key={`friends-list-card-${i}`}>
+              <FriendsListCard {...list} />
+            </div>
           ))}
         </div>
       </article>

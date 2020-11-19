@@ -9,6 +9,7 @@ import { NAVBAR_HEIGHT } from "../utils/constants";
 import DashboardLayout from "../components/DashboardLayout";
 import ProfileView from "../components/ProfileView";
 import PollView from "../components/PollView";
+import Sidebar from "../components/Sidebar";
 import DashboardSkeleton from "../components/Skeletons/DashboardSkeleton";
 import { UserContext } from "../contexts/UserContext";
 
@@ -51,10 +52,16 @@ export default function Dashboard() {
             className={classes.leftPane}
             display={{ xs: "none", sm: "block" }}
           >
-            Friends
+            <Sidebar />
           </Box>
 
-          <Grid item sm={8} md={9} className={classes.rightPane}>
+          <Grid
+            item
+            sm={8}
+            md={9}
+            component="section"
+            className={classes.rightPane}
+          >
             <Switch>
               <Route exact path="/dashboard" render={() => <ProfileView />} />
               <Route
