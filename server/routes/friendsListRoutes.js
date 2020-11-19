@@ -1,14 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
+const {
+  addNewFriendsList,
+  getFriendsList,
+} = require("../controllers/friendsListControllers");
 
-const { 
-    addNewFriendsList, 
-    getFriendList,
-} = require('../controllers/friendsListControllers');
-
-    getFriendList
-    router.get("/friendsList", getFriendList);
-    router.post("/friendsList", addNewFriendsList);
+getFriendsList;
+router.get("/friendsList", getFriendsList);
+router.post("/friendsList", addNewFriendsList);
 
 module.exports = router;

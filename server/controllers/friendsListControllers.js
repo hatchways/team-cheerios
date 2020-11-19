@@ -1,27 +1,21 @@
-const Friend = require('../models/friendsListModel');
+const FriendsList = require("../models/friendsListModel");
 
 exports.addNewFriendsList = (req, res) => {
-    let newFriendList = new Friend(req.body);
+  const newFriendList = new FriendsList(req.body);
 
-    newFriendList.save((err, Friend) => {
-        if (err) {
-            res.send(err);
-        }
-        res.json(Friend);
-    });
+  newFriendList.save((err, FriendsList) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(FriendsList);
+  });
 };
 
 exports.getFriendList = (req, res) => {
-    Friend.find({},(err, Friend) => {
-        if (err) {
-            res.send(err);
-        }
-        res.json(Friend);
-    });
+  FriendsList.find({}, (err, FriendsList) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(FriendsList);
+  });
 };
-
-
-
-
-
-

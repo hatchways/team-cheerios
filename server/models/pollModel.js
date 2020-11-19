@@ -13,10 +13,10 @@ const PollSchema = new Schema({
       ref: "imageSchema",
     },
   ],
-  friendList: [
+  friendsList: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "userModel",
+      ref: "FriendsList",
     },
   ],
   numOfVotes: {

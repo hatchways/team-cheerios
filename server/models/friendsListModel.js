@@ -1,18 +1,18 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
 const friendsListSchema = new Schema({
   title: {
     type: String,
-    required: true, 
+    required: true,
   },
   user: [
     {
       type: String,
-      ref: "userModel"
-    }
+      ref: "userModel",
+    },
   ],
 });
 
-module.exports = mongoose.model('Friend', friendsListSchema);
+module.exports = mongoose.model("FriendsList", friendsListSchema);
