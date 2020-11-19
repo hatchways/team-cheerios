@@ -9,7 +9,8 @@ const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 const pollRouter = require("./routes/pollRoutes");
 const friendsListRouter = require("./routes/friendsListRoutes");
-const uploadRouter = require("./routes/upload")
+const uploadRouter = require("./routes/upload");
+const userRouter = require("./routes/userRoutes");
 const users = require("./routes/users");
 const auth = require("./routes/auth");
 const friendsRoutes = require("./routes/friendsRoutes");
@@ -28,13 +29,13 @@ app.use(express.static(join(__dirname, "public")));
 app.use("/api/users", users);
 app.use("/api/auth", auth);
 
-app.use("/",uploadRouter);
+app.use("/", uploadRouter);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/", pollRouter);
 app.use("/", friendsListRouter);
 app.use("/friends", friendsRoutes);
-
+app.use("/", userRouter);
 app.use(cors());
 
 // catch 404 and forward to error handler

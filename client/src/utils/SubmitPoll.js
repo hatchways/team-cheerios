@@ -1,16 +1,10 @@
 import axios from "axios";
+import uploadtoS3 from "./uploadtoS3";
 
-const imageUrl = "http://localhost:3001/upload";
-const pollUrl = "http://localhost:3001/polls";
-
-const imageUrls = (files) => {
-  return axios.post(imageUrl, files).then((response) => {
-    return response.data.locationArray;
-  });
-};
+const pollUrl = "/polls";
 
 const SubmitPoll = (files, question, selectedOption) => {
-  imageUrls(files).then((urls) => {
+  uploadtoS3(files).then((urls) => {
     return axios.post(pollUrl, {
       question: question,
       images: urls,
