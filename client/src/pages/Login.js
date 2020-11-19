@@ -16,7 +16,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Logo from "../components/Logo";
-import Background from "../assets/login_bg.png"
+import Background from "../assets/login_bg.png";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -111,13 +111,16 @@ export default function Login() {
       loginUser(newUser)
         .then((user) => {
           if (user) {
+            const name = user.name;
+            const image = user.image;
+            const email = user.email;
             dispatch({
               type: SET_USER,
               payload: {
                 user: {
-                  name: user.name,
-                  image: user.image,
-                  email: user.email,
+                  name,
+                  image,
+                  email,
                 },
               },
             });
@@ -188,15 +191,14 @@ export default function Login() {
           </form>
         </div>
         <div className={classes.snackbar}>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error">
-            Error ! Your email or password is incorrect !
-          </Alert>
-        </Snackbar>
-      </div>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              Error ! Your email or password is incorrect !
+            </Alert>
+          </Snackbar>
+        </div>
       </Grid>
       <Grid item xs={false} sm={1} md={7} className={classes.image} />
-      
     </Grid>
   );
 }
@@ -205,10 +207,9 @@ const loginUser = async (user) => {
   try {
     const res = await axios.post("/api/auth", user);
     localStorage.setItem("HatchwayToken", res.data.token);
-    axios.defaults.headers.common["x-auth-token"] = res.data.token;    
+    axios.defaults.headers.common["x-auth-token"] = res.data.token;
     return res.data.user;
   } catch (err) {
     console.error(err);
   }
 };
-
