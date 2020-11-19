@@ -54,7 +54,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Poll({ open, handleClose, ...rest }) {
+export default function Poll({ open, handleClose, ...props }) {
   const classes = useStyles();
   const [topImage, setTopImage] = React.useState(null);
   const [botImage, setBotImage] = React.useState(null);
@@ -92,7 +92,7 @@ export default function Poll({ open, handleClose, ...rest }) {
       onClose={handleClose}
       fullWidth={true}
       maxWidth={"md"}
-      {...rest}
+      {...props}
     >
       <DialogTitle className={classes.title}>Create a Poll</DialogTitle>
       <IconButton

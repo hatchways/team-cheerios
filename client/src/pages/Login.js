@@ -1,7 +1,8 @@
 import axios from "axios";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { SET_AUTHENTICATED } from "../contexts/types";
+
+import { SET_USER } from "../contexts/types";
 import { UserContext } from "../contexts/UserContext";
 import {
   Grid,
@@ -65,10 +66,8 @@ export default function Login() {
   const classes = useStyles();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const { state, dispatch } = React.useContext(UserContext);
+  const {dispatch } = React.useContext(UserContext);
   let history = useHistory();
-
-  if (state.authenticated) history.push("/");
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -78,9 +77,21 @@ export default function Login() {
       password,
     };
 
-    loginUser(newUser);
-    dispatch({ type: SET_AUTHENTICATED });
-    history.push("/");
+    loginUser(newUser)
+      .then((user) => {
+        dispatch({
+          type: SET_USER,
+          payload: {
+            user: {
+              name: user.name,
+              image: user.image,
+              email: user.email,
+            },
+          },
+        });
+        history.push("/");
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -147,7 +158,8 @@ export default function Login() {
 const loginUser = async (user) => {
   try {
     const res = await axios.post("/api/auth", user);
-    setAuth(res.data);
+    setAuth(res.data.token);
+    return res.data.user;
   } catch (err) {
     console.error(err);
   }
