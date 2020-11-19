@@ -1,8 +1,8 @@
 const { User } = require("../models/userModel");
 
 exports.changeProfilePicture = async (req, res) => {
-  let email = req.body.email;
-  let newImage = req.body.image;
+  const email = req.body.email;
+  const newImage = req.body.image;
   User.updateOne(
     { email: email },
     {

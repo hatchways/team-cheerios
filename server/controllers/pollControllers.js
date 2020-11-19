@@ -1,7 +1,7 @@
 const Poll = require("../models/pollModel");
 
 exports.addNewPoll = (req, res) => {
-  let newPoll = new Poll(req.body);
+  const newPoll = new Poll(req.body);
 
   newPoll.save((err, Poll) => {
     if (err) {
