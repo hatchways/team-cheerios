@@ -10,14 +10,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Logo from "../components/Logo";
+import Background from "../assets/login_bg.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
   },
   image: {
-    backgroundImage:
-      "url(https://i.ibb.co/YRBjvKT/f1d2e32ad77c9c983af281c12eee46567109a4f6.png)",
+    backgroundImage: `url(${Background})`,
     backgroundRepeat: "no-repeat",
     backgroundColor:
       theme.palette.type === "light"

@@ -16,6 +16,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Logo from "../components/Logo";
+import Background from "../assets/login_bg.png"
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -32,8 +33,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
   },
   image: {
-    backgroundImage:
-      "url(https://i.ibb.co/YRBjvKT/f1d2e32ad77c9c983af281c12eee46567109a4f6.png)",
+    backgroundImage: `url(${Background})`,
     backgroundRepeat: "no-repeat",
     backgroundColor:
       theme.palette.type === "light"
@@ -204,15 +204,11 @@ export default function Login() {
 const loginUser = async (user) => {
   try {
     const res = await axios.post("/api/auth", user);
-    console.log(res);
-    setAuth(res.data.token);
+    localStorage.setItem("HatchwayToken", res.data.token);
+    axios.defaults.headers.common["x-auth-token"] = res.data.token;    
     return res.data.user;
   } catch (err) {
     console.error(err);
   }
 };
 
-const setAuth = (token) => {
-  localStorage.setItem("HatchwayToken", token);
-  axios.defaults.headers.common["x-auth-token"] = token;
-};
