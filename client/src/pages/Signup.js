@@ -124,7 +124,7 @@ export default function SignUp() {
         .then((res) => console.log(res.data))
         .catch((error) => console.log(error.response));
 
-      history.push("/login");
+      history.push("/");
     }
   };
 
@@ -207,7 +207,7 @@ export default function SignUp() {
             </Button>
             <Grid container>
               <Grid item>
-                <Link href="/login" variant="body2">
+                <Link href="/" variant="body2">
                   {"Already have an account? Sign In"}
                 </Link>
               </Grid>

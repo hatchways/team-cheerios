@@ -1,9 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import MuiAlert from "@material-ui/lab/Alert";
-import { SET_USER } from "../contexts/types";
-import { UserContext } from "../contexts/UserContext";
+
 import {
   Grid,
   Paper,
@@ -13,10 +11,14 @@ import {
   Snackbar,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Logo from "../components/Logo";
+import Typography from "@material-ui/core/Typography";
+import MuiAlert from "@material-ui/lab/Alert";
+
 import Background from "../assets/login_bg.png";
+import Logo from "../components/Logo";
+import { SET_USER } from "../contexts/types";
+import { UserContext } from "../contexts/UserContext";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -124,7 +126,7 @@ export default function Login() {
                 },
               },
             });
-            history.push("/");
+            history.push("/dashboard");
           } else {
             setOpen(true);
           }

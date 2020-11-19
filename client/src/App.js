@@ -16,7 +16,7 @@ function App() {
             {routes.map((route, i) =>
               route.auth ? (
                 <PrivateRoute
-                  exact
+                  exact={route.exact}
                   path={route.path}
                   component={route.component}
                   key={`route-${i}`}
