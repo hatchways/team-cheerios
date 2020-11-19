@@ -30,10 +30,10 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-export default function ProfileBtn({ user, loading, ...rest }) {
+export default function ProfileBtn({ user, loading, dispatch, ...rest }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -56,7 +56,7 @@ export default function ProfileBtn({ user, loading, ...rest }) {
         <span className={classes.userName}>{user.name}</span>
       </Button>
 
-      <ProfileMenu anchorEl={anchorEl} handleClose={handleClose} />
+      <ProfileMenu anchorEl={anchorEl} handleClose={handleClose}/>
     </>
   );
 }

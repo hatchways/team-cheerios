@@ -1,10 +1,9 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-
+import Profile from "../ProfileOptions/Profile";
 const useStyles = makeStyles(() =>
   createStyles({
     menuItem: {
@@ -16,7 +15,12 @@ const useStyles = makeStyles(() =>
 
 export default function ProfileMenu({ anchorEl, handleClose }) {
   const classes = useStyles();
-  let history = useHistory();
+  const [open , setOpen] = React.useState(false);
+
+  const handleCloseDialog = () =>{
+    setOpen(false);
+  }
+
 
   const handleLogout = () => {
     // TODO: logout
@@ -24,6 +28,7 @@ export default function ProfileMenu({ anchorEl, handleClose }) {
   };
 
   return (
+    <>
     <Menu
       id="simple-menu"
       anchorEl={anchorEl}
@@ -46,7 +51,7 @@ export default function ProfileMenu({ anchorEl, handleClose }) {
     >
       <MenuItem
         className={classes.menuItem}
-        onClick={() => history.push("/profile")}
+        onClick={() =>setOpen(true)}
       >
         Profile
       </MenuItem>
@@ -55,5 +60,7 @@ export default function ProfileMenu({ anchorEl, handleClose }) {
         Logout
       </MenuItem>
     </Menu>
+    <Profile open = {open} handleCloseDialog = {handleCloseDialog}/>
+    </>
   );
 }
