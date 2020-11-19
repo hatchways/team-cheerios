@@ -4,12 +4,11 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import BackIcon from "@material-ui/icons/ArrowBackIos";
-import HeartIcon from "@material-ui/icons/Favorite";
 
-import Img1 from "../../assets/black-T.png";
-import Img2 from "../../assets/white-T.png";
-import FriendPoll from "./FriendPoll";
+import { polls as initData } from "../../initData";
 import ConfirmationDialog from "./ConfirmationDialog";
+import FriendPoll from "./FriendPoll";
+import Choice from "./Choice";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -34,9 +33,6 @@ const useStyles = makeStyles(() => ({
       height: "1rem",
     },
   },
-  question: {
-    fontWeight: 600,
-  },
   answers: {
     marginBottom: "1.5rem",
     fontSize: "1rem",
@@ -45,31 +41,6 @@ const useStyles = makeStyles(() => ({
   choiceWrapper: {
     display: "flex",
     marginBottom: "2rem",
-  },
-  choice: {
-    display: "flex",
-    flexDirection: "column",
-    marginRight: "0.5rem",
-    fontSize: "0.85rem",
-    fontWeight: 600,
-    textAlign: "center",
-    cursor: "pointer",
-  },
-  image: {
-    marginBottom: "0.75rem",
-    width: 100,
-    height: 100,
-    objectFit: "cover",
-  },
-  likes: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    "& > svg": {
-      width: "1rem",
-      height: "0.875rem",
-      color: "#FF5D5D",
-    },
   },
   friendPollWrapper: {
     overflow: "scroll",
@@ -82,10 +53,10 @@ export default function PollView({ id }) {
   const [vote, setVote] = React.useState(null);
 
   // TODO: Fetch Poll Data
-  const { question, images, friendsList, numOfVotes } = initData;
+  const { question, images, friendsList, numOfVotes } = initData[id];
   React.useEffect(() => {
     console.log(`fetch poll data id:${id}`);
-  }, []);
+  }, [id]);
 
   const totalVotes = numOfVotes.reduce((a, b) => a + b, 0);
 
@@ -114,7 +85,7 @@ export default function PollView({ id }) {
         </Link>
       </span>
 
-      <Typography variant="h4" component="h2" className={classes.question}>
+      <Typography variant="h4" component="h2">
         {question}
       </Typography>
 
@@ -122,17 +93,12 @@ export default function PollView({ id }) {
 
       <div className={classes.choiceWrapper}>
         {images.map((image, i) => (
-          <div
-            key={`choice-${i}`}
-            className={classes.choice}
+          <Choice
+            image={image}
+            vote={numOfVotes[i]}
             onClick={() => handleClick(i)}
-          >
-            <img src={image} alt="choice" className={classes.image} />
-            <span className={classes.likes}>
-              <HeartIcon />
-              {numOfVotes[i]}
-            </span>
-          </div>
+            key={`choice-${i}`}
+          />
         ))}
       </div>
 
@@ -151,45 +117,3 @@ export default function PollView({ id }) {
     </div>
   );
 }
-
-// Temp data
-const initData = {
-  question: "Which one is better?",
-  images: [Img1, Img2],
-  friendsList: {
-    title: "clothes",
-    user: [
-      {
-        name: "Mary Shealye",
-        image: "",
-        vote: "a",
-        votedAt: "2020-11-17T19:00:11.536+00:00",
-      },
-      {
-        name: "Kimberly Martin",
-        image: "",
-        vote: "a",
-        votedAt: "2020-11-17T01:58:11.536+00:00",
-      },
-      {
-        name: "Louisa Holbrook",
-        image: "",
-        vote: "b",
-        votedAt: "2020-11-16T01:58:11.536+00:00",
-      },
-      {
-        name: "Lucy Berger",
-        image: "",
-        vote: "a",
-        votedAt: "2020-11-15T01:58:11.536+00:00",
-      },
-      {
-        name: "Florence Lantz",
-        image: "",
-        vote: "b",
-        votedAt: "2020-11-14T01:58:11.536+00:00",
-      },
-    ],
-  },
-  numOfVotes: [18, 6],
-};
