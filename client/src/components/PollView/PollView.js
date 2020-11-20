@@ -47,16 +47,16 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function PollView({ id }) {
+export default function PollView({ pollId }) {
   const classes = useStyles();
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
   const [vote, setVote] = React.useState(null);
 
   // TODO: Fetch Poll Data
-  const { question, images, friendsList, numOfVotes } = initData[id];
+  const { question, images, friendsList, numOfVotes } = initData[pollId];
   React.useEffect(() => {
-    console.log(`fetch poll data id:${id}`);
-  }, [id]);
+    console.log(`fetch poll data id:${pollId}`);
+  }, [pollId]);
 
   const totalVotes = numOfVotes.reduce((a, b) => a + b, 0);
 

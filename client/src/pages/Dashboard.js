@@ -67,7 +67,9 @@ export default function Dashboard() {
               <Route
                 exact
                 path="/dashboard/poll/:pollId"
-                render={({ match }) => <PollView id={match.params.pollId} />}
+                render={({ match }) => (
+                  <PollView pollId={match.params.pollId} />
+                )}
               />
             </Switch>
           </Grid>
