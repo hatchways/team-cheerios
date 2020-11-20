@@ -4,11 +4,10 @@ export const theme = createMuiTheme({
   typography: {
     fontFamily: '"Roboto"',
     fontSize: 12,
-    h1: {
-      // could customize the h1 variant as well
-    }
+    h4: { fontWeight: 600 },
+    h5: { fontWeight: 600 },
   },
   palette: {
-    primary: { main: "#DF1B1B" }
-  }
+    primary: { main: "#DF1B1B" },
+  },
 });

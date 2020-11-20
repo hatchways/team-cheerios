@@ -2,8 +2,9 @@ import React from "react";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
+import Badge from "@material-ui/core/Badge";
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       display: "flex",
@@ -11,11 +12,18 @@ const useStyles = makeStyles((theme) =>
       height: 40,
     },
     avatar: {
-      marginRight: theme.spacing(1),
       width: 40,
       height: 40,
     },
-    userName: {
+    badge: {
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      border: "2px solid #FFFFFF",
+      backgroundColor: "#48DF2A",
+    },
+    name: {
+      marginLeft: "0.75rem",
       fontSize: "1rem",
       textTransform: "none",
       color: "black",
@@ -23,13 +31,21 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-export default function User({ name, image }) {
+export default function User({ name, image, active, ...rest }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <Avatar alt={name} src={image} className={classes.avatar} />
-      <span className={classes.userName}>{name}</span>
+    <div className={classes.root} style={rest?.style}>
+      <Badge
+        invisible={!active}
+        overlap="circle"
+        variant="dot"
+        color="secondary"
+        classes={{ badge: classes.badge }}
+      >
+        <Avatar alt={name} src={image} className={classes.avatar} />
+      </Badge>
+      <span className={classes.name}>{name}</span>
     </div>
   );
 }
