@@ -1,30 +1,21 @@
 const express = require("express");
+const {
+  getPollByID,
+  getPollsByUser,
+  getMyPolls,
+  createNewPoll,
+  updatePoll,
+  deletePoll,
+} = require("../controllers/pollControllers");
+const auth = require("../middleware/auth");
+
 const router = express.Router();
 
-const { 
-    addNewPoll, 
-    getPoll,
-    getPollWithID,
-    UpdatePoll,
-    deletePoll
-} = require('../controllers/pollControllers');
-
-// const { 
-//     addNewVote,
-//     getVotes
-// } = require('../controllers/votesControllers');
-
-router.get("/polls", getPoll);
-router.post("/polls", addNewPoll);
-
-// router.get("/polls/vote", getVotes);
-// router.get("/polls/vote", addNewVote);
-
-
-
-router.get("/polls/:id", getPollWithID);
-router.put("/polls/:id", UpdatePoll);
-router.delete("/polls/:id", deletePoll);
-
+router.get("/:id", getPollByID);
+router.get("/user/:userId", getPollsByUser);
+router.get("/", auth, getMyPolls);
+router.post("/", auth, createNewPoll);
+router.put("/:id", auth, updatePoll);
+router.delete("/:id", auth, deletePoll);
 
 module.exports = router;
