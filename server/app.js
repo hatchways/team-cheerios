@@ -33,7 +33,7 @@ app.use("/", uploadRouter);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/", pollRouter);
-app.use("/", friendsListRouter);
+app.use("/friends-list", friendsListRouter);
 app.use("/friends", friendsRoutes);
 app.use("/", userRouter);
 app.use(cors());

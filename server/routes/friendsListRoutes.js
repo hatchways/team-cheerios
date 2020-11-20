@@ -1,13 +1,17 @@
 const express = require("express");
-const router = express.Router();
-
 const {
   addNewFriendsList,
-  getFriendsList,
+  getMyFriendsList,
+  editFriendsList,
+  deleteFriendsList,
 } = require("../controllers/friendsListControllers");
+const auth = require("../middleware/auth");
 
-getFriendsList;
-router.get("/friendsList", getFriendsList);
-router.post("/friendsList", addNewFriendsList);
+const router = express.Router();
+
+router.get("/", auth, getMyFriendsList);
+router.post("/", auth, addNewFriendsList);
+router.post("/:id", auth, editFriendsList);
+router.delete("/:id", auth, deleteFriendsList);
 
 module.exports = router;
