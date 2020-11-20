@@ -11,6 +11,14 @@ import { useHistory } from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Logo from "../components/Logo";
 import Background from "../assets/login_bg.png";
+import MuiAlert from "@material-ui/lab/Alert";
+import { Snackbar } from "@material-ui/core";
+import { SET_USER } from "../contexts/types";
+import { UserContext } from "../contexts/UserContext";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,6 +70,9 @@ export default function SignUp() {
   const [password, setPassword] = React.useState("");
   const [rePassword, setRePassword] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [reason, setReason] = React.useState("");
+  const { dispatch } = React.useContext(UserContext);
   const [validError, setValidError] = React.useState({
     passwordErr: "",
     emailErr: "",
@@ -71,6 +82,13 @@ export default function SignUp() {
   const classes = useStyles();
   let history = useHistory();
   const { passwordErr, emailErr, retypePassErr, nameErr } = validError;
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const reset = () => {
     setValidError({
@@ -101,11 +119,13 @@ export default function SignUp() {
       setValidError({ ...validError, retypePassErr: "Passwords do not match" });
       isErr = true;
     }
-    if (name.length < 3) {
+    if (name.length < 3 || name.length > 10) {
       setValidError({
         ...validError,
-        nameErr: "Name should be at least 3 characters long",
+        nameErr:
+          "Name should be at least 3 characters long. Maximum length of 10 allowed",
       });
+      isErr = true;
     }
     return isErr;
   };
@@ -114,17 +134,41 @@ export default function SignUp() {
     e.preventDefault();
     const isErr = validate();
     if (!isErr) {
-      const user = {
-        name: name,
-        email: email,
-        password: password,
+      const newUser = {
+        name,
+        email,
+        password,
       };
       axios
-        .post("/api/users", user)
-        .then((res) => console.log(res.data))
-        .catch((error) => console.log(error.response));
+        .post("/api/users", newUser)
+        .then((res) => {
+          return res;
+        })
+        .then((user) => {
+          loginUser({ email, password }).then((user) => {
+            if (user) {
+              const name = user.name;
+              const image = user.image;
+              const email = user.email;
+              dispatch({
+                type: SET_USER,
+                payload: {
+                  user: {
+                    name,
+                    image,
+                    email,
+                  },
+                },
+              });
+              history.push("/dashboard");
+            }
+          });
+        })
 
-      history.push("/");
+        .catch((error) => {
+          setReason(error.response.data);
+          setOpen(true);
+        });
     }
   };
 
@@ -157,7 +201,7 @@ export default function SignUp() {
               margin="normal"
               required
               fullWidth
-              error={emailErr !== ""}
+              error={emailErr !== "" || reason !== ""}
               id="email"
               label="Email Address"
               name="email"
@@ -214,8 +258,26 @@ export default function SignUp() {
             </Grid>
           </form>
         </div>
+        <div className={classes.snackbar}>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              {reason}
+            </Alert>
+          </Snackbar>
+        </div>
       </Grid>
       <Grid item xs={false} sm={1} md={7} className={classes.image} />
     </Grid>
   );
 }
+
+const loginUser = async (user) => {
+  try {
+    const res = await axios.post("/api/auth", user);
+    localStorage.setItem("HatchwayToken", res.data.token);
+    axios.defaults.headers.common["x-auth-token"] = res.data.token;
+    return res.data.user;
+  } catch (err) {
+    console.error(err);
+  }
+};
