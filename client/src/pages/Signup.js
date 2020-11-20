@@ -15,6 +15,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { Snackbar } from "@material-ui/core";
 import { SET_USER } from "../contexts/types";
 import { UserContext } from "../contexts/UserContext";
+import loginUser from "../utils/loginUser";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -271,13 +272,3 @@ export default function SignUp() {
   );
 }
 
-const loginUser = async (user) => {
-  try {
-    const res = await axios.post("/api/auth", user);
-    localStorage.setItem("HatchwayToken", res.data.token);
-    axios.defaults.headers.common["x-auth-token"] = res.data.token;
-    return res.data.user;
-  } catch (err) {
-    console.error(err);
-  }
-};
