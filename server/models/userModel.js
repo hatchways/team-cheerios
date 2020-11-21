@@ -1,11 +1,9 @@
-const { string } = require("joi");
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const User = mongoose.model(
-  "User",
-  new mongoose.Schema({
+const UserSchema = new Schema(
+  {
     name: {
       type: String,
       required: true,
@@ -38,7 +36,24 @@ const User = mongoose.model(
       type: Boolean,
       default: false,
     },
-  })
+    friendsId: {
+      type: Schema.Types.ObjectId,
+      ref: "Friends",
+    },
+    friendsListIds: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "FriendsList",
+      },
+    ],
+    PollIds: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Poll",
+      },
+    ],
+  },
+  { timestamps: true }
 );
 
-exports.User = User;
+module.exports = mongoose.model("User", UserSchema);

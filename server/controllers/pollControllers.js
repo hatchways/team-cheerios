@@ -1,5 +1,5 @@
 const Poll = require("../models/pollModel");
-const { User } = require("../models/userModel");
+const User = require("../models/userModel");
 
 exports.createNewPoll = async (req, res) => {
   const userId = req.user._id;
