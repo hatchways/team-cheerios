@@ -108,7 +108,7 @@ exports.editFriendsList = async (req, res) => {
     const friendsList = await FriendsList.findOne({ _id: listId, userId });
     if (!friendsList) throw new Error("FriendsList not found");
 
-    const title = newTitle !== "" ? newTitle : friendsList.title;
+    const title = newTitle && newTitle !== "" ? newTitle : friendsList.title;
 
     let users = [...newUsers];
     if (newUsers && newUsers.length !== 0) {

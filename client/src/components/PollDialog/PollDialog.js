@@ -1,12 +1,7 @@
 import React from "react";
-import DialogContents from "./DialogContents";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import DropZone from "./DropZone";
-import Divider from "@material-ui/core/Divider";
-import SubmitPoll from "../../utils/SubmitPoll";
-
 import {
   Dialog,
   DialogActions,
@@ -14,6 +9,10 @@ import {
   DialogTitle,
   Button,
 } from "@material-ui/core";
+
+import SubmitPoll from "../../utils/SubmitPoll";
+import DialogContents from "./DialogContents";
+import DropZone from "./DropZone";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -42,15 +41,13 @@ const useStyles = makeStyles(() => ({
     top: "1rem",
     right: "1rem",
   },
-  dropControlTop: {
-    position: "absolute",
-    top: "3rem",
-    right: "4rem",
+  contentWrapper: {
+    display: "flex",
   },
-  dropControlBot: {
-    position: "absolute",
-    top: "17rem",
-    right: "4rem",
+  dropZoneWrapper: {
+    display: "flex",
+    flex: "50%",
+    justifyContent: "space-around",
   },
 }));
 
@@ -86,12 +83,13 @@ export default function Poll({ open, handleClose, ...props }) {
     }
     handleClose();
   };
+
   return (
     <Dialog
       open={open}
       onClose={handleClose}
       fullWidth={true}
-      maxWidth={"md"}
+      maxWidth="md"
       {...props}
     >
       <DialogTitle className={classes.title}>Create a Poll</DialogTitle>
@@ -103,32 +101,23 @@ export default function Poll({ open, handleClose, ...props }) {
         <CloseIcon />
       </IconButton>
 
-      <DialogContent>
+      <DialogContent className={classes.contentWrapper}>
         <DialogContents
           onChangeList={onChangeList}
           onChangeText={OnChangeText}
         />
-      </DialogContent>
 
-      <DialogContent>
-        <div className={classes.dropControlTop}>
+        <div className={classes.dropZoneWrapper}>
           <DropZone onChange={handleChangeTop} accept="image/*" />
-          <Divider variant="middle" />
-        </div>
-      </DialogContent>
-
-      <DialogContent>
-        <div className={classes.dropControlBot}>
           <DropZone onChange={handleChangeBot} accept="image/*" />
         </div>
       </DialogContent>
-      <DialogContent>
-        <DialogActions>
-          <Button onClick={handleSubmitPoll} className={classes.btn}>
-            Create
-          </Button>
-        </DialogActions>
-      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={handleSubmitPoll} className={classes.btn}>
+          Create
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 }
