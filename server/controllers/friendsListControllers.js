@@ -7,12 +7,12 @@ exports.addNewFriendsList = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    const newFriendsList = await new FriendsList(req.body).save();
+    if (req.body.title === "") throw new Error("Title must not empty");
 
-    await User.update(
-      { _id: userId },
-      { $push: { friendsListIds: newFriendsList._id } }
-    );
+    const newFriendsList = await new FriendsList({
+      userId,
+      ...req.body,
+    }).save();
 
     res.json({
       message: `FriendsList:${newFriendsList._id} created successfully`,
@@ -23,6 +23,24 @@ exports.addNewFriendsList = async (req, res) => {
   }
 };
 
+const lookup = {
+  $lookup: {
+    from: "users",
+    localField: "users",
+    foreignField: "_id",
+    as: "users",
+  },
+};
+
+const project = {
+  $project: {
+    title: 1,
+    "users._id": 1,
+    "users.name": 1,
+    "users.image": 1,
+  },
+};
+
 exports.getMyFriendsLists = async (req, res) => {
   const userId = req.user._id;
 
@@ -31,22 +49,9 @@ exports.getMyFriendsLists = async (req, res) => {
     if (!user) throw new Error("User not found");
 
     const lists = await FriendsList.aggregate([
-      { $match: { _id: { $in: user.friendsListIds } } },
-      {
-        $lookup: {
-          from: "users",
-          localField: "users",
-          foreignField: "_id",
-          as: "users",
-        },
-      },
-      {
-        $project: {
-          "users._id": 1,
-          "users.name": 1,
-          "users.image": 1,
-        },
-      },
+      { $match: { userId: mongoose.Types.ObjectId(userId) } },
+      lookup,
+      project,
     ]);
 
     res.json(lists);
@@ -62,21 +67,8 @@ exports.getFriendsListById = async (req, res) => {
   try {
     const list = await FriendsList.aggregate([
       { $match: { _id: mongoose.Types.ObjectId(listId) } },
-      {
-        $lookup: {
-          from: "users",
-          localField: "users",
-          foreignField: "_id",
-          as: "users",
-        },
-      },
-      {
-        $project: {
-          "users._id": 1,
-          "users.name": 1,
-          "users.image": 1,
-        },
-      },
+      lookup,
+      project,
     ]);
 
     res.json(list);
@@ -94,22 +86,9 @@ exports.getFriendsListsByUser = async (req, res) => {
     if (!user) throw new Error("User not found");
 
     const lists = await FriendsList.aggregate([
-      { $match: { _id: { $in: user.friendsListIds } } },
-      {
-        $lookup: {
-          from: "users",
-          localField: "users",
-          foreignField: "_id",
-          as: "users",
-        },
-      },
-      {
-        $project: {
-          "users._id": 1,
-          "users.name": 1,
-          "users.image": 1,
-        },
-      },
+      { $match: { userId: mongoose.Types.ObjectId(userId) } },
+      lookup,
+      project,
     ]);
 
     res.json(lists);
@@ -119,20 +98,28 @@ exports.getFriendsListsByUser = async (req, res) => {
   }
 };
 
-// TODO: need to modify
+// TODO: remove user from list
 exports.editFriendsList = async (req, res) => {
   const userId = req.user._id;
   const listId = req.params.id;
+  const { title: newTitle, users: newUsers } = req.body;
 
   try {
     const friendsList = await FriendsList.findOne({ _id: listId, userId });
     if (!friendsList) throw new Error("FriendsList not found");
 
+    const title = newTitle !== "" ? newTitle : friendsList.title;
+
+    let users = [...newUsers];
+    if (newUsers && newUsers.length !== 0) {
+      users = newUsers.filter((user) => !friendsList.users.includes(user));
+    }
+
     await FriendsList.update(
       { _id: listId },
       {
-        $set: { title: req.body.title ? req.body.title : friendsList.title },
-        $push: { friends: req.body.friends },
+        $set: { title },
+        $push: { users },
       }
     );
 
@@ -143,7 +130,6 @@ exports.editFriendsList = async (req, res) => {
   }
 };
 
-// TODO: need to modify
 exports.deleteFriendsList = async (req, res) => {
   const userId = req.user._id;
   const listId = req.params.id;

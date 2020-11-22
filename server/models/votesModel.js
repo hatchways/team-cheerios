@@ -5,8 +5,12 @@ const Schema = mongoose.Schema;
 const voteSchema = new Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "userModel",
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    pollId: {
+      type: Schema.Types.ObjectId,
+      ref: "Poll",
     },
     votedFor: {
       type: String,

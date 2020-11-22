@@ -36,22 +36,6 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    friendsId: {
-      type: Schema.Types.ObjectId,
-      ref: "Friends",
-    },
-    friendsListIds: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "FriendsList",
-      },
-    ],
-    PollIds: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Poll",
-      },
-    ],
   },
   { timestamps: true }
 );
