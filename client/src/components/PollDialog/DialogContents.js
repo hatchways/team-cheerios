@@ -16,30 +16,26 @@ const useStyles = makeStyles(() => ({
     flex: "50%",
   },
   inputField: {
-    width: "90%",
+    width: "100%",
   },
 }));
 
 export default function DialogContent({
   onChangeList,
-  onChangeText,
+  onChangeQuestion,
   ...props
 }) {
   const classes = useStyles();
-  const [friendListName, setFriendListName] = React.useState("");
+  const [friendsListName, setFriendsListName] = React.useState("");
   const [myLists, setMyLists] = React.useState([]);
 
   React.useEffect(() => {
     getMyFriendsLists().then((res) => setMyLists(res));
   }, []);
 
-  const handleChangeText = (event) => {
-    onChangeText(event.target.value);
-  };
-
   const handleChangeList = (event) => {
     const option = event.target.value;
-    setFriendListName(option);
+    setFriendsListName(option);
     onChangeList(option);
   };
 
@@ -51,7 +47,7 @@ export default function DialogContent({
           id="outlined-basic"
           label="Text Here"
           variant="outlined"
-          onChange={handleChangeText}
+          onChange={(e) => onChangeQuestion(e.target.value)}
           className={classes.inputField}
         />
       </form>
@@ -60,7 +56,7 @@ export default function DialogContent({
       <FormControl variant="outlined" className={classes.inputField}>
         <InputLabel htmlFor="select-friends-list">Select</InputLabel>
         <Select
-          value={friendListName}
+          value={friendsListName}
           onChange={handleChangeList}
           label="Select"
         >

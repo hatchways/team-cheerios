@@ -5,6 +5,8 @@ exports.createNewPoll = async (req, res) => {
   const userId = req.user._id;
   const newPoll = new Poll({
     userId,
+    numOfVote1: 0,
+    numOfVote2: 0,
     ...req.body,
   });
 
