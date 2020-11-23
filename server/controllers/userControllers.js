@@ -1,4 +1,4 @@
-const { User } = require("../models/userModel");
+const User = require("../models/userModel");
 
 exports.changeProfilePicture = async (req, res) => {
   const email = req.body.email;
