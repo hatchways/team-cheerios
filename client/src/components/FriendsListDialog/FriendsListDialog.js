@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -13,7 +14,6 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { theme } from "../../themes/theme";
-import UserSkeleton from "../Skeletons/UserSkeleton";
 import Friend from "./Friend";
 
 const useStyles = makeStyles({
@@ -71,10 +71,19 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("xs"));
   const [listName, setListName] = React.useState("");
   const [friendsList, setFriendsList] = React.useState([]);
+  const [friends, setFriends] = React.useState([]);
 
   // TODO: fetch friends
-  const friends = [];
-  const loading = true;
+  React.useEffect(() => {
+    if (open) {
+      axios
+        .get("/friends")
+        .then((res) => {
+          setFriends(res.data?.friends);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [open]);
 
   const handleAdd = (user) => setFriendsList([...friendsList, user]);
 
@@ -89,7 +98,7 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
     setListName(e.target.value);
   };
 
-  const handleCreate = () => {
+  const handleCreate = (e) => {
     // TODO: create new friends list
     console.log(`create new friend list: ${listName}`);
     onClose();
@@ -132,24 +141,15 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
         </Typography>
 
         <div className={classes.list}>
-          {loading ? (
-            <>
-              <UserSkeleton />
-              <UserSkeleton />
-              <UserSkeleton />
-              <UserSkeleton />
-            </>
-          ) : (
-            friends.map((user, i) => (
-              <Friend
-                user={user}
-                friendsList={friendsList}
-                handleAdd={handleAdd}
-                handleDelete={handleDelete}
-                key={`friend-${i}`}
-              />
-            ))
-          )}
+          {friends.map((user, i) => (
+            <Friend
+              user={user}
+              friendsList={friendsList}
+              handleAdd={handleAdd}
+              handleDelete={handleDelete}
+              key={`friend-${i}`}
+            />
+          ))}
         </div>
       </DialogContent>
 
