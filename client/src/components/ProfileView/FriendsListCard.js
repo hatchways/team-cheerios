@@ -41,7 +41,7 @@ const useStyles = makeStyles(() => ({
 
 export default function FriendsListCard({ ...data }) {
   const classes = useStyles();
-  const { title, user } = data;
+  const { title, users } = data;
 
   return (
     <div className={classes.root}>
@@ -51,7 +51,7 @@ export default function FriendsListCard({ ...data }) {
         </Typography>
 
         <Typography variant="body1" component="p" color="textSecondary">
-          {user.length} friends
+          {users.length} friends
         </Typography>
 
         <IconButton
@@ -63,7 +63,7 @@ export default function FriendsListCard({ ...data }) {
       </div>
 
       <div className={classes.list}>
-        {user.map((info, i) => (
+        {users.map((info, i) => (
           <FriendsListItem {...info} key={`friend-${i}`} />
         ))}
       </div>
