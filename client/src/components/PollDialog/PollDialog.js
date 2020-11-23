@@ -8,9 +8,10 @@ import {
   DialogContent,
   DialogTitle,
   Button,
+  CircularProgress,
 } from "@material-ui/core";
 
-import SubmitPoll from "../../utils/SubmitPoll";
+import { createNewPoll } from "../../apis/poll";
 import DialogContents from "./DialogContents";
 import DropZone from "./DropZone";
 
@@ -43,11 +44,29 @@ const useStyles = makeStyles(() => ({
   },
   contentWrapper: {
     display: "flex",
+    flexWrap: "wrap",
   },
   dropZoneWrapper: {
     display: "flex",
     flex: "50%",
+    flexWrap: "wrap",
     justifyContent: "space-around",
+    position: "relative",
+  },
+  btnWrapper: {
+    position: "relative",
+  },
+  btnProgress: {
+    color: "tomato",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -15,
+    marginLeft: -15,
+  },
+  disabledButton: {
+    background: "#999999",
+    color: "unset",
   },
 }));
 
@@ -55,14 +74,15 @@ export default function Poll({ open, handleClose, ...props }) {
   const classes = useStyles();
   const [topImage, setTopImage] = React.useState(null);
   const [botImage, setBotImage] = React.useState(null);
-  const [text, setText] = React.useState("");
-  const [selectedOption, setSelectedOption] = React.useState("");
+  const [question, setQuestion] = React.useState("");
+  const [friendsListId, setFriendsListId] = React.useState("");
+  const [uploading, setUploading] = React.useState(false);
 
   const onChangeList = (newList) => {
-    setSelectedOption(newList);
+    setFriendsListId(newList);
   };
-  const OnChangeText = (newText) => {
-    setText(newText);
+  const OnChangeQuestion = (newQuestion) => {
+    setQuestion(newQuestion);
   };
 
   const handleChangeTop = (newFile) => {
@@ -74,14 +94,24 @@ export default function Poll({ open, handleClose, ...props }) {
 
   const handleSubmitPoll = (event) => {
     event.preventDefault();
+    setUploading(true);
 
-    if (topImage && botImage && text && selectedOption) {
+    if (topImage && botImage && question && friendsListId) {
       let formData = new FormData();
       formData.append("image", topImage);
       formData.append("image", botImage);
-      SubmitPoll(formData, text, selectedOption);
+
+      createNewPoll(formData, {
+        question,
+        friendsListId,
+      }).then(() => {
+        setUploading(false);
+        handleClose();
+      });
+    } else {
+      setUploading(false);
+      handleClose();
     }
-    handleClose();
   };
 
   return (
@@ -104,7 +134,7 @@ export default function Poll({ open, handleClose, ...props }) {
       <DialogContent className={classes.contentWrapper}>
         <DialogContents
           onChangeList={onChangeList}
-          onChangeText={OnChangeText}
+          onChangeQuestion={OnChangeQuestion}
         />
 
         <div className={classes.dropZoneWrapper}>
@@ -113,10 +143,18 @@ export default function Poll({ open, handleClose, ...props }) {
         </div>
       </DialogContent>
 
-      <DialogActions>
-        <Button onClick={handleSubmitPoll} className={classes.btn}>
+      <DialogActions className={classes.btnWrapper} disableSpacing>
+        <Button
+          onClick={handleSubmitPoll}
+          className={classes.btn}
+          disabled={uploading}
+          classes={{ disabled: classes.disabledButton }}
+        >
           Create
         </Button>
+        {uploading && (
+          <CircularProgress size={30} className={classes.btnProgress} />
+        )}
       </DialogActions>
     </Dialog>
   );
