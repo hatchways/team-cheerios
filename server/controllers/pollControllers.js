@@ -3,7 +3,36 @@ const _ = require("lodash");
 const FriendsList = require("../models/friendsListModel");
 const Poll = require("../models/pollModel");
 const User = require("../models/userModel");
-const Vote = require("../models/votesModel");
+
+const merge = (lists, polls) => {
+  for (i in lists) {
+    const friendList = lists[i];
+    for (k in polls) {
+      const poll = polls[k];
+      if (_.isEqual(poll.friendsListId, friendList._id)) {
+        friendList.users = friendList.users.map((user) => ({
+          //merge votes and users if user ids match
+          ...poll.votes.find(
+            (voter) => _.isEqual(voter.userId, user._id) && voter
+          ),
+          ...user,
+        }));
+        delete poll.votes;
+        poll.friendsList = friendList;
+      }
+    }
+  }
+  return polls;
+};
+
+const pollsLookUp = {
+  $lookup: {
+    from: "votes",
+    localField: "_id",
+    foreignField: "pollId",
+    as: "votes",
+  },
+};
 
 exports.createNewPoll = async (req, res) => {
   const userId = req.user._id;
@@ -25,10 +54,26 @@ exports.createNewPoll = async (req, res) => {
 exports.getPollByID = async (req, res) => {
   const pollId = req.params.id;
   try {
-    const poll = await Poll.findById({ _id: pollId });
-    if (!poll) throw new Error("Poll Not Found");
+    const polls = await Poll.aggregate([
+      { $match: { _id: mongoose.Types.ObjectId(pollId) } },
+      pollsLookUp,
+    ]);
 
-    res.json(poll);
+    if (polls.length === 0) throw new Error("No Polls Found");
+    const lists = await FriendsList.aggregate([
+      {
+        $match: {
+          _id:  polls[0].friendsListId 
+        },
+        //include only friendslistIds associated with users polls
+      },
+      lookup,
+      project,
+    ]);
+
+    const pollWithData = merge(lists, polls);
+
+    res.json(pollWithData);
   } catch (err) {
     console.error(err);
     res.status(404).json(err.toString());
@@ -70,53 +115,48 @@ const project = {
   },
 };
 
+exports.getMyPollsWithData = async (req,res) => {
+   const userId = req.user._id;
+
+   try {
+     const polls = await Poll.aggregate([pollsLookUp]);
+
+     if (polls.length === 0) throw new Error("No Polls Found");
+
+     const friendsListIds = polls.map((poll) => poll.friendsListId);
+
+     const lists = await FriendsList.aggregate([
+       {
+         $match: {
+           $and: [
+             { userId: mongoose.Types.ObjectId(userId) },
+             { _id: { $in: friendsListIds } },
+             //include only friendslistIds associated with users polls
+           ],
+         },
+       },
+       lookup,
+       project,
+     ]);
+
+     const pollsWithData = merge(lists, polls);
+     res.json(pollsWithData);
+   } catch (err) {
+     console.error(err);
+     res.status(404).json(err.toString());
+   }
+}
 
 exports.getMyPolls = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    const polls = await Poll.find({ userId }).lean(); //plain JS object
-    if (polls.length === 0) throw new Error("Poll Not Found");
+    const polls = await Poll.find({userId: userId});
 
-    const pollandVotes = await Poll.aggregate([
-      {
-      $lookup: {
-        from: "vote",
-        localField: "_id",
-        foreignField:  "pollId",
-        as: "votes",
-      },
-    }
-    ]);
-    const friendsListIds = polls.map((poll) => poll.friendsListId);
-    const pollIds = polls.map((poll) => poll._id);
-    const votes = await Vote.find({ pollId: { $in: pollIds } }).lean();
+    if (polls.length === 0) throw new Error("No Polls Found");
 
-    const lists = await FriendsList.aggregate([
-      {
-        $match: {
-          $and: [
-            { userId: mongoose.Types.ObjectId(userId) },
-            { _id: { $in: friendsListIds } },
-            //include only friendslistIds associated with users polls
-          ],
-        },
-      },
-      lookup,
-      project,
-    ]);
+    res.json(polls);
 
-    for (i in lists) {
-      const friendList = lists[i];
-      for (k in polls) {
-        const poll = polls[k];
-        if (_.isEqual(poll.friendsListId, friendList._id)) {
-          poll.friendsList = friendList;
-        }
-      }
-    }
-    
-    res.json(votes);
   } catch (err) {
     console.error(err);
     res.status(404).json(err.toString());
