@@ -1,5 +1,5 @@
 const Friends = require("../models/friendsModel");
-const User = require("../models/userModel");
+const { User } = require("../models/userModel");
 
 const createNewFriends = async (userId) => {
   const user = await User.findOne({ _id: userId });
