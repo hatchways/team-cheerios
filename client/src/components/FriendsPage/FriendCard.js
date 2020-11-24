@@ -59,14 +59,7 @@ const IgnoreButton = withStyles({
   root: { width: "50%" },
 })(CancelRequestButton);
 
-export default function FriendCard({
-  _id,
-  name,
-  image,
-  friendId,
-  status,
-  handleClick,
-}) {
+export default function FriendCard({ _id, name, image, status, handleClick }) {
   const classes = useStyles();
 
   const Button = (props) => {
@@ -74,7 +67,7 @@ export default function FriendCard({
       case "sent":
         return (
           <CancelRequestButton
-            onClick={() => handleClick(friendId, "cancel")}
+            onClick={() => handleClick(_id, "cancel")}
             {...props}
           >
             cancel request
@@ -83,7 +76,7 @@ export default function FriendCard({
       case "following":
         return (
           <UnfollowButton
-            onClick={() => handleClick(friendId, "unfollow")}
+            onClick={() => handleClick(_id, "unfollow")}
             {...props}
           >
             unfollow
@@ -92,16 +85,10 @@ export default function FriendCard({
       case "received":
         return (
           <>
-            <AcceptButton
-              onClick={() => handleClick(friendId, "accept")}
-              {...props}
-            >
+            <AcceptButton onClick={() => handleClick(_id, "accept")} {...props}>
               accept
             </AcceptButton>
-            <IgnoreButton
-              onClick={() => handleClick(friendId, "ignore")}
-              {...props}
-            >
+            <IgnoreButton onClick={() => handleClick(_id, "ignore")} {...props}>
               ignore
             </IgnoreButton>
           </>
