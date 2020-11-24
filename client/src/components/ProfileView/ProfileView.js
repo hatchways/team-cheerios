@@ -57,7 +57,6 @@ export default function ProfileView() {
           axios.spread((...res) => {
             const friendsListArr = res[0].data;
             const pollsArr = res[1].data;
-            console.log(pollsArr);
             setMyFriendsLists(friendsListArr);
             setMyPolls(pollsArr);
           })

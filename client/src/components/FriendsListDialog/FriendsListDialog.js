@@ -73,7 +73,7 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
   const [friendsList, setFriendsList] = React.useState([]);
   const [friends, setFriends] = React.useState([]);
 
-  // TODO: fetch friends
+  // TODO: fetch friends user user ids
   React.useEffect(() => {
     if (open) {
       axios
