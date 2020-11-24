@@ -1,4 +1,3 @@
-import axios from "axios";
 import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -6,6 +5,14 @@ import MuiPaper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
+import {
+  acceptRequest,
+  cancelRequest,
+  followFriend,
+  getFriends,
+  ignoreRequest,
+  unfollowFriend,
+} from "../../apis/friends";
 import { theme } from "../../themes/theme";
 import FriendsListSkeleton from "../Skeletons/FriendsListSkeleton";
 import TabPanel from "./TabPanel";
@@ -37,14 +44,10 @@ export default function FriendsPage() {
         url += `/?search=${keywords[index]}`;
       }
 
-      axios
-        .get(url)
-        .then((res) => res.data?.friends)
-        .then((list) => {
-          setFetchedFriends(list);
-          setLoading(false);
-        })
-        .catch((error) => console.error(error));
+      getFriends(url, index).then((list) => {
+        setFetchedFriends(list);
+        setLoading(false);
+      });
     },
     [keywords]
   );
@@ -61,25 +64,25 @@ export default function FriendsPage() {
   const handleClick = (id, type) => {
     switch (type) {
       case "follow":
-        axios
-          .post(`friends/follow/${id}`)
-          .then(() => fetchData(selectedTab))
-          .catch((error) => console.error(error));
+        followFriend(id).then(() => fetchData(selectedTab));
         break;
+
       case "unfollow":
+        unfollowFriend(id).then(() => fetchData(selectedTab));
+        break;
+
       case "ignore":
+        ignoreRequest(id).then(() => fetchData(selectedTab));
+        break;
+
       case "cancel":
-        axios
-          .post(`friends/unfollow/${id}`)
-          .then(() => fetchData(selectedTab))
-          .catch((error) => console.error(error));
+        cancelRequest(id).then(() => fetchData(selectedTab));
         break;
+
       case "accept":
-        axios
-          .post(`friends/accept/${id}`)
-          .then(() => fetchData(selectedTab))
-          .catch((error) => console.error(error));
+        acceptRequest(id).then(() => fetchData(selectedTab));
         break;
+
       default:
         return null;
     }
