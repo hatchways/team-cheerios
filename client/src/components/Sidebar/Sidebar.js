@@ -1,10 +1,10 @@
-import axios from "axios";
 import React from "react";
 import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
+import { getFollowings } from "../../apis/friends";
 import User from "../User";
 
 const useStyles = makeStyles((theme) => ({
@@ -30,11 +30,7 @@ export default function Sidebar() {
   const [friends, setFriends] = React.useState([]);
 
   React.useEffect(() => {
-    axios
-      .get("/friends/followings")
-      .then((res) => res.data?.friends)
-      .then((list) => setFriends(list))
-      .catch((error) => console.error(error));
+    getFollowings().then((list) => setFriends(list));
   }, []);
 
   return (

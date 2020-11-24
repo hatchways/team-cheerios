@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const Friends = require("../models/friendsModel");
 const User = require("../models/userModel");
 
@@ -9,7 +11,15 @@ const createNewFriends = async (userId) => {
     userId,
     followings: [],
     followers: [],
+    sent: [],
+    received: [],
   }).save();
+};
+
+const project = {
+  _id: 1,
+  name: 1,
+  image: 1,
 };
 
 exports.getSuggestedFriends = async (req, res) => {
@@ -17,15 +27,20 @@ exports.getSuggestedFriends = async (req, res) => {
 
   try {
     let myFriends = await Friends.findOne({ userId });
-    if (!myFriends) myFriend = await createNewFriends(userId);
+    let myFollowings = [];
 
-    const myFollowings =
-      myFriends.followings &&
-      myFriends.followings.map((followings) => followings.friendId);
+    if (!myFriends) {
+      myFriend = await createNewFriends(userId);
+    } else {
+      const allFollowings = myFriends.followings.concat(myFriends.sent);
+      myFollowings = allFollowings.map((strId) =>
+        mongoose.Types.ObjectId(strId)
+      );
+    }
 
     let query = {
       _id: {
-        $ne: userId,
+        $ne: mongoose.Types.ObjectId(userId),
         $nin: myFollowings,
       },
     };
@@ -40,7 +55,10 @@ exports.getSuggestedFriends = async (req, res) => {
       };
     }
 
-    const suggestions = await User.find(query)
+    const suggestions = await User.aggregate([
+      { $match: query },
+      { $project: project },
+    ])
       .sort({ createdAt: -1 })
       .limit(15);
 
@@ -51,6 +69,16 @@ exports.getSuggestedFriends = async (req, res) => {
   }
 };
 
+const getUserInfo = async (ids) =>
+  await User.aggregate([
+    {
+      $match: {
+        _id: { $in: ids },
+      },
+    },
+    { $project: project },
+  ]);
+
 exports.getYourFollowers = async (req, res) => {
   const userId = req.user._id;
   const keyword = req.query.search;
@@ -59,13 +87,18 @@ exports.getYourFollowers = async (req, res) => {
     let friends = await Friends.findOne({ userId });
     if (!friends) friends = await createNewFriends(userId);
 
-    let followers = friends.followers;
-    if (keyword) followers = searchByName(followers, keyword);
+    let followers = await getUserInfo(friends.followers);
+    let received = await getUserInfo(friends.received);
 
-    res.json({ friends: followers });
+    if (keyword) {
+      followers = searchByName(followers, keyword);
+      received = searchByName(received, keyword);
+    }
+
+    res.json({ followers, received });
   } catch (err) {
     console.error(err);
-    res.status(404).json(err.toString());
+    res.status(400).json(err.toString());
   }
 };
 
@@ -77,13 +110,18 @@ exports.getYourFollowings = async (req, res) => {
     let friends = await Friends.findOne({ userId });
     if (!friends) friends = await createNewFriends(userId);
 
-    let followings = friends.followings;
-    if (keyword) followings = searchByName(followings, keyword);
+    let followings = await getUserInfo(friends.followings);
+    let sent = await getUserInfo(friends.sent);
 
-    res.json({ friends: followings });
+    if (keyword) {
+      followings = searchByName(followings, keyword);
+      sent = searchByName(sent, keyword);
+    }
+
+    res.json({ followings, sent });
   } catch (err) {
     console.error(err);
-    res.status(404).json(err.toString());
+    res.status(400).json(err.toString());
   }
 };
 
@@ -101,43 +139,27 @@ exports.followFriend = async (req, res) => {
     let myFriends = await Friends.findOne({ userId });
     if (!myFriends) myFriends = await createNewFriends(userId);
 
-    const friendInfo = await User.findOne({ _id: friendId });
-    if (!friendInfo) throw new Error("User not Found");
+    if (
+      myFriends.followings.includes(friendId) ||
+      myFriends.sent.includes(friendId)
+    )
+      throw new Error("Already follow/sent");
 
-    const followRequest = {
-      friendId,
-      name: friendInfo.name,
-      image: friendInfo.image,
-      status: "sent",
-    };
-
-    const isAlreadyFollow = myFriends.followings.filter(
-      (obj) => obj.friendId.toString() === friendId
-    );
-    if (isAlreadyFollow.length !== 0) throw new Error("Already follow");
-
-    await Friends.update({ userId }, { $push: { followings: followRequest } });
+    await Friends.update({ userId }, { $push: { sent: friendId } });
 
     // change friend's followers status
     let followingFriends = await Friends.findOne({ userId: friendId });
     if (!followingFriends) followingFriends = await createNewFriends(friendId);
 
-    const myInfo = await User.findOne({ _id: userId });
-    if (!myInfo) throw new Error("User not Found");
+    if (
+      followingFriends.followers.includes(userId) ||
+      followingFriends.received.includes(userId)
+    )
+      throw new Error("Something went wrong...");
 
-    const followerRequest = {
-      friendId: userId,
-      name: myInfo.name,
-      image: myInfo.image,
-      status: "received",
-    };
+    await Friends.update({ userId: friendId }, { $push: { received: userId } });
 
-    await Friends.update(
-      { userId: friendId },
-      { $push: { followers: followerRequest } }
-    );
-
-    res.json({ message: `Request sent to ${userId} successfully` });
+    res.json({ message: `Request sent to ${friendId} successfully` });
   } catch (err) {
     console.error(err);
     res.status(400).json(err.toString());
@@ -150,27 +172,18 @@ exports.unfollowFriend = async (req, res) => {
 
   try {
     // remove friend from user's followings
-    const myFriends = await Friends.findOne({
-      userId,
-      "followings.friendId": friendId,
-    });
+    const myFriends = await Friends.findOne({ userId });
     if (!myFriends) throw new Error("Not following");
 
-    await Friends.updateOne(
-      { userId },
-      { $pull: { followings: { friendId } } }
-    );
+    await Friends.update({ userId }, { $pull: { followings: friendId } });
 
     // remove user from friend's followers
-    const followersFriends = await Friends.findOne({
-      userId: friendId,
-      "followers.friendId": userId,
-    });
+    const followersFriends = await Friends.findOne({ userId: friendId });
     if (!followersFriends) throw new Error("Not follower");
 
-    await Friends.updateOne(
+    await Friends.update(
       { userId: friendId },
-      { $pull: { followers: { friendId: userId } } }
+      { $pull: { followers: userId } }
     );
 
     res.json({ message: `Unfollow ${friendId}` });
@@ -206,8 +219,8 @@ exports.acceptRequest = async (req, res) => {
     if (!myFriends) throw new Error("Friends not found");
 
     await Friends.updateOne(
-      { userId, "followers.friendId": friendId },
-      { $set: { "followers.$.status": "follower" } }
+      { userId },
+      { $push: { followers: friendId }, $pull: { received: friendId } }
     );
 
     // update friend's status to "following"
@@ -215,11 +228,62 @@ exports.acceptRequest = async (req, res) => {
     if (!followersFriends) throw new Error("Friends not found");
 
     await Friends.updateOne(
-      { userId: friendId, "followings.friendId": userId },
-      { $set: { "followings.$.status": "following" } }
+      { userId: friendId },
+      { $push: { followings: userId }, $pull: { sent: userId } }
     );
 
-    res.json({ message: `Accept request from ${userId}` });
+    res.json({ message: `Accept the request from ${friendId}` });
+  } catch (err) {
+    console.error(err);
+    res.status(404).json(err.toString());
+  }
+};
+
+exports.ignoreRequest = async (req, res) => {
+  const userId = req.user._id;
+  const friendId = req.params.friendId;
+
+  try {
+    // remove friend from user's received
+    const myFriends = await Friends.findOne({ userId });
+    if (!myFriends) throw new Error("Friends not found");
+
+    await Friends.updateOne({ userId }, { $pull: { received: friendId } });
+
+    // remove user from friend's sent
+    const followersFriends = await Friends.findOne({ userId });
+    if (!followersFriends) throw new Error("Friends not found");
+
+    await Friends.updateOne({ userId: friendId }, { $pull: { sent: userId } });
+
+    res.json({ message: `Ignore the request from ${friendId}` });
+  } catch (err) {
+    console.error(err);
+    res.status(404).json(err.toString());
+  }
+};
+
+exports.cancelRequest = async (req, res) => {
+  const userId = req.user._id;
+  const friendId = req.params.friendId;
+
+  try {
+    // remove friend from user's sent
+    const myFriends = await Friends.findOne({ userId });
+    if (!myFriends) throw new Error("Friends not found");
+
+    await Friends.updateOne({ userId }, { $pull: { sent: friendId } });
+
+    // remove user from friend's received
+    const followersFriends = await Friends.findOne({ userId });
+    if (!followersFriends) throw new Error("Friends not found");
+
+    await Friends.updateOne(
+      { userId: friendId },
+      { $pull: { received: userId } }
+    );
+
+    res.json({ message: `Cancel the request for ${friendId}` });
   } catch (err) {
     console.error(err);
     res.status(404).json(err.toString());
