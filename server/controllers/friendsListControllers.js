@@ -8,8 +8,6 @@ exports.addNewFriendsList = async (req, res) => {
 
   try {
     if (req.body.title === "") throw new Error("Title must not empty");
-    if (req.body.users.length === 0) throw new Error("No friends selected");
-    
     const newFriendsList = await new FriendsList({
       userId,
       ...req.body,
@@ -47,7 +45,6 @@ exports.getMyFriendsLists = async (req, res) => {
 
   try {
     const user = await User.findOne({ _id: userId });
-
     if (!user) throw new Error("User not found");
 
     const lists = await FriendsList.aggregate([
@@ -100,7 +97,6 @@ exports.getFriendsListsByUser = async (req, res) => {
   }
 };
 
-// TODO: remove user from list
 exports.editFriendsList = async (req, res) => {
   const userId = req.user._id;
   const listId = req.params.id;
