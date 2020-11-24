@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-//import { polls } from "../../initData";
+import { polls } from "../../initData";
 import PollDialog from "../PollDialog/PollDialog";
 import FriendsListDialog from "../FriendsListDialog";
 import OutlinedBtn from "../OutlinedBtn";
@@ -50,30 +50,32 @@ export default function ProfileView() {
   const [myPolls, setMyPolls] = React.useState([]);
 
   React.useEffect(() => {
-    const requestOne = axios.get("/friends-list");
-    const requestTwo = axios.get("/poll");
-    axios
-      .all([requestOne,requestTwo ])
-      .then(
-        axios.spread((...res) => {
-          const friendLists = res[0].data;
-          const polls = res[1].data;
-
-          setMyFriendsLists(friendLists);
-          setMyPolls(polls);
-        })
-      )
-      .catch((errors) => {
-        console.log(errors);
-      });
-  }, []);
+    if (!openPollDialog) {
+      const requestOne = axios.get("/friends-list");
+      const requestTwo = axios.get("/poll");
+      axios
+        .all([requestOne, requestTwo])
+        .then(
+          axios.spread((...res) => {
+            const friendsListArr = res[0].data;
+            const pollsArr = res[1].data;
+            console.log(pollsArr);
+            setMyFriendsLists(friendsListArr);
+            setMyPolls(pollsArr);
+          })
+        )
+        .catch((errors) => {
+          console.log(errors);
+        });
+    }
+  }, [openPollDialog]);
 
   return (
     <>
       <article className={classes.article}>
         <div className={classes.header}>
           <Typography variant="h4" component="h2" className={classes.title}>
-            Polls <span>({myPolls.length})</span>
+            Polls <span>({polls.length})</span>
           </Typography>
 
           <OutlinedBtn onClick={() => setOpenPollDialog(true)}>
@@ -82,7 +84,7 @@ export default function ProfileView() {
         </div>
 
         <div className={classes.cards}>
-          {myPolls.map((poll, i) => (
+          {polls.map((poll, i) => (
             <Link to={`/dashboard/poll/${i}`} key={`poll-card-${i}`}>
               <PollCard {...poll} />
             </Link>
