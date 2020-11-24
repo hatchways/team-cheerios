@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { polls } from "../../initData";
 import PollDialog from "../PollDialog/PollDialog";
 import FriendsListDialog from "../FriendsListDialog";
 import OutlinedBtn from "../OutlinedBtn";
@@ -50,7 +49,6 @@ export default function ProfileView() {
   const [myPolls, setMyPolls] = React.useState([]);
 
   React.useEffect(() => {
-    if (!openPollDialog) {
       const requestOne = axios.get("/friends-list");
       const requestTwo = axios.get("/poll");
       axios
@@ -67,15 +65,14 @@ export default function ProfileView() {
         .catch((errors) => {
           console.log(errors);
         });
-    }
-  }, [openPollDialog]);
+  }, []);
 
   return (
     <>
       <article className={classes.article}>
         <div className={classes.header}>
           <Typography variant="h4" component="h2" className={classes.title}>
-            Polls <span>({polls.length})</span>
+            Polls <span>({myPolls.length})</span>
           </Typography>
 
           <OutlinedBtn onClick={() => setOpenPollDialog(true)}>
@@ -84,7 +81,7 @@ export default function ProfileView() {
         </div>
 
         <div className={classes.cards}>
-          {polls.map((poll, i) => (
+          {myPolls.map((poll, i) => (
             <Link to={`/dashboard/poll/${i}`} key={`poll-card-${i}`}>
               <PollCard {...poll} />
             </Link>
