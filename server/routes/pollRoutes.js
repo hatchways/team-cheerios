@@ -6,6 +6,7 @@ const {
   createNewPoll,
   updatePoll,
   deletePoll,
+  getMyPollsWithData,
 } = require("../controllers/pollControllers");
 const auth = require("../middleware/auth");
 
@@ -17,5 +18,6 @@ router.get("/", auth, getMyPolls);
 router.post("/", auth, createNewPoll);
 router.put("/:id", auth, updatePoll);
 router.delete("/:id", auth, deletePoll);
+router.get("/me/data", auth, getMyPollsWithData);
 
 module.exports = router;
