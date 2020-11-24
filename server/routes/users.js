@@ -3,7 +3,7 @@ const auth = require("../middleware/auth");
 const Joi = require("joi");
 const dotenv = require("dotenv");
 dotenv.config();
-const { User } = require("../models/userModel");
+const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const express = require("express");
 const router = express.Router();

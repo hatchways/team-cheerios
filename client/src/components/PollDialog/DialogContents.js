@@ -1,57 +1,74 @@
 import React from "react";
 
-import { TextField, FormControl, InputLabel, Select } from "@material-ui/core";
-
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+import { getMyFriendsLists } from "../../apis/friendsList";
+
+const useStyles = makeStyles(() => ({
   root: {
-    flexGrow: 4,
+    flex: "50%",
   },
   inputField: {
-    width: "40%",
+    width: "100%",
   },
 }));
 
 export default function DialogContent({
   onChangeList,
-  onChangeText,
+  onChangeQuestion,
   ...props
 }) {
   const classes = useStyles();
-  const [friendListName, setFriendListName] = React.useState("");
+  const [friendsListName, setFriendsListName] = React.useState("");
+  const [myLists, setMyLists] = React.useState([]);
 
-  const handleChangeText = (event) => {
-    onChangeText(event.target.value);
-  };
+  React.useEffect(() => {
+    getMyFriendsLists().then((res) => setMyLists(res));
+  }, []);
 
   const handleChangeList = (event) => {
     const option = event.target.value;
-    setFriendListName(option);
+    setFriendsListName(option);
     onChangeList(option);
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} {...props}>
       <h3>Question: </h3>
       <form noValidate autoComplete="off">
         <TextField
           id="outlined-basic"
           label="Text Here"
           variant="outlined"
-          onChange={handleChangeText}
+          onChange={(e) => onChangeQuestion(e.target.value)}
           className={classes.inputField}
         />
       </form>
 
       <h3>Friend list: </h3>
       <FormControl variant="outlined" className={classes.inputField}>
-        <InputLabel htmlFor="outlined-age-native-simple">Select</InputLabel>
-        <Select native value={friendListName} onChange={handleChangeList}>
-          <option aria-label="None" value="" />
-          <option value={"List 1"}>List 1</option>
-          <option value={"List 2"}>List 2</option>
-          <option value={"List 3"}>List 3</option>
+        <InputLabel htmlFor="select-friends-list">Select</InputLabel>
+        <Select
+          value={friendsListName}
+          onChange={handleChangeList}
+          label="Select"
+        >
+          {myLists.length ? (
+            myLists.map((list, i) => (
+              <MenuItem key={`friends-list-${i}`} value={list._id}>
+                {list.title}
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem value="">Please Create a FriendsList First</MenuItem>
+          )}
         </Select>
       </FormControl>
     </div>
