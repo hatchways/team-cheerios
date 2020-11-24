@@ -8,6 +8,10 @@ const {
   deletePoll,
   getMyPollsWithData,
 } = require("../controllers/pollControllers");
+const {
+  voteMyChoice,
+  changeMyChoice,
+} = require("../controllers/voteControllers");
 const auth = require("../middleware/auth");
 
 const router = express.Router();
@@ -19,5 +23,8 @@ router.post("/", auth, createNewPoll);
 router.put("/:id", auth, updatePoll);
 router.delete("/:id", auth, deletePoll);
 router.get("/me/data", auth, getMyPollsWithData);
+
+router.post("/:pollId/vote/:choice", auth, voteMyChoice);
+router.post("/:pollId/change/:choice", auth, changeMyChoice);
 
 module.exports = router;
