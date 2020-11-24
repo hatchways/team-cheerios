@@ -98,7 +98,6 @@ exports.getFriendsListsByUser = async (req, res) => {
   }
 };
 
-// TODO: remove user from list
 exports.editFriendsList = async (req, res) => {
   const userId = req.user._id;
   const listId = req.params.id;
