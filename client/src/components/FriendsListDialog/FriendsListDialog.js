@@ -1,6 +1,9 @@
 import React from "react";
-import axios from "axios";
 
+import {isEqual} from "lodash";
+
+import { createNewFriendsList } from "../../apis/friendsList";
+import { getFollowings } from "../../apis/friends";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -73,22 +76,23 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
   const [friendsList, setFriendsList] = React.useState([]);
   const [friends, setFriends] = React.useState([]);
 
-  // TODO: fetch friends user user ids
   React.useEffect(() => {
     if (open) {
-      axios
-        .get("/friends")
-        .then((res) => {
-          setFriends(res.data?.friends);
-        })
-        .catch((err) => console.log(err));
+      getFollowings().then((followings) => setFriends(followings));
     }
   }, [open]);
 
-  const handleAdd = (user) => setFriendsList([...friendsList, user]);
+  const handleAdd = (id) => {
+    setFriendsList([...friendsList, id]);
+    console.log(friendsList);
+  };
 
-  const handleDelete = (user) => {
-    const newList = friendsList.filter((friend) => friend.name !== user.name);
+  const handleDelete = (id) => {
+    const newList = friendsList.filter((friend) =>
+      !isEqual(friend._id, id)
+      
+    );
+
     setFriendsList(newList);
   };
 
@@ -99,8 +103,9 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
   };
 
   const handleCreate = (e) => {
-    // TODO: create new friends list
-    console.log(`create new friend list: ${listName}`);
+    if (listName && friendsList.length) {
+      createNewFriendsList(listName, friendsList);
+    }
     onClose();
   };
 
@@ -141,15 +146,19 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
         </Typography>
 
         <div className={classes.list}>
-          {friends.map((user, i) => (
-            <Friend
-              user={user}
-              friendsList={friendsList}
-              handleAdd={handleAdd}
-              handleDelete={handleDelete}
-              key={`friend-${i}`}
-            />
-          ))}
+          {!friends.length ? (
+            <h2>Please follow someone to add to your friends list</h2>
+          ) : (
+            friends.map((user, i) => (
+              <Friend
+                user={user}
+                friendsList={friendsList}
+                handleAdd={handleAdd}
+                handleDelete={handleDelete}
+                key={`friend-${i}`}
+              />
+            ))
+          )}
         </div>
       </DialogContent>
 

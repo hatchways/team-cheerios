@@ -12,3 +12,9 @@ export const createNewPoll = (files, newPoll) =>
         .then((res) => res.data)
     )
     .catch((err) => console.error(err));
+
+export const getPolls = () =>
+  axios
+    .get("/poll")
+    .then((res) => res.data)
+    .catch((err) => console.log(err));

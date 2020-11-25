@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import {isEqual} from "lodash"
 
 import User from "../User";
 
@@ -34,13 +35,13 @@ const useStyles = makeStyles((theme) =>
 export default function Friend({ user, friendsList, handleAdd, handleDelete }) {
   const classes = useStyles();
 
-  const added = friendsList.some((friend) => friend.name === user.name);
+  const added = friendsList.some((id) => isEqual(id, user._id));
 
   return (
     <Grid container className={classes.root}>
       <Grid item xs={1}>
         {added && (
-          <IconButton onClick={() => handleDelete(user)}>
+          <IconButton onClick={() => handleDelete(user._id)}>
             <CloseIcon />
           </IconButton>
         )}
@@ -54,7 +55,7 @@ export default function Friend({ user, friendsList, handleAdd, handleDelete }) {
         {added ? (
           <Button disabled>Added</Button>
         ) : (
-          <Button onClick={() => handleAdd(user)} className={classes.addBtn}>
+          <Button onClick={() => handleAdd(user._id)} className={classes.addBtn}>
             Add
           </Button>
         )}
