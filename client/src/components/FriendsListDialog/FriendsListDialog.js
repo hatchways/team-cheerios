@@ -84,7 +84,6 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
 
   const handleAdd = (id) => {
     setFriendsList([...friendsList, id]);
-    console.log(friendsList);
   };
 
   const handleDelete = (id) => {
