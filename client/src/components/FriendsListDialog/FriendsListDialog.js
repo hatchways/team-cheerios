@@ -105,6 +105,9 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
     if (listName && friendsList.length) {
       createNewFriendsList(listName, friendsList);
     }
+    setFriendsList([]);
+    setFriends([]);
+    setListName("");
     onClose();
   };
 

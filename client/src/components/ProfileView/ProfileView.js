@@ -50,13 +50,20 @@ export default function ProfileView() {
   const [myPolls, setMyPolls] = React.useState([]);
 
   React.useEffect(() => {
-    getPolls().then((polls) => {
-      if (polls) {
-        setMyPolls(polls);
-      }
-    });
-    getMyFriendsLists().then((lists) => setMyFriendsLists(lists));
-  }, [openPollDialog, openFriendDialog]);
+    if (!openPollDialog) {
+      getPolls().then((polls) => {
+        if (polls) {
+          setMyPolls(polls);
+        }
+      });
+    }
+  }, [openPollDialog]);
+
+  React.useEffect(() => {
+    if (!openFriendDialog) {
+      getMyFriendsLists().then((lists) => setMyFriendsLists(lists));
+    }
+  }, [openFriendDialog]);
 
   return (
     <>
