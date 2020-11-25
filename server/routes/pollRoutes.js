@@ -6,6 +6,7 @@ const {
   createNewPoll,
   updatePoll,
   deletePoll,
+  getMyPollsWithData,
 } = require("../controllers/pollControllers");
 const {
   voteMyChoice,
@@ -21,6 +22,7 @@ router.get("/", auth, getMyPolls);
 router.post("/", auth, createNewPoll);
 router.put("/:id", auth, updatePoll);
 router.delete("/:id", auth, deletePoll);
+router.get("/me/data", auth, getMyPollsWithData);
 
 router.post("/:pollId/vote/:choice", auth, voteMyChoice);
 router.post("/:pollId/change/:choice", auth, changeMyChoice);

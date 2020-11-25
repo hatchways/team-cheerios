@@ -37,8 +37,9 @@ const useStyles = makeStyles(() => ({
 
 export default function PollCard({ ...data }) {
   const classes = useStyles();
-  const { question, images, numOfVotes } = data;
-  const totalVotes = numOfVotes.reduce((a, b) => a + b, 0);
+  const { question, images, numOfVote1, numOfVote2 } = data;
+  const totalVotes = numOfVote1 + numOfVote2;
+  const numOfVotes = [numOfVote1, numOfVote2];
 
   return (
     <div className={classes.root}>
@@ -54,7 +55,7 @@ export default function PollCard({ ...data }) {
 
       <div className={classes.bottomHalf}>
         {images.map((image, i) => (
-          <Choice image={image} vote={numOfVotes[i]} key={`choice-${i}`} />
+          <Choice image={image} votes={numOfVotes[i]} key={`choice-${i}`} />
         ))}
       </div>
     </div>

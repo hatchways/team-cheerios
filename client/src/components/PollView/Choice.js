@@ -31,7 +31,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Choice({ image, vote, ...props }) {
+export default function Choice({ image, votes, ...props }) {
   const classes = useStyles();
 
   return (
@@ -39,7 +39,7 @@ export default function Choice({ image, vote, ...props }) {
       <img src={image} alt="choice" className={classes.image} />
       <span className={classes.likes}>
         <HeartIcon />
-        {vote}
+        {votes}
       </span>
     </div>
   );

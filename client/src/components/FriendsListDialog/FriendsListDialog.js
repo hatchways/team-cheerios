@@ -1,5 +1,9 @@
 import React from "react";
 
+import {isEqual} from "lodash";
+
+import { createNewFriendsList } from "../../apis/friendsList";
+import { getFollowings } from "../../apis/friends";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -13,7 +17,6 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { theme } from "../../themes/theme";
-import UserSkeleton from "../Skeletons/UserSkeleton";
 import Friend from "./Friend";
 
 const useStyles = makeStyles({
@@ -71,15 +74,24 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("xs"));
   const [listName, setListName] = React.useState("");
   const [friendsList, setFriendsList] = React.useState([]);
+  const [friends, setFriends] = React.useState([]);
 
-  // TODO: fetch friends
-  const friends = [];
-  const loading = true;
+  React.useEffect(() => {
+    if (open) {
+      getFollowings().then((followings) => setFriends(followings));
+    }
+  }, [open]);
 
-  const handleAdd = (user) => setFriendsList([...friendsList, user]);
+  const handleAdd = (id) => {
+    setFriendsList([...friendsList, id]);
+  };
 
-  const handleDelete = (user) => {
-    const newList = friendsList.filter((friend) => friend.name !== user.name);
+  const handleDelete = (id) => {
+    const newList = friendsList.filter((friend) =>
+      !isEqual(friend._id, id)
+      
+    );
+
     setFriendsList(newList);
   };
 
@@ -89,9 +101,13 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
     setListName(e.target.value);
   };
 
-  const handleCreate = () => {
-    // TODO: create new friends list
-    console.log(`create new friend list: ${listName}`);
+  const handleCreate = (e) => {
+    if (listName && friendsList.length) {
+      createNewFriendsList(listName, friendsList);
+    }
+    setFriendsList([]);
+    setFriends([]);
+    setListName("");
     onClose();
   };
 
@@ -132,13 +148,8 @@ export default function FriendsListDialog({ open, onClose, ...rest }) {
         </Typography>
 
         <div className={classes.list}>
-          {loading ? (
-            <>
-              <UserSkeleton />
-              <UserSkeleton />
-              <UserSkeleton />
-              <UserSkeleton />
-            </>
+          {!friends.length ? (
+            <h2>Please follow someone to add to your friends list</h2>
           ) : (
             friends.map((user, i) => (
               <Friend

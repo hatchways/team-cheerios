@@ -8,7 +8,6 @@ exports.addNewFriendsList = async (req, res) => {
 
   try {
     if (req.body.title === "") throw new Error("Title must not empty");
-
     const newFriendsList = await new FriendsList({
       userId,
       ...req.body,
