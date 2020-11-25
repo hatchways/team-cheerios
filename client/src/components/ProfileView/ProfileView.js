@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 
 import { Link } from "react-router-dom";
 
@@ -10,6 +9,8 @@ import FriendsListDialog from "../FriendsListDialog";
 import OutlinedBtn from "../OutlinedBtn";
 import FriendsListCard from "./FriendsListCard";
 import PollCard from "./PollCard";
+import { getPolls } from "../../apis/poll";
+import { getMyFriendsLists } from "../../apis/friendsList";
 
 const useStyles = makeStyles(() => ({
   article: {
@@ -49,29 +50,20 @@ export default function ProfileView() {
   const [myPolls, setMyPolls] = React.useState([]);
 
   React.useEffect(() => {
-      const requestOne = axios.get("/friends-list");
-      const requestTwo = axios.get("/poll");
-      axios
-        .all([requestOne, requestTwo])
-        .then(
-          axios.spread((...res) => {
-            const friendsListArr = res[0].data;
-            const pollsArr = res[1].data;
-            setMyFriendsLists(friendsListArr);
-            setMyPolls(pollsArr);
-          })
-        )
-        .catch((errors) => {
-          console.log(errors);
-        });
-  }, []);
+    getPolls().then((polls) => {
+      if (polls) {
+        setMyPolls(polls);
+      }
+    });
+    getMyFriendsLists().then((lists) => setMyFriendsLists(lists));
+  }, [openPollDialog, openFriendDialog]);
 
   return (
     <>
       <article className={classes.article}>
         <div className={classes.header}>
           <Typography variant="h4" component="h2" className={classes.title}>
-            Polls <span>({myPolls.length})</span>
+            Polls <span> ({myPolls.length})</span>
           </Typography>
 
           <OutlinedBtn onClick={() => setOpenPollDialog(true)}>
@@ -80,11 +72,15 @@ export default function ProfileView() {
         </div>
 
         <div className={classes.cards}>
-          {myPolls.map((poll, i) => (
-            <Link to={`/dashboard/poll/${i}`} key={`poll-card-${i}`}>
-              <PollCard {...poll} />
-            </Link>
-          ))}
+          {myPolls.length ? (
+            myPolls.map((poll, i) => (
+              <Link to={`/dashboard/poll/${i}`} key={`poll-card-${i}`}>
+                <PollCard {...poll} />
+              </Link>
+            ))
+          ) : (
+            <h2> No polls present</h2>
+          )}
         </div>
       </article>
 
@@ -99,11 +95,15 @@ export default function ProfileView() {
           </OutlinedBtn>
         </div>
         <div className={classes.cards}>
-          {myFriendsLists.map((list, i) => (
-            <div key={`friends-list-card-${i}`}>
-              <FriendsListCard {...list} />
-            </div>
-          ))}
+          {myFriendsLists.length ? (
+            myFriendsLists.map((list, i) => (
+              <div key={`friends-list-card-${i}`}>
+                <FriendsListCard {...list} />
+              </div>
+            ))
+          ) : (
+            <h2>No friend lists created</h2>
+          )}
         </div>
       </article>
 
