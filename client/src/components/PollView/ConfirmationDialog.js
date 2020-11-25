@@ -7,15 +7,20 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+import { changeYourVote } from "../../apis/poll";
+
 export default function ConfirmationDialog({
+  pollId,
   vote,
   open,
+  setReload,
   handleClose,
-  voteChoice,
 }) {
-  const handleChange = () => {
-    voteChoice(vote);
-    handleClose();
+  const handleChange = async () => {
+    await changeYourVote(pollId, vote).then(() => {
+      setReload(true);
+      handleClose();
+    });
   };
 
   return (

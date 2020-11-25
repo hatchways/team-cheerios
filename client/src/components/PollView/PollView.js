@@ -5,9 +5,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import BackIcon from "@material-ui/icons/ArrowBackIos";
 
-import { polls as initData } from "../../initData";
+import { getPollById, voteForPoll } from "../../apis/poll";
+import { UserContext } from "../../contexts/UserContext";
+import PollViewSkeleton from "../Skeletons/PollViewSkeleton";
 import ConfirmationDialog from "./ConfirmationDialog";
-import FriendPoll from "./FriendPoll";
+import FriendVote from "./FriendVote";
 import Choice from "./Choice";
 
 const useStyles = makeStyles(() => ({
@@ -50,30 +52,43 @@ const useStyles = makeStyles(() => ({
 export default function PollView({ pollId }) {
   const classes = useStyles();
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
+  const [pollInfo, setPollInfo] = React.useState({});
   const [vote, setVote] = React.useState(null);
+  const [reload, setReload] = React.useState(true);
+  const { state } = React.useContext(UserContext);
+  const { id: myUserId } = state.user;
 
-  // TODO: Fetch Poll Data
-  const { question, images, friendsList, numOfVotes } = initData[pollId];
   React.useEffect(() => {
-    console.log(`fetch poll data id:${pollId}`);
-  }, [pollId]);
+    if (reload) {
+      getPollById(pollId).then((res) => {
+        setPollInfo(res);
+        setReload(false);
+      });
+    }
+  }, [pollId, reload]);
 
-  const totalVotes = numOfVotes.reduce((a, b) => a + b, 0);
+  if (!pollInfo.length) return <PollViewSkeleton />;
 
-  const handleClick = (choice) => {
+  const { question, images, friendsList, numOfVote1, numOfVote2 } = pollInfo[0];
+  const totalVotes = numOfVote1 + numOfVote2;
+  const numOfVotes = [numOfVote1, numOfVote2];
+
+  const canVote = friendsList.users.some((user) => user._id === myUserId);
+
+  let myVote = null;
+  if (canVote) {
+    myVote = +friendsList.users.filter((user) => user._id === myUserId)[0]
+      .voteFor;
+  }
+
+  const handleClick = async (choice) => {
     setVote(choice);
-    // TODO: Check user already voted or not
-    const alreadyVoted = true;
-    if (alreadyVoted) {
+
+    if (myVote) {
       setOpenConfirmation(true);
     } else {
-      voteChoice(choice);
+      await voteForPoll(pollId, choice).then(() => setReload(true));
     }
-  };
-
-  const voteChoice = (choice) => {
-    // TODO: api call
-    console.log("send request to vote your choice", choice);
   };
 
   return (
@@ -95,24 +110,38 @@ export default function PollView({ pollId }) {
         {images.map((image, i) => (
           <Choice
             image={image}
-            vote={numOfVotes[i]}
-            onClick={() => handleClick(i)}
+            votes={numOfVotes[i]}
+            filled={myVote === i + 1}
             key={`choice-${i}`}
+            onClick={
+              canVote && myVote !== i + 1 ? () => handleClick(i + 1) : undefined
+            }
+            style={{
+              cursor: canVote && myVote !== i + 1 ? "pointer" : "not-allowed",
+            }}
           />
         ))}
       </div>
 
       <div className={classes.friendPollWrapper}>
-        {friendsList.user.map((friend, i) => (
-          <FriendPoll {...friend} images={images} key={`friend-poll-${i}`} />
-        ))}
+        {friendsList.users.map(
+          (friend, i) =>
+            friend.voteFor && (
+              <FriendVote
+                {...friend}
+                images={images}
+                key={`friend-poll-${i}`}
+              />
+            )
+        )}
       </div>
 
       <ConfirmationDialog
+        pollId={pollId}
         vote={vote}
         open={openConfirmation}
+        setReload={setReload}
         handleClose={() => setOpenConfirmation(false)}
-        voteChoice={voteChoice}
       />
     </div>
   );
