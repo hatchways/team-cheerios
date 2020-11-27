@@ -67,12 +67,10 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   React.useEffect(() => {
-    socket.on("connect", () => {
-      console.log("socket id", socket.id);
-    });
+    socket.emit("login");
 
     return () => {
-      socket.emit("disconnect");
+      socket.emit("logout");
       socket.off();
     };
   }, []);
