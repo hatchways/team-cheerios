@@ -13,12 +13,12 @@ export default function ConfirmationDialog({
   pollId,
   vote,
   open,
-  setReload,
+  fetchPollData,
   handleClose,
 }) {
   const handleChange = async () => {
     await changeYourVote(pollId, vote).then(() => {
-      setReload(true);
+      fetchPollData();
       handleClose();
     });
   };

@@ -54,18 +54,17 @@ export default function PollView({ pollId }) {
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
   const [pollInfo, setPollInfo] = React.useState({});
   const [vote, setVote] = React.useState(null);
-  const [reload, setReload] = React.useState(true);
   const { state } = React.useContext(UserContext);
   const { id: myUserId } = state.user;
 
+  const fetchPollData = () =>
+    getPollById(pollId).then((res) => setPollInfo(res));
+
   React.useEffect(() => {
-    if (reload) {
-      getPollById(pollId).then((res) => {
-        setPollInfo(res);
-        setReload(false);
-      });
-    }
-  }, [pollId, reload]);
+    fetchPollData();
+
+    // eslint-disable-next-line
+  }, []);
 
   if (!pollInfo.length) return <PollViewSkeleton />;
 
@@ -87,7 +86,7 @@ export default function PollView({ pollId }) {
     if (myVote) {
       setOpenConfirmation(true);
     } else {
-      await voteForPoll(pollId, choice).then(() => setReload(true));
+      await voteForPoll(pollId, choice).then(() => fetchPollData());
     }
   };
 
@@ -140,7 +139,7 @@ export default function PollView({ pollId }) {
         pollId={pollId}
         vote={vote}
         open={openConfirmation}
-        setReload={setReload}
+        fetchPollData={fetchPollData}
         handleClose={() => setOpenConfirmation(false)}
       />
     </div>
