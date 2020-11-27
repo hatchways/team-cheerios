@@ -42,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     overflowY: "scroll",
+    display : "relative",
+    height: "650px",
+
   },
   img: {
     display: "relative",
@@ -127,7 +130,6 @@ export default function Profile() {
       </div>
       <Box p={1} pl={35} pr={35}>
         <Divider className={classes.divider} />
-
         <div>
           <Grid container spacing={1}>
             {data?.polls.length ? (
