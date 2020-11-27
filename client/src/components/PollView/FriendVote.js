@@ -28,7 +28,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function FriendPoll({ name, image, vote, votedAt, images }) {
+export default function FriendVote({
+  name,
+  image,
+  voteFor,
+  updatedAt,
+  images,
+}) {
   const classes = useStyles();
 
   return (
@@ -39,12 +45,12 @@ export default function FriendPoll({ name, image, vote, votedAt, images }) {
         <Typography variant="h6">{name}</Typography>
 
         <Typography variant="body2" color="textSecondary">
-          {dayjs(votedAt).fromNow()}
+          {dayjs(updatedAt).fromNow()}
         </Typography>
       </div>
 
       <img
-        src={vote === "a" ? images[0] : images[1]}
+        src={voteFor === "1" ? images[0] : images[1]}
         alt={`${name}'s choice`}
         className={classes.votedImage}
       />

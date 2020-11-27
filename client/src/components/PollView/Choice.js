@@ -2,6 +2,7 @@ import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import HeartIcon from "@material-ui/icons/Favorite";
+import OutlinedHeartIcon from "@material-ui/icons/FavoriteBorder";
 
 const useStyles = makeStyles(() => ({
   choice: {
@@ -31,14 +32,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Choice({ image, votes, ...props }) {
+export default function Choice({ image, votes, filled = true, ...props }) {
   const classes = useStyles();
 
   return (
     <div className={classes.choice} {...props}>
       <img src={image} alt="choice" className={classes.image} />
       <span className={classes.likes}>
-        <HeartIcon />
+        {filled ? <HeartIcon /> : <OutlinedHeartIcon />}
         {votes}
       </span>
     </div>

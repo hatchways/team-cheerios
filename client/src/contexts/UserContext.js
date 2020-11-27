@@ -54,10 +54,10 @@ export const UserProvider = ({ children }) => {
 
       axios
         .get("/api/users/me")
-        .then(({ data: { name, image, email } }) => {
+        .then(({ data: { name, image, email, _id: id } }) => {
           dispatch({
             type: SET_USER,
-            payload: { user: { name, image, email } },
+            payload: { user: { name, image, email, id } },
           });
         })
         .catch((err) => console.error(err));

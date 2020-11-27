@@ -1,9 +1,9 @@
 import React from "react";
-
 import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+
 import PollDialog from "../PollDialog/PollDialog";
 import FriendsListDialog from "../FriendsListDialog";
 import OutlinedBtn from "../OutlinedBtn";
@@ -31,6 +31,7 @@ const useStyles = makeStyles(() => ({
   cards: {
     display: "flex",
     "& a": {
+      color: "inherit",
       textDecoration: "none",
     },
     "& a:visited": {
@@ -81,7 +82,7 @@ export default function ProfileView() {
         <div className={classes.cards}>
           {myPolls.length ? (
             myPolls.map((poll, i) => (
-              <Link to={`/dashboard/poll/${i}`} key={`poll-card-${i}`}>
+              <Link to={`/dashboard/poll/${poll._id}`} key={`poll-card-${i}`}>
                 <PollCard {...poll} />
               </Link>
             ))
