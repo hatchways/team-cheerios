@@ -71,7 +71,6 @@ export const UserProvider = ({ children }) => {
 
     return () => {
       socket.emit("logout");
-      socket.off();
     };
   }, []);
 

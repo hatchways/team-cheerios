@@ -13,19 +13,20 @@ module.exports = function (io) {
       next();
     });
   }).on("connection", (socket) => {
-    console.log("socket connected");
+    console.log(`${socket.id} connected`);
 
     socket.on("login", () => {
-      const res = addOnlineUser(socket.id, socket.userId);
-
-      if (!res) new Error("Login failed");
+      const added = addOnlineUser(socket.id, socket.userId);
+      if (!added) new Error("Login failed");
     });
 
     socket.on("logout", () => {
-      const res = removeOfflineUser(socket.userId);
-      if (!res) new Error("Logout failed");
+      const removed = removeOfflineUser(socket.userId);
+      if (!removed) new Error("Logout failed");
+    });
 
-      console.log("socket disconnected");
+    socket.on("disconnect", () => {
+      console.log(`${socket.id} disconnected`);
     });
   });
 };
