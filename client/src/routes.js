@@ -5,7 +5,7 @@ import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 
 export default [
-  { path: "/", component: Login },
+  { path: "/", component: Login},
   { path: "/signup", component: Signup },
   { path: "/dashboard", component: Dashboard, auth: true, exact: false },
   { path: "/friends", component: Friends, auth: true, exact: true },

@@ -1,19 +1,11 @@
-import Axios from "axios";
 import React from "react";
 import { UserContext } from "../../contexts/UserContext";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import {
-  Divider,
-  makeStyles,
-  styled,
-  Typography,
-  withStyles,
-} from "@material-ui/core";
+import { Divider, makeStyles, Typography, withStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import MuiTableCell from "@material-ui/core/TableCell";
@@ -35,16 +27,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "15px",
   },
   content: {
-    marginLeft: "10px",
     marginTop: "50px",
-    marginLeft: "400px",
+    marginLeft: "410px",
   },
   root: {
     flexGrow: 1,
     overflowY: "scroll",
-    display : "relative",
     height: "650px",
-
   },
   img: {
     display: "relative",
@@ -134,7 +123,7 @@ export default function Profile() {
           <Grid container spacing={1}>
             {data?.polls.length ? (
               data.polls.map((poll) => (
-                <Grid className={classes.cards} item xs={12} md={4} >
+                <Grid className={classes.cards} item xs={12} md={4}>
                   <PollCard {...poll} />
                 </Grid>
               ))

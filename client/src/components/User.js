@@ -3,7 +3,7 @@ import React from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Badge from "@material-ui/core/Badge";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
