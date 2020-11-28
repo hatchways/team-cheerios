@@ -1,5 +1,5 @@
-import axios from "axios";
 import React from "react";
+import { checkLoggedIn } from "../apis/user";
 
 import {
   LOADING_USER,
@@ -43,24 +43,19 @@ const UserReducer = (state, action) => {
   }
 };
 
-const token = localStorage.HatchwayToken;
-
 export const UserProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(UserReducer, initialState);
 
   React.useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common["x-auth-token"] = token;
+    const res = checkLoggedIn();
 
-      axios
-        .get("/api/users/me")
-        .then(({ data: { name, image, email, _id: id } }) => {
-          dispatch({
-            type: SET_USER,
-            payload: { user: { name, image, email, id } },
-          });
-        })
-        .catch((err) => console.error(err));
+    if (res) {
+      dispatch({ type: SET_AUTHENTICATED });
+      const { name, image, email, _id: id } = res;
+      dispatch({
+        type: SET_USER,
+        payload: { user: { name, image, email, id } },
+      });
     }
   }, []);
 
