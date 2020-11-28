@@ -47,16 +47,7 @@ export const UserProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(UserReducer, initialState);
 
   React.useEffect(() => {
-    const res = checkLoggedIn();
-
-    if (res) {
-      dispatch({ type: SET_AUTHENTICATED });
-      const { name, image, email, _id: id } = res;
-      dispatch({
-        type: SET_USER,
-        payload: { user: { name, image, email, id } },
-      });
-    }
+    checkLoggedIn(dispatch);
   }, []);
 
   return (

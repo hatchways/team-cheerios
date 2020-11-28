@@ -4,7 +4,6 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
-import { SET_UNAUTHENTICATED } from "../../contexts/types";
 import { UserContext } from "../../contexts/UserContext";
 import Profile from "../ProfileOptions/Profile";
 import { logout } from "../../apis/user";
@@ -27,9 +26,8 @@ export default function ProfileMenu({ anchorEl, handleClose }) {
     setOpen(false);
   };
 
-  const handleLogout = async () => {
-    logout();
-    await dispatch({ type: SET_UNAUTHENTICATED });
+  const handleLogout = () => {
+    logout(dispatch);
     handleClose();
   };
 
