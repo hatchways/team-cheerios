@@ -4,14 +4,15 @@ const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
-const pollRouter = require("./routes/pollRoutes");
+const auth = require("./routes/auth");
 const friendsListRouter = require("./routes/friendsListRoutes");
+const friendsRouter = require("./routes/friendsRoutes");
+const notificationRouter = require("./routes/notificationRoutes");
+const pollRouter = require("./routes/pollRoutes");
 const uploadRouter = require("./routes/upload");
 const userRouter = require("./routes/userRoutes");
 const users = require("./routes/users");
-const auth = require("./routes/auth");
-const friendsRoutes = require("./routes/friendsRoutes");
-const connect = require("./connect");
+require("./connect");
 
 const { json, urlencoded } = express;
 
@@ -25,12 +26,12 @@ app.use(express.static(join(__dirname, "public")));
 
 app.use("/api/users", users);
 app.use("/api/auth", auth);
-
+app.use("/", userRouter);
 app.use("/", uploadRouter);
 app.use("/poll", pollRouter);
 app.use("/friends-list", friendsListRouter);
-app.use("/friends", friendsRoutes);
-app.use("/", userRouter);
+app.use("/friends", friendsRouter);
+app.use("/notification", notificationRouter);
 app.use(cors());
 
 // catch 404 and forward to error handler
