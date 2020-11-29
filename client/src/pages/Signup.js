@@ -1,19 +1,20 @@
 import React from "react";
-import axios from "axios";
+import { useHistory } from "react-router-dom";
+
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
-import Logo from "../components/Logo";
-import Background from "../assets/login_bg.png";
+import Snackbar from "@material-ui/core/Snackbar";
+import { makeStyles } from "@material-ui/core/styles";
 import MuiAlert from "@material-ui/lab/Alert";
-import { Snackbar } from "@material-ui/core";
+
+import Background from "../assets/login_bg.png";
 import { signup } from "../apis/user";
+import Logo from "../components/Logo";
 import { SET_USER } from "../contexts/types";
 import { UserContext } from "../contexts/UserContext";
 
@@ -66,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+
 export default function SignUp() {
   const [name, setName] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -99,6 +101,7 @@ export default function SignUp() {
       nameErr: "",
     });
   };
+
   const validate = () => {
     reset();
     let isErr = false;
