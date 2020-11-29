@@ -13,9 +13,9 @@ import Logo from "../components/Logo";
 import Background from "../assets/login_bg.png";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Snackbar } from "@material-ui/core";
+import { signup } from "../apis/user";
 import { SET_USER } from "../contexts/types";
 import { UserContext } from "../contexts/UserContext";
-import loginUser from "../utils/loginUser";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -140,32 +140,20 @@ export default function SignUp() {
         email,
         password,
       };
-      axios
-        .post("/api/users", newUser)
-        .then((res) => {
-          return res;
-        })
-        .then((user) => {
-          loginUser({ email, password }).then((user) => {
-            if (user) {
-              const name = user.name;
-              const image = user.image;
-              const email = user.email;
-              dispatch({
-                type: SET_USER,
-                payload: {
-                  user: {
-                    name,
-                    image,
-                    email,
-                  },
-                },
-              });
-              history.push("/dashboard");
-            }
-          });
-        })
 
+      signup(newUser)
+        .then((user) => {
+          if (user) {
+            const { name, image, email } = user;
+            dispatch({
+              type: SET_USER,
+              payload: {
+                user: { name, image, email },
+              },
+            });
+            history.push("/dashboard");
+          }
+        })
         .catch((error) => {
           setReason(error.response.data);
           setOpen(true);
@@ -271,4 +259,3 @@ export default function SignUp() {
     </Grid>
   );
 }
-

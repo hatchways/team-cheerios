@@ -27,12 +27,26 @@ export const checkLoggedIn = (dispatch) => {
 export const loginUser = async (user) => {
   try {
     const res = await axios.post("/api/auth", user);
-    localStorage.setItem(TOKEN_KEY, res.data.token);
-    axios.defaults.headers.common["x-auth-token"] = res.data.token;
+    setToken(res.data.token);
     return res.data.user;
   } catch (err) {
     console.error(err);
   }
+};
+
+export const signup = async (user) => {
+  try {
+    const res = await axios.post("/api/users", user);
+    setToken(res.data.token);
+    return res.data.user;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const setToken = (token) => {
+  localStorage.setItem(TOKEN_KEY, token);
+  axios.defaults.headers.common["x-auth-token"] = token;
 };
 
 export const logout = (dispatch) => {

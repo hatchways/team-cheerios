@@ -31,10 +31,8 @@ router.post("/", async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
-  if (process.env.jwtPrivateKey) {
-    const token = jwt.sign({ _id: user._id }, process.env.jwtPrivateKey);
-    res.header("x-auth-token", token).status(201).send(user);
-  }
+  const token = jwt.sign({ _id: user._id }, process.env.jwtPrivateKey);
+  res.send({ user, token });
 });
 
 /* Input validation for user registration */
