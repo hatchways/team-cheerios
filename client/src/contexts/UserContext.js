@@ -37,7 +37,10 @@ const UserReducer = (state, action) => {
         authenticated: true,
       };
     case SET_UNAUTHENTICATED:
-      return initialState;
+      return {
+        ...initialState,
+        loading: false,
+      };
     default:
       return state;
   }

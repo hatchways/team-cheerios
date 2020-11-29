@@ -19,8 +19,10 @@ export const checkLoggedIn = (dispatch) => {
         });
       })
       .catch((err) => console.error(err));
+  } else {
+    dispatch({ type: SET_UNAUTHENTICATED });
   }
-  return false;
+  }
 };
 
 export const logout = (dispatch) => {

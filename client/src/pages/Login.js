@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import {
   Grid,
@@ -80,12 +80,10 @@ export default function Login() {
   const classes = useStyles();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const { state, dispatch } = React.useContext(UserContext);
+  const { dispatch } = React.useContext(UserContext);
   const [errEmail, setErrEmail] = React.useState("");
   const [open, setOpen] = React.useState(false);
   let history = useHistory();
-
-  if (state.authenticated) return <Redirect to="/dashboard" />;
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
