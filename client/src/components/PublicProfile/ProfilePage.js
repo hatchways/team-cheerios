@@ -1,27 +1,13 @@
 import React from "react";
-import { UserContext } from "../../contexts/UserContext";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Divider, makeStyles, Typography, withStyles } from "@material-ui/core";
+import { Button, Divider, makeStyles, Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import MuiTableCell from "@material-ui/core/TableCell";
 import Box from "@material-ui/core/Box";
 import PollCard from "../ProfileView/PollCard";
+import { followFriend } from "../../apis/friends";
 
-const TableCell = withStyles({
-  root: {
-    borderBottom: "none",
-    fontSize: "0.85rem",
-    textAlign: "center",
-    padding: "12px",
-  },
-})(MuiTableCell);
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   divider: {
     display: "relative",
     marginTop: "15px",
@@ -45,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
   text: {
     fontSize: "1.15rem",
     fontWeight: "600",
-    padding: "10px",
+    marginLeft: "40px",
+    marginTop: "20px",
   },
   cards: {
     display: "flex",
@@ -53,66 +40,101 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 100,
     marginTop: "2rem",
   },
+  ul: {
+    display: "flex",
+  },
+  li: {
+    display: "inline",
+    marginRight: "40px",
+    fontSize: "16px",
+    marginTop: "40px",
+  },
+  number: {
+    fontWeight: 600,
+  },
+  button: {
+    marginLeft: "40px",
+  },
 }));
 
 export default function Profile() {
   const classes = useStyles();
-  const { state } = React.useContext(UserContext);
   const { userId } = useParams();
-  const [isAFriend, setIsAFriend] = React.useState(false);
-  const [friend, setFriend] = React.useState({});
+  const [isAFriend, setIsAFriend] = React.useState(true);
   const [data, setData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
 
-  //TODO: follow button if user is not friend
   React.useEffect(() => {
     axios
       .get(`/getFriendsInfo?userId=${userId}`)
       .then((res) => {
         const data = res?.data;
         setData(data);
-        console.log(data);
         setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setIsAFriend(false);
+        setLoading(false);
+      });
+
+    // eslint-disable-next-line
   }, []);
+
+  const sendRequest = () => {
+    followFriend(userId);
+  };
 
   return (
     <div className={classes.root}>
       <div className={classes.content}>
         <Grid container spacing={3}>
           <Grid item>
-            <img src={data?.user.image} className={classes.img} />
+            <img src={data?.user.image} className={classes.img} alt = "User"/>
           </Grid>
           <Grid item xs={12} sm container>
             <Grid item xs={12} container direction="column" spacing={3}>
               <Grid item>
-                <Table style={{ width: 80 }}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Polls</TableCell>
-                      <TableCell>Followers</TableCell>
-                      <TableCell>Following</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>
-                        {data?.polls.length ? data?.polls?.length : 0}
-                      </TableCell>
-                      <TableCell>
-                        {data?.numOfFollowers ? data?.numOfFollowers : 0}
-                      </TableCell>
-                      <TableCell>
-                        {data?.numOfFollowing ? data?.numOfFollowing : 0}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                <ul className={classes.ul}>
+                  <li className={classes.li}>
+                    <span className={classes.number}>
+                      {data?.polls.length ? data?.polls?.length : 0}
+                    </span>{" "}
+                    polls
+                  </li>
+                  <li className={classes.li}>
+                    <span className={classes.number}>
+                      {" "}
+                      {data?.numOfFollowers ? data.numOfFollowers : 0}
+                    </span>{" "}
+                    followers
+                  </li>
+                  <li className={classes.li}>
+                    <span className={classes.number}>
+                      {" "}
+                      {data?.numOfFollowing ? data?.numOfFollowing : 0}
+                    </span>{" "}
+                    following
+                  </li>
+                </ul>
+
                 <Typography className={classes.text}>
                   {data?.user.name}
                 </Typography>
               </Grid>
+              {!isAFriend && !loading ? (
+                <Grid item>
+                  <Button
+                    className={classes.button}
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => sendRequest()}
+                  >
+                    Follow
+                  </Button>
+                </Grid>
+              ) : (
+                ""
+              )}
             </Grid>
           </Grid>
         </Grid>

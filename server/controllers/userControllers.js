@@ -34,9 +34,10 @@ exports.getFriendsInfo = async (req, res) => {
       followings: { $in: [mongoose.Types.ObjectId(userId)] },
     }).populate({ path: "userId", select: "_id name image" });
 
-    if (!friendsInfo) throw new Error("User is not your friend or does not exist");
+    if (!friendsInfo)
+      throw new Error("User is not your friend or does not exist");
 
-    const polls = await Poll.find({ userId : friendId });
+    const polls = await Poll.find({ userId: friendId });
     if (!polls) throw new Error("No polls found for this user");
 
     const numOfFollowers = friendsInfo.followers.length;
@@ -46,7 +47,7 @@ exports.getFriendsInfo = async (req, res) => {
       numOfFollowers,
       numOfFollowing,
       user,
-      polls
+      polls,
     });
   } catch (err) {
     res.status(404).json(err.toString());
