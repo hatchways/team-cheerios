@@ -19,11 +19,6 @@ exports.changeProfilePicture = async (req, res) => {
     }
   );
 };
-const project = {
-  project: {
-    $project: { followers: { $size: "$followers" } },
-  },
-};
 
 exports.getFriendsInfo = async (req, res) => {
   const userId = req.user._id;
