@@ -26,7 +26,7 @@ exports.getFriendsInfo = async (req, res) => {
   try {
     const friendsInfo = await Friends.findOne({
       userId: friendId,
-      followings: { $in: [mongoose.Types.ObjectId(userId)] },
+      followers: { $in: [mongoose.Types.ObjectId(userId)] },
     }).populate({ path: "userId", select: "_id name image" });
 
     if (!friendsInfo)
