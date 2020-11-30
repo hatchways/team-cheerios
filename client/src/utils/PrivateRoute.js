@@ -9,13 +9,12 @@ export default function PrivateRoute({ component: Component, ...rest }) {
   const loading = state.loading;
 
   return (
-    !loading?
+    !loading && 
     <Route
       {...rest}
       render={(props) =>
         authenticated ? <Component {...props} /> : <Redirect to="/" />
       }
     /> 
-    : ""
   );
 }

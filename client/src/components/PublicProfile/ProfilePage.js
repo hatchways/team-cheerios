@@ -1,11 +1,18 @@
 import React from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Button, Divider, makeStyles, Typography } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
+import {
+  Button,
+  Divider,
+  makeStyles,
+  Typography,
+  Grid,
+  Box,
+} from "@material-ui/core";
+
 import PollCard from "../ProfileView/PollCard";
 import { followFriend } from "../../apis/friends";
+import Dummy from "../../assets/dummy.png";
 
 const useStyles = makeStyles(() => ({
   divider: {
@@ -89,7 +96,11 @@ export default function Profile() {
       <div className={classes.content}>
         <Grid container spacing={3}>
           <Grid item>
-            <img src={data?.user.image} className={classes.img} alt = "User"/>
+            {!data?.user.image ? (
+              <img src={Dummy} className={classes.img} alt = "User" />
+            ) : (
+              <img src={data?.user.image} className={classes.img} alt="User" />
+            )}
           </Grid>
           <Grid item xs={12} sm container>
             <Grid item xs={12} container direction="column" spacing={3}>
