@@ -107,7 +107,7 @@ export default function FriendCard({ _id, name, image, status, handleClick }) {
   return (
     <Grid container className={classes.root}>
       <Grid item xs>
-        <User name={name} image={image} />
+        <User _id = {_id} name={name} image={image} />
       </Grid>
 
       <Grid item xs={5} sm={4}>
