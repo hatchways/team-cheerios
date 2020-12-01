@@ -11,6 +11,12 @@ export const createNewPoll = (files, newPoll) =>
     )
     .catch((err) => console.error(err));
 
+export const editPoll = (pollId, updatingData) =>
+  axios
+    .put(`/poll/${pollId}`, updatingData)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+
 export const getPolls = () =>
   axios
     .get("/poll")
@@ -42,4 +48,10 @@ export const changeYourVote = (pollId, choice) =>
       if (res.data.message === SAME_VOTE_MSG) return false;
       return true;
     })
+    .catch((err) => console.error(err));
+
+export const deletePoll = (pollId) =>
+  axios
+    .delete(`/poll/${pollId}`)
+    .then((res) => res.data)
     .catch((err) => console.error(err));
