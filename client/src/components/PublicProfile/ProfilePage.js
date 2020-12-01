@@ -21,10 +21,12 @@ const useStyles = makeStyles(() => ({
   },
   content: {
     marginTop: "50px",
-    marginLeft: "410px",
   },
   root: {
+    display:"flex",
+    flexDirection:"column",
     flexGrow: 1,
+    alignItems: "center",
     overflowY: "scroll",
     height: "650px",
   },
