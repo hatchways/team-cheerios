@@ -14,11 +14,11 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import MuiAlert from "@material-ui/lab/Alert";
 
+import { loginUser } from "../apis/user";
 import Background from "../assets/login_bg.png";
 import Logo from "../components/Logo";
 import { SET_USER } from "../contexts/types";
 import { UserContext } from "../contexts/UserContext";
-import { loginUser } from "../apis/user";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -80,9 +80,9 @@ export default function Login() {
   const classes = useStyles();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const { dispatch } = React.useContext(UserContext);
   const [errEmail, setErrEmail] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const { dispatch } = React.useContext(UserContext);
   let history = useHistory();
 
   const handleClose = (event, reason) => {

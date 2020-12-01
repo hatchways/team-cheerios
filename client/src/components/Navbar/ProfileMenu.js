@@ -4,9 +4,9 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
+import { logout } from "../../apis/user";
 import { UserContext } from "../../contexts/UserContext";
 import Profile from "../ProfileOptions/Profile";
-import { logout } from "../../apis/user";
 
 const useStyles = makeStyles(() =>
   createStyles({

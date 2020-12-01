@@ -5,22 +5,20 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { UserContext } from "../contexts/UserContext";
 
+const styles = { position: "absolute", left: "50%", top: "50%" };
+
 export default function PublicRoute({
   component: Component,
   restricted = true,
   ...rest
 }) {
-  const { state } = React.useContext(UserContext);
-  const authenticated = state.authenticated ?? false;
+  const {
+    state: { authenticated, loading },
+  } = React.useContext(UserContext);
 
-  if (state.loading)
-    return (
-      <CircularProgress
-        style={{ position: "absolute", left: "50%", top: "50%" }}
-      />
-    );
-
-  return (
+  return loading ? (
+    <CircularProgress style={styles} />
+  ) : (
     <Route
       {...rest}
       render={(props) =>
