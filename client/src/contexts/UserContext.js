@@ -53,9 +53,7 @@ export const UserProvider = ({ children }) => {
 
   React.useEffect(() => {
     checkLoggedIn(dispatch);
-  }, []);
 
-  React.useEffect(() => {
     socket.emit("login");
 
     return () => {

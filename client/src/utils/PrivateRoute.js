@@ -5,20 +5,18 @@ import DashboardSkeleton from "../components/Skeletons/DashboardSkeleton";
 import { UserContext } from "../contexts/UserContext";
 
 export default function PrivateRoute({ component: Component, ...rest }) {
-  const { state } = React.useContext(UserContext);
-  const authenticated = state.authenticated ?? false;
-  const loading = state.loading;
+  const {
+    state: { authenticated, loading },
+  } = React.useContext(UserContext);
 
-  if (state.loading)
-    return <Route {...rest} render={() => <DashboardSkeleton />} />;
-
-  return (
-    !loading && 
+  return !loading ? (
     <Route
       {...rest}
       render={(props) =>
         authenticated ? <Component {...props} /> : <Redirect to="/" />
       }
-    /> 
+    />
+  ) : (
+    <DashboardSkeleton />
   );
 }

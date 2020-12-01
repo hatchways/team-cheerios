@@ -3,22 +3,22 @@ import { SET_UNAUTHENTICATED, SET_USER } from "../contexts/types";
 
 const TOKEN_KEY = "HatchwayToken";
 
-export const checkLoggedIn = (dispatch) => {
+export const checkLoggedIn = async (dispatch) => {
   const token = localStorage.getItem(TOKEN_KEY);
 
   if (token) {
     axios.defaults.headers.common["x-auth-token"] = token;
 
-    return axios
-      .get("/api/users/me")
-      .then((res) => {
-        const { name, image, email, _id: id } = res.data;
-        dispatch({
-          type: SET_USER,
-          payload: { user: { name, image, email, id } },
-        });
-      })
-      .catch((err) => console.error(err));
+    try {
+      const res = await axios.get("/api/users/me");
+      const { name, image, email, _id: id } = res.data;
+      dispatch({
+        type: SET_USER,
+        payload: { user: { name, image, email, id } },
+      });
+    } catch (err) {
+      console.error(err);
+    }
   } else {
     dispatch({ type: SET_UNAUTHENTICATED });
   }
