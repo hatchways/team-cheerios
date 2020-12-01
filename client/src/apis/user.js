@@ -17,6 +17,7 @@ export const checkLoggedIn = async (dispatch) => {
         payload: { user: { name, image, email, id } },
       });
     } catch (err) {
+      dispatch({ type: SET_UNAUTHENTICATED });
       console.error(err);
     }
   } else {

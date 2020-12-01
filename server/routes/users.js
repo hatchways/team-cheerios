@@ -10,8 +10,15 @@ const router = express.Router();
 
 //To get the current user detail
 router.get("/me", auth, async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
-  res.send(user);
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) throw new Error("User not found");
+
+    res.send(user);
+  } catch (err) {
+    console.error(err);
+    res.status(404).json(err.toString());
+  }
 });
 // To register new user
 router.post("/", async (req, res) => {
