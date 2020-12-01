@@ -28,12 +28,15 @@ export default function DialogContent({
   ...props
 }) {
   const classes = useStyles();
-  const [friendsListName, setFriendsListName] = React.useState(defaultList);
+  const [friendsListName, setFriendsListName] = React.useState("");
   const [myLists, setMyLists] = React.useState([]);
 
   React.useEffect(() => {
-    getMyFriendsLists().then((res) => setMyLists(res));
-  }, []);
+    getMyFriendsLists().then((res) => {
+      setMyLists(res);
+      setFriendsListName(defaultList);
+    });
+  }, [defaultList]);
 
   const handleChangeList = (event) => {
     const option = event.target.value;
