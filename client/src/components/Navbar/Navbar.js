@@ -45,7 +45,7 @@ export default function Navbar() {
         <div className={classes.spacer} />
 
         <MenuBtn to="/friends" text="Friends" />
-        <MenuBtn to="/friends-pools" text="Friends pools" />
+        <MenuBtn to="/friends-polls" text="Friends polls" />
         <MenuBtn to="/opinions" text="Opinions" />
 
         <PollBtn user={user} loading={loading} />
