@@ -18,6 +18,7 @@ const merge = (lists, polls) => {
           ...user,
         }));
         delete poll.votes;
+        friendList.users.sort((a, b) => b.updatedAt - a.updatedAt);
         poll.friendsList = friendList;
       }
     }
