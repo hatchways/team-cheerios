@@ -1,6 +1,8 @@
 import React from "react";
 import { checkLoggedIn } from "../apis/user";
 
+import socket from "../utils/socket";
+
 import {
   LOADING_USER,
   SET_USER,
@@ -51,6 +53,14 @@ export const UserProvider = ({ children }) => {
 
   React.useEffect(() => {
     checkLoggedIn(dispatch);
+  }, []);
+
+  React.useEffect(() => {
+    socket.emit("login");
+
+    return () => {
+      socket.emit("logout");
+    };
   }, []);
 
   return (

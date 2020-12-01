@@ -139,7 +139,7 @@ exports.getMyPollsWithData = async (req,res) => {
        project,
      ]);
 
-     const pollsWithData = merge(lists, polls);
+     const pollsWithData = await merge(lists, polls);
      res.json(pollsWithData);
    } catch (err) {
      console.error(err);

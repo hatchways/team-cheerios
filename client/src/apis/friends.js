@@ -36,7 +36,7 @@ export const getFollowings = () =>
     .catch((error) => console.error(error));
 
 export const followFriend = (id) =>
-  axios.post(`friends/follow/${id}`).catch((error) => console.error(error));
+  axios.post(`/friends/follow/${id}`).catch((error) => console.error(error));
 
 export const unfollowFriend = (id) =>
   axios.post(`friends/unfollow/${id}`).catch((error) => console.error(error));

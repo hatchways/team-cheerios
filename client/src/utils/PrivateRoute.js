@@ -7,16 +7,18 @@ import { UserContext } from "../contexts/UserContext";
 export default function PrivateRoute({ component: Component, ...rest }) {
   const { state } = React.useContext(UserContext);
   const authenticated = state.authenticated ?? false;
+  const loading = state.loading;
 
   if (state.loading)
     return <Route {...rest} render={() => <DashboardSkeleton />} />;
 
   return (
+    !loading && 
     <Route
       {...rest}
       render={(props) =>
         authenticated ? <Component {...props} /> : <Redirect to="/" />
       }
-    />
+    /> 
   );
 }
