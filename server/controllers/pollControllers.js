@@ -63,7 +63,7 @@ exports.getPollByID = async (req, res) => {
     const lists = await FriendsList.aggregate([
       {
         $match: {
-          _id:  polls[0].friendsListId 
+          _id: polls[0].friendsListId,
         },
         //include only friendslistIds associated with users polls
       },
@@ -115,48 +115,47 @@ const project = {
   },
 };
 
-exports.getMyPollsWithData = async (req,res) => {
-   const userId = req.user._id;
+exports.getMyPollsWithData = async (req, res) => {
+  const userId = req.user._id;
 
-   try {
-     const polls = await Poll.aggregate([pollsLookUp]);
+  try {
+    const polls = await Poll.aggregate([pollsLookUp]);
 
-     if (polls.length === 0) throw new Error("No Polls Found");
+    if (polls.length === 0) throw new Error("No Polls Found");
 
-     const friendsListIds = polls.map((poll) => poll.friendsListId);
+    const friendsListIds = polls.map((poll) => poll.friendsListId);
 
-     const lists = await FriendsList.aggregate([
-       {
-         $match: {
-           $and: [
-             { userId: mongoose.Types.ObjectId(userId) },
-             { _id: { $in: friendsListIds } },
-             //include only friendslistIds associated with users polls
-           ],
-         },
-       },
-       lookup,
-       project,
-     ]);
+    const lists = await FriendsList.aggregate([
+      {
+        $match: {
+          $and: [
+            { userId: mongoose.Types.ObjectId(userId) },
+            { _id: { $in: friendsListIds } },
+            //include only friendslistIds associated with users polls
+          ],
+        },
+      },
+      lookup,
+      project,
+    ]);
 
-     const pollsWithData = await merge(lists, polls);
-     res.json(pollsWithData);
-   } catch (err) {
-     console.error(err);
-     res.status(404).json(err.toString());
-   }
-}
+    const pollsWithData = merge(lists, polls);
+    res.json(pollsWithData);
+  } catch (err) {
+    console.error(err);
+    res.status(404).json(err.toString());
+  }
+};
 
 exports.getMyPolls = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    const polls = await Poll.find({userId: userId});
+    const polls = await Poll.find({ userId: userId });
 
     if (polls.length === 0) throw new Error("No Polls Found");
 
     res.json(polls);
-
   } catch (err) {
     console.error(err);
     res.status(404).json(err.toString());
@@ -190,4 +189,25 @@ exports.deletePoll = (req, res) => {
     }
     res.json({ message: "Successfully deleted Poll" });
   });
+};
+
+exports.getInvitedPolls = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const friendsLists = await FriendsList.find({
+      users: userId,
+    });
+
+    const friendsListIds = friendsLists.map((list) => list._id);
+
+    const polls = await Poll.find({
+      friendsListId: friendsListIds,
+    }).sort({ date: -1 });
+
+    res.status(200).json(polls);
+  } catch (err) {
+    console.error(err);
+    res.status(404).json(err.toString());
+  }
 };

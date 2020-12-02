@@ -43,3 +43,9 @@ export const changeYourVote = (pollId, choice) =>
       return true;
     })
     .catch((err) => console.error(err));
+
+export const getInvitedPolls = () =>
+  axios
+    .get("/poll/me/invited")
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
