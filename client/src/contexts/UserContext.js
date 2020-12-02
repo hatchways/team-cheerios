@@ -1,6 +1,6 @@
 import React from "react";
-import { checkLoggedIn } from "../apis/user";
 
+import { checkLoggedIn } from "../apis/user";
 import socket from "../utils/socket";
 
 import {

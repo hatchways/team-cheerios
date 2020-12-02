@@ -11,7 +11,6 @@ import NavbarSkeleton from "./NavbarSkeleton";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
-    root: {},
     nav: {
       background: "#FFFFFF",
       height: `${NAVBAR_HEIGHT}px`,
@@ -39,7 +38,7 @@ export default function DashboardSkeleton() {
   const classes = useStyles();
 
   return (
-    <section className={classes.root}>
+    <section>
       <NavbarSkeleton />
 
       <Grid container className={classes.body}>
