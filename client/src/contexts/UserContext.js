@@ -1,6 +1,8 @@
 import axios from "axios";
 import React from "react";
 
+import socket from "../utils/socket";
+
 import {
   LOADING_USER,
   SET_USER,
@@ -62,6 +64,14 @@ export const UserProvider = ({ children }) => {
         })
         .catch((err) => console.error(err));
     }
+  }, []);
+
+  React.useEffect(() => {
+    socket.emit("login");
+
+    return () => {
+      socket.emit("logout");
+    };
   }, []);
 
   return (
