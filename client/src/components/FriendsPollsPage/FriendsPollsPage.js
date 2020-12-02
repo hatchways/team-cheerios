@@ -18,15 +18,12 @@ const useStyles = makeStyles(() => ({
   content: {
     marginTop: "20px",
   },
-  divider: {
-    display: "relative",
-    marginTop: "15px",
-  },
   cards: {
     display: "flex",
     minWidth: 20,
     minHeight: 100,
     marginTop: "2rem",
+    marginLeft:"3rem",
     textDecoration: "none",
   },
 }));
@@ -41,8 +38,8 @@ export default function FriendsPollsPage() {
   return (
     <div className={classes.root}>
       <h2>You were invited to the following polls</h2>
-      <Box p={1} pl={25} pr={26}>
-        <Divider className={classes.divider} />
+      <Box m={0.75} ml={10} mr={10}>
+        <Divider/>
         <div>
           <Grid container direction="row" spacing={3}>
             {polls?.length ? (
@@ -51,8 +48,7 @@ export default function FriendsPollsPage() {
                   className={classes.cards}
                   item
                   xs={12}
-                  md={4}
-                  sm={6}
+                  md="auto"
                   key={poll._id}
                 >
                   <Link
