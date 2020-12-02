@@ -11,6 +11,12 @@ export const createNewPoll = (files, newPoll) =>
     )
     .catch((err) => console.error(err));
 
+export const editPoll = (pollId, updatingData) =>
+  axios
+    .put(`/poll/${pollId}`, updatingData)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
+
 export const getPolls = () =>
   axios
     .get("/poll")
@@ -49,3 +55,9 @@ export const getInvitedPolls = () =>
     .get("/poll/me/invited")
     .then((res) => res.data)
     .catch((err) => console.log(err));
+    
+export const deletePoll = (pollId) =>
+  axios
+    .delete(`/poll/${pollId}`)
+    .then((res) => res.data)
+    .catch((err) => console.error(err));
