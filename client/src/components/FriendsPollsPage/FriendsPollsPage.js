@@ -58,6 +58,7 @@ export default function FriendsPollsPage() {
                   <Link
                     to={`/dashboard/poll/${poll._id}`}
                     key={`poll-card-${poll._id}`}
+                    style={{ textDecoration: "none" }}
                   >
                     <PollCard {...poll} />
                   </Link>
