@@ -23,6 +23,8 @@ const useStyles = makeStyles(() => ({
 export default function DialogContent({
   onChangeList,
   onChangeQuestion,
+  defaultList,
+  defaultQuestion,
   ...props
 }) {
   const classes = useStyles();
@@ -30,8 +32,11 @@ export default function DialogContent({
   const [myLists, setMyLists] = React.useState([]);
 
   React.useEffect(() => {
-    getMyFriendsLists().then((res) => setMyLists(res));
-  }, []);
+    getMyFriendsLists().then((res) => {
+      setMyLists(res);
+      setFriendsListName(defaultList);
+    });
+  }, [defaultList]);
 
   const handleChangeList = (event) => {
     const option = event.target.value;
@@ -47,6 +52,7 @@ export default function DialogContent({
           id="outlined-basic"
           label="Text Here"
           variant="outlined"
+          value={defaultQuestion}
           onChange={(e) => onChangeQuestion(e.target.value)}
           className={classes.inputField}
         />
@@ -54,11 +60,12 @@ export default function DialogContent({
 
       <h3>Friend list: </h3>
       <FormControl variant="outlined" className={classes.inputField}>
-        <InputLabel htmlFor="select-friends-list">Select</InputLabel>
+        <InputLabel id="select-friends-list">Select</InputLabel>
         <Select
           value={friendsListName}
           onChange={handleChangeList}
           label="Select"
+          labelId="select-friends-list"
         >
           {myLists.length ? (
             myLists.map((list, i) => (

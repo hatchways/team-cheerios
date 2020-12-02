@@ -18,6 +18,7 @@ const merge = (lists, polls) => {
           ...user,
         }));
         delete poll.votes;
+        friendList.users.sort((a, b) => b.updatedAt - a.updatedAt);
         poll.friendsList = friendList;
       }
     }
@@ -184,7 +185,7 @@ exports.deletePoll = (req, res) => {
   const userId = req.user._id;
   const pollId = req.params.id;
 
-  Poll.remove({ _id: pollId, userId }, (err, Poll) => {
+  Poll.deleteOne({ _id: pollId, userId }, (err, Poll) => {
     if (err) {
       res.send(err);
     }

@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import {
   Dialog,
@@ -9,9 +8,11 @@ import {
   DialogTitle,
   Button,
   CircularProgress,
+  IconButton,
 } from "@material-ui/core";
 
-import { createNewPoll } from "../../apis/poll";
+import { createNewPoll, editPoll } from "../../apis/poll";
+import uploadtoS3 from "../../utils/uploadtoS3";
 import DialogContents from "./DialogContents";
 import DropZone from "./DropZone";
 
@@ -70,13 +71,28 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Poll({ open, handleClose, ...props }) {
+export default function Poll({
+  open,
+  handleClose,
+  editMode = false,
+  ...props
+}) {
   const classes = useStyles();
   const [topImage, setTopImage] = React.useState(null);
   const [botImage, setBotImage] = React.useState(null);
   const [question, setQuestion] = React.useState("");
   const [friendsListId, setFriendsListId] = React.useState("");
   const [uploading, setUploading] = React.useState(false);
+
+  React.useEffect(() => {
+    if (editMode) {
+      const { question, images, friendsListId } = props.poll;
+      setTopImage(images[0]);
+      setBotImage(images[1]);
+      setQuestion(question);
+      setFriendsListId(friendsListId);
+    }
+  }, [editMode, props.poll]);
 
   const onChangeList = (newList) => {
     setFriendsListId(newList);
@@ -92,25 +108,47 @@ export default function Poll({ open, handleClose, ...props }) {
     setBotImage(newFile);
   };
 
-  const handleSubmitPoll = (event) => {
+  const getImageUrl = async (data) => {
+    let formData = new FormData();
+    formData.append("image", data);
+
+    return uploadtoS3(formData).then((res) => res[0]);
+  };
+
+  const handleSubmitPoll = async (event) => {
     event.preventDefault();
     setUploading(true);
 
-    if (topImage && botImage && question && friendsListId) {
-      let formData = new FormData();
-      formData.append("image", topImage);
-      formData.append("image", botImage);
+    if (editMode) {
+      let updatingData = { question, friendsListId, images: [] };
 
-      createNewPoll(formData, {
-        question,
-        friendsListId,
-      }).then(() => {
-        setUploading(false);
-        handleClose();
-      });
-    } else {
+      updatingData.images[0] =
+        typeof topImage === "string" ? topImage : await getImageUrl(topImage);
+
+      updatingData.images[1] =
+        typeof botImage === "string" ? botImage : await getImageUrl(botImage);
+
+      await editPoll(props.poll._id, updatingData);
+
       setUploading(false);
       handleClose();
+    } else {
+      if (topImage && botImage && question && friendsListId) {
+        let formData = new FormData();
+        formData.append("image", topImage);
+        formData.append("image", botImage);
+
+        createNewPoll(formData, {
+          question,
+          friendsListId,
+        }).then(() => {
+          setUploading(false);
+          handleClose();
+        });
+      } else {
+        setUploading(false);
+        handleClose();
+      }
     }
   };
 
@@ -122,7 +160,10 @@ export default function Poll({ open, handleClose, ...props }) {
       maxWidth="md"
       {...props}
     >
-      <DialogTitle className={classes.title}>Create a Poll</DialogTitle>
+      <DialogTitle className={classes.title}>
+        {editMode ? "Edit My Poll" : "Create a Poll"}
+      </DialogTitle>
+
       <IconButton
         aria-label="close"
         className={classes.closeButton}
@@ -133,13 +174,23 @@ export default function Poll({ open, handleClose, ...props }) {
 
       <DialogContent className={classes.contentWrapper}>
         <DialogContents
+          defaultList={friendsListId}
+          defaultQuestion={question}
           onChangeList={onChangeList}
           onChangeQuestion={OnChangeQuestion}
         />
 
         <div className={classes.dropZoneWrapper}>
-          <DropZone onChange={handleChangeTop} accept="image/*" />
-          <DropZone onChange={handleChangeBot} accept="image/*" />
+          <DropZone
+            onChange={handleChangeTop}
+            accept="image/*"
+            defaultImg={topImage}
+          />
+          <DropZone
+            onChange={handleChangeBot}
+            accept="image/*"
+            defaultImg={botImage}
+          />
         </div>
       </DialogContent>
 
@@ -150,7 +201,7 @@ export default function Poll({ open, handleClose, ...props }) {
           disabled={uploading}
           classes={{ disabled: classes.disabledButton }}
         >
-          Create
+          {editMode ? "Save Change" : "Create"}
         </Button>
         {uploading && (
           <CircularProgress size={30} className={classes.btnProgress} />

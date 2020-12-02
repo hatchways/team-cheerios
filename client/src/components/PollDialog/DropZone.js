@@ -16,7 +16,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function MyDropzone({ onChange }) {
+export default function MyDropzone({ onChange, defaultImg }) {
   const classes = useStyles();
   const [dropped, setDropped] = React.useState(false);
   const [file, setFile] = React.useState(null);
@@ -54,7 +54,11 @@ export default function MyDropzone({ onChange }) {
       <input {...getInputProps()} />
       <div className={classes.imageDiv}>
         {!dropped ? (
-          <img alt="default" src="https://i.ibb.co/rF1P2WT/drop.png" />
+          <img
+            className={classes.imagePreviewDiv}
+            alt="default"
+            src={defaultImg ? defaultImg : "https://i.ibb.co/rF1P2WT/drop.png"}
+          />
         ) : (
           <img
             className={classes.imagePreviewDiv}
