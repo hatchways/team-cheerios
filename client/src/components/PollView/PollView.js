@@ -95,11 +95,11 @@ export default function PollView({ pollId }) {
   const totalVotes = numOfVote1 + numOfVote2;
   const numOfVotes = [numOfVote1, numOfVote2];
 
-  const canVote = friendsList.users.some((user) => user._id === myUserId);
+  const canVote = friendsList?.users.some((user) => user._id === myUserId);
 
   let myVote = null;
   if (canVote) {
-    myVote = +friendsList.users.filter((user) => user._id === myUserId)[0]
+    myVote = +friendsList?.users.filter((user) => user._id === myUserId)[0]
       .voteFor;
   }
 
@@ -158,7 +158,7 @@ export default function PollView({ pollId }) {
       </div>
 
       <div className={classes.friendPollWrapper}>
-        {friendsList.users.map(
+        {friendsList?.users.map(
           (friend, i) =>
             friend.voteFor && (
               <FriendVote

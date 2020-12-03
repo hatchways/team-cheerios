@@ -50,6 +50,12 @@ export const changeYourVote = (pollId, choice) =>
     })
     .catch((err) => console.error(err));
 
+export const getInvitedPolls = () =>
+  axios
+    .get("/poll/me/invited")
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
+    
 export const deletePoll = (pollId) =>
   axios
     .delete(`/poll/${pollId}`)
