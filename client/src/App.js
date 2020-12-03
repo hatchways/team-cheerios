@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Switch } from "react-router-dom";
 
 import { MuiThemeProvider } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -7,6 +7,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { UserProvider } from "./contexts/UserContext";
 import { theme } from "./themes/theme";
 import PrivateRoute from "./utils/PrivateRoute";
+import PublicRoute from "./utils/PublicRoute";
 import routes from "./routes";
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
                   key={`route-${i}`}
                 />
               ) : (
-                <Route
+                <PublicRoute
                   exact
                   path={route.path}
                   component={route.component}

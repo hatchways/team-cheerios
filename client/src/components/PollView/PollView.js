@@ -3,17 +3,23 @@ import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
 import BackIcon from "@material-ui/icons/ArrowBackIos";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
 import { getPollById, voteForPoll } from "../../apis/poll";
 import { UserContext } from "../../contexts/UserContext";
 import PollViewSkeleton from "../Skeletons/PollViewSkeleton";
+import PollDialog from "../PollDialog";
 import ConfirmationDialog from "./ConfirmationDialog";
 import FriendVote from "./FriendVote";
 import Choice from "./Choice";
+import ConfirmationDeleteDialog from "./ConfirmationDeleteDialog";
 
 const useStyles = makeStyles(() => ({
   root: {
+    position: "relative",
     display: "flex",
     flexDirection: "column",
     height: "100%",
@@ -35,6 +41,12 @@ const useStyles = makeStyles(() => ({
       height: "1rem",
     },
   },
+  editBtnWrapper: {
+    position: "absolute",
+    top: 0,
+    right: "1rem",
+    color: "#0000008A",
+  },
   answers: {
     marginBottom: "1.5rem",
     fontSize: "1rem",
@@ -52,6 +64,10 @@ const useStyles = makeStyles(() => ({
 export default function PollView({ pollId }) {
   const classes = useStyles();
   const [openConfirmation, setOpenConfirmation] = React.useState(false);
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = React.useState(
+    false
+  );
+  const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [pollInfo, setPollInfo] = React.useState({});
   const [vote, setVote] = React.useState(null);
   const { state } = React.useContext(UserContext);
@@ -64,11 +80,18 @@ export default function PollView({ pollId }) {
     fetchPollData();
 
     // eslint-disable-next-line
-  }, []);
+  }, [openEditDialog]);
 
   if (!pollInfo.length) return <PollViewSkeleton />;
 
-  const { question, images, friendsList, numOfVote1, numOfVote2 } = pollInfo[0];
+  const {
+    question,
+    images,
+    friendsList,
+    numOfVote1,
+    numOfVote2,
+    userId: askerId,
+  } = pollInfo[0];
   const totalVotes = numOfVote1 + numOfVote2;
   const numOfVotes = [numOfVote1, numOfVote2];
 
@@ -98,6 +121,18 @@ export default function PollView({ pollId }) {
           <span>Back</span>
         </Link>
       </span>
+
+      {askerId === myUserId && (
+        <div className={classes.editBtnWrapper}>
+          <IconButton onClick={() => setOpenEditDialog(true)}>
+            <EditIcon />
+          </IconButton>
+
+          <IconButton onClick={() => setOpenDeleteConfirmation(true)}>
+            <DeleteIcon />
+          </IconButton>
+        </div>
+      )}
 
       <Typography variant="h4" component="h2">
         {question}
@@ -141,6 +176,19 @@ export default function PollView({ pollId }) {
         open={openConfirmation}
         fetchPollData={fetchPollData}
         handleClose={() => setOpenConfirmation(false)}
+      />
+
+      <PollDialog
+        editMode={true}
+        poll={pollInfo[0]}
+        open={openEditDialog}
+        handleClose={() => setOpenEditDialog(false)}
+      />
+
+      <ConfirmationDeleteDialog
+        pollId={pollId}
+        open={openDeleteConfirmation}
+        handleClose={() => setOpenDeleteConfirmation(false)}
       />
     </div>
   );

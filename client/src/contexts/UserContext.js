@@ -1,6 +1,6 @@
-import axios from "axios";
 import React from "react";
 
+import { checkLoggedIn } from "../apis/user";
 import socket from "../utils/socket";
 
 import {
@@ -39,34 +39,21 @@ const UserReducer = (state, action) => {
         authenticated: true,
       };
     case SET_UNAUTHENTICATED:
-      return initialState;
+      return {
+        ...initialState,
+        loading: false,
+      };
     default:
       return state;
   }
 };
 
-const token = localStorage.HatchwayToken;
-
 export const UserProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(UserReducer, initialState);
 
   React.useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common["x-auth-token"] = token;
+    checkLoggedIn(dispatch);
 
-      axios
-        .get("/api/users/me")
-        .then(({ data: { name, image, email, _id: id } }) => {
-          dispatch({
-            type: SET_USER,
-            payload: { user: { name, image, email, id } },
-          });
-        })
-        .catch((err) => console.error(err));
-    }
-  }, []);
-
-  React.useEffect(() => {
     socket.emit("login");
 
     return () => {

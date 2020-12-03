@@ -4,7 +4,7 @@ import DashboardLayout from "../components/DashboardLayout";
 import FriendsPollsPage from "../components/FriendsPollsPage/FriendsPollsPage";
 import { NAVBAR_HEIGHT } from "../utils/constants";
 
-export default function Friends() {
+export default function FriendsPolls() {
   return (
     <DashboardLayout
       style={{

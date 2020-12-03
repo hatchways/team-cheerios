@@ -10,8 +10,6 @@ import DashboardLayout from "../components/DashboardLayout";
 import ProfileView from "../components/ProfileView";
 import PollView from "../components/PollView";
 import Sidebar from "../components/Sidebar";
-import DashboardSkeleton from "../components/Skeletons/DashboardSkeleton";
-import { UserContext } from "../contexts/UserContext";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -34,47 +32,38 @@ const useStyles = makeStyles(() => ({
 
 export default function Dashboard() {
   const classes = useStyles();
-  const {
-    state: { loading },
-  } = React.useContext(UserContext);
 
   return (
     <DashboardLayout>
-      {loading ? (
-        <DashboardSkeleton />
-      ) : (
-        <Grid container className={classes.root}>
-          <Box
-            component={Grid}
-            item
-            sm={4}
-            md={3}
-            className={classes.leftPane}
-            display={{ xs: "none", sm: "block" }}
-          >
-            <Sidebar />
-          </Box>
+      <Grid container className={classes.root}>
+        <Box
+          component={Grid}
+          item
+          sm={4}
+          md={3}
+          className={classes.leftPane}
+          display={{ xs: "none", sm: "block" }}
+        >
+          <Sidebar />
+        </Box>
 
-          <Grid
-            item
-            sm={8}
-            md={9}
-            component="section"
-            className={classes.rightPane}
-          >
-            <Switch>
-              <Route exact path="/dashboard" render={() => <ProfileView />} />
-              <Route
-                exact
-                path="/dashboard/poll/:pollId"
-                render={({ match }) => (
-                  <PollView pollId={match.params.pollId} />
-                )}
-              />
-            </Switch>
-          </Grid>
+        <Grid
+          item
+          sm={8}
+          md={9}
+          component="section"
+          className={classes.rightPane}
+        >
+          <Switch>
+            <Route exact path="/dashboard" render={() => <ProfileView />} />
+            <Route
+              exact
+              path="/dashboard/poll/:pollId"
+              render={({ match }) => <PollView pollId={match.params.pollId} />}
+            />
+          </Switch>
         </Grid>
-      )}
+      </Grid>
     </DashboardLayout>
   );
 }

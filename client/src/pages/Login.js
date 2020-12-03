@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import {
   Grid,
@@ -14,11 +14,11 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import MuiAlert from "@material-ui/lab/Alert";
 
+import { loginUser } from "../apis/user";
 import Background from "../assets/login_bg.png";
 import Logo from "../components/Logo";
 import { SET_USER } from "../contexts/types";
 import { UserContext } from "../contexts/UserContext";
-import loginUser from "../utils/loginUser";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -80,12 +80,10 @@ export default function Login() {
   const classes = useStyles();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const { state, dispatch } = React.useContext(UserContext);
   const [errEmail, setErrEmail] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const { dispatch } = React.useContext(UserContext);
   let history = useHistory();
-
-  if (state.authenticated) return <Redirect to="/dashboard" />;
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -115,17 +113,11 @@ export default function Login() {
       loginUser(newUser)
         .then((user) => {
           if (user) {
-            const name = user.name;
-            const image = user.image;
-            const email = user.email;
+            const { name, image, email } = user;
             dispatch({
               type: SET_USER,
               payload: {
-                user: {
-                  name,
-                  image,
-                  email,
-                },
+                user: { name, image, email },
               },
             });
             history.push("/dashboard");

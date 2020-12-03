@@ -10,8 +10,15 @@ const router = express.Router();
 
 //To get the current user detail
 router.get("/me", auth, async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
-  res.send(user);
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) throw new Error("User not found");
+
+    res.send(user);
+  } catch (err) {
+    console.error(err);
+    res.status(404).json(err.toString());
+  }
 });
 // To register new user
 router.post("/", async (req, res) => {
@@ -31,10 +38,8 @@ router.post("/", async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
-  if (process.env.jwtPrivateKey) {
-    const token = jwt.sign({ _id: user._id }, process.env.jwtPrivateKey);
-    res.header("x-auth-token", token).status(201).send(user);
-  }
+  const token = jwt.sign({ _id: user._id }, process.env.jwtPrivateKey);
+  res.send({ user, token });
 });
 
 /* Input validation for user registration */
