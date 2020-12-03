@@ -71,7 +71,7 @@ export default function PollView({ pollId }) {
   const [pollInfo, setPollInfo] = React.useState({});
   const [vote, setVote] = React.useState(null);
   const { state } = React.useContext(UserContext);
-  const { id: myUserId } = state.user;
+  const { _id: myUserId } = state.user;
 
   const fetchPollData = () =>
     getPollById(pollId).then((res) => setPollInfo(res));

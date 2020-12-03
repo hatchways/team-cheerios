@@ -147,11 +147,11 @@ export default function SignUp() {
       signup(newUser)
         .then((user) => {
           if (user) {
-            const { name, image, email } = user;
+            const { name, image, email, _id } = user;
             dispatch({
               type: SET_USER,
               payload: {
-                user: { name, image, email },
+                user: { name, image, email, _id },
               },
             });
             history.push("/dashboard");
