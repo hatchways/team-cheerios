@@ -11,10 +11,10 @@ export const checkLoggedIn = async (dispatch) => {
 
     try {
       const res = await axios.get("/api/users/me");
-      const { name, image, email, _id: id } = res.data;
+      const { name, image, email, _id } = res.data;
       dispatch({
         type: SET_USER,
-        payload: { user: { name, image, email, id } },
+        payload: { user: { name, image, email, _id } },
       });
     } catch (err) {
       dispatch({ type: SET_UNAUTHENTICATED });
