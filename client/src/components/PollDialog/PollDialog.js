@@ -184,11 +184,15 @@ export default function Poll({
           <DropZone
             onChange={handleChangeTop}
             accept="image/*"
+            minSize={0}
+            maxSize={5242880}
             defaultImg={topImage}
           />
           <DropZone
             onChange={handleChangeBot}
             accept="image/*"
+            minSize={0}
+            maxSize={5242880}
             defaultImg={botImage}
           />
         </div>
