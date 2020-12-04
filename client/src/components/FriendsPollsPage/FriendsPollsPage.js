@@ -23,8 +23,15 @@ const useStyles = makeStyles(() => ({
     minWidth: 20,
     minHeight: 100,
     marginTop: "2rem",
-    marginLeft:"3rem",
-    textDecoration: "none",
+    marginLeft: "3rem",
+    "& a": {
+      color: "inherit",
+      textDecoration: "none",
+    },
+    "& a:visited": {
+      color: "inherit",
+      textDecorationColor: "inherit",
+    },
   },
 }));
 
@@ -39,7 +46,7 @@ export default function FriendsPollsPage() {
     <div className={classes.root}>
       <h2>You were invited to the following polls</h2>
       <Box m={0.75} ml={10} mr={10}>
-        <Divider/>
+        <Divider />
         <div>
           <Grid container direction="row" spacing={3}>
             {polls?.length ? (
@@ -54,7 +61,6 @@ export default function FriendsPollsPage() {
                   <Link
                     to={`/dashboard/poll/${poll._id}`}
                     key={`poll-card-${poll._id}`}
-                    style={{ textDecoration: "none" }}
                   >
                     <PollCard {...poll} />
                   </Link>
