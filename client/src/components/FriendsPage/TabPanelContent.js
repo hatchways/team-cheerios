@@ -43,14 +43,7 @@ export default function TabPanelContent({
     setKeywords(newKeywords);
   };
 
-  return !friends.length ? (
-    <div className={classes.noFriends}>
-      <PersonIcon className={classes.personIcon} />
-      <Typography variant="h6" component="p" color="textSecondary">
-        No Friends Yet
-      </Typography>
-    </div>
-  ) : (
+  return (
     <>
       <TextField
         id={`friend-search-${index}`}
@@ -61,15 +54,24 @@ export default function TabPanelContent({
         onChange={handleChange}
       />
 
-      <div className={classes.cardWrapper}>
-        {friends.map((friend, i) => (
-          <FriendCard
-            {...friend}
-            handleClick={handleClick}
-            key={`friend-${i}`}
-          />
-        ))}
-      </div>
+      {!friends.length ? (
+        <div className={classes.noFriends}>
+          <PersonIcon className={classes.personIcon} />
+          <Typography variant="h6" component="p" color="textSecondary">
+            No Friends Yet
+          </Typography>
+        </div>
+      ) : (
+        <div className={classes.cardWrapper}>
+          {friends.map((friend, i) => (
+            <FriendCard
+              {...friend}
+              handleClick={handleClick}
+              key={`friend-${i}`}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }
