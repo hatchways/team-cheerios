@@ -57,10 +57,9 @@ exports.getSuggestedFriends = async (req, res) => {
 
     const suggestions = await User.aggregate([
       { $match: query },
+      { $sort: { createdAt: -1 } },
       { $project: project },
-    ])
-      .sort({ createdAt: -1 })
-      .limit(15);
+    ]).limit(15);
 
     res.json({ friends: suggestions });
   } catch (err) {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -29,15 +29,9 @@ const useStyles = makeStyles(() => ({
     fontSize: "0.875rem",
     textDecorationColor: "#BCCID0",
     color: "#BCC1D0",
-    "& a": {
-      display: "flex",
-      alignItems: "center",
-    },
-    "& a:visited": {
-      color: "#BCC1D0",
-      textDecorationColor: "#BCC1D0",
-    },
+    cursor: "pointer",
     "& svg": {
+      marginBottom: "-0.2rem",
       height: "1rem",
     },
   },
@@ -72,6 +66,7 @@ export default function PollView({ pollId }) {
   const [vote, setVote] = React.useState(null);
   const { state } = React.useContext(UserContext);
   const { _id: myUserId } = state.user;
+  const history = useHistory();
 
   const fetchPollData = () =>
     getPollById(pollId).then((res) => setPollInfo(res));
@@ -115,11 +110,9 @@ export default function PollView({ pollId }) {
 
   return (
     <div className={classes.root}>
-      <span className={classes.backLink}>
-        <Link to="/dashboard">
-          <BackIcon />
-          <span>Back</span>
-        </Link>
+      <span className={classes.backLink} onClick={() => history.goBack()}>
+        <BackIcon />
+        <span>Back</span>
       </span>
 
       {askerId === myUserId && (

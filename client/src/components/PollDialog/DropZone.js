@@ -16,38 +16,52 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function MyDropzone({ onChange, defaultImg }) {
+export default function MyDropzone({
+  onChange,
+  defaultImg,
+  accept,
+  minSize,
+  maxSize,
+}) {
   const classes = useStyles();
   const [dropped, setDropped] = React.useState(false);
   const [file, setFile] = React.useState(null);
 
+
   const onDrop = useCallback((acceptedFile) => {
-    const promise = new Promise((resolve, reject) => {
-      const reader = new FileReader();
+    if (!isDragReject && acceptedFile.length === 1) {
+      const promise = new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(acceptedFile[0]);
 
-      reader.readAsDataURL(acceptedFile[0]);
-
-      reader.onload = () => {
-        if (!!reader.result) {
-          resolve(reader.result);
-        } else {
-          reject(Error("Failed converting to base64"));
+        reader.onload = () => {
+          if (!!reader.result) {
+            resolve(reader.result);
+          } else {
+            reject(Error("Failed converting to base64"));
+          }
+        };
+      });
+      promise.then(
+        (result) => {
+          setFile(result);
+          onChange(acceptedFile[0]);
+          setDropped(true);
+        },
+        (err) => {
+          console.log(err);
         }
-      };
-    });
-    promise.then(
-      (result) => {
-        setFile(result);
-        onChange(acceptedFile[0]);
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
-    setDropped(true);
+      );
+    }
     //eslint-disable-next-line
   }, []);
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragReject } = useDropzone({
+    onDrop,
+    accept,
+    minSize,
+    maxSize,
+    maxFiles: 1,
+  });
 
   return (
     <div {...getRootProps()}>
@@ -57,7 +71,7 @@ export default function MyDropzone({ onChange, defaultImg }) {
           <img
             className={classes.imagePreviewDiv}
             alt="default"
-            src={defaultImg ? defaultImg : "https://i.ibb.co/rF1P2WT/drop.png"}
+            src={defaultImg?.length ? defaultImg : "https://i.ibb.co/rF1P2WT/drop.png"}
           />
         ) : (
           <img
