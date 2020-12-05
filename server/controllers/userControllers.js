@@ -48,3 +48,7 @@ exports.getFriendsInfo = async (req, res) => {
     res.status(404).json(err.toString());
   }
 };
+
+exports.deleteAll = async () => {
+  await User.deleteMany();
+};

@@ -126,3 +126,7 @@ exports.removeNotification = async (req, res) => {
     }
   );
 };
+
+exports.deleteAll = async () => {
+  await Notification.deleteMany();
+};
