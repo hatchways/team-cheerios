@@ -36,7 +36,6 @@ export default function Sidebar() {
   }, []);
 
   React.useEffect(() => {
-    console.log("friends");
     socket.on("online users", (data) => setOnlineFriends(new Set(data)));
   }, [friends]);
 

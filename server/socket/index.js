@@ -20,7 +20,6 @@ module.exports = function (io) {
 
       const onlineUsers = getOnlineUsers();
       io.emit("online users", onlineUsers);
-      console.log({ onlineUsers });
     });
 
     socket.on("log out", (userId) => {
@@ -28,10 +27,10 @@ module.exports = function (io) {
 
       const onlineUsers = getOnlineUsers();
       io.emit("online users", onlineUsers);
-      console.log({ onlineUsers });
     });
 
     socket.on("disconnect", () => {
+      removeOfflineUser(socket.id, socket.userId);
       console.log(`${socket.id} disconnected`);
     });
   });
