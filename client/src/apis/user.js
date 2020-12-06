@@ -1,5 +1,7 @@
 import axios from "axios";
+
 import { SET_UNAUTHENTICATED, SET_USER } from "../contexts/types";
+import socket from "../utils/socket";
 
 const TOKEN_KEY = "HatchwayToken";
 
@@ -16,6 +18,7 @@ export const checkLoggedIn = async (dispatch) => {
         type: SET_USER,
         payload: { user: { name, image, email, _id } },
       });
+      socket.emit("log in", _id);
     } catch (err) {
       dispatch({ type: SET_UNAUTHENTICATED });
       console.error(err);
@@ -29,6 +32,7 @@ export const loginUser = async (user) => {
   try {
     const res = await axios.post("/api/auth", user);
     setToken(res.data.token);
+    socket.emit("log in", res.data.user?._id);
     return res.data.user;
   } catch (err) {
     console.error(err);
@@ -39,6 +43,7 @@ export const signup = async (user) => {
   try {
     const res = await axios.post("/api/users", user);
     setToken(res.data.token);
+    socket.emit("log in", res.data.user?._id);
     return res.data.user;
   } catch (err) {
     console.error(err);
@@ -50,8 +55,9 @@ const setToken = (token) => {
   axios.defaults.headers.common["x-auth-token"] = token;
 };
 
-export const logout = (dispatch) => {
+export const logout = (userId, dispatch) => {
   localStorage.removeItem(TOKEN_KEY);
   delete axios.defaults.headers.common["x-auth-token"];
   dispatch({ type: SET_UNAUTHENTICATED });
+  socket.emit("log out", userId).disconnect();
 };
