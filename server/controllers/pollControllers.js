@@ -48,7 +48,7 @@ exports.createNewPoll = async (req, res) => {
     if (err) {
       res.send(err);
     }
-    res.json(Poll);
+    res.status(201).json(Poll);
   });
 };
 
@@ -214,5 +214,9 @@ exports.getInvitedPolls = async (req, res) => {
 };
 
 exports.deleteAll = async () => {
-  await Poll.deleteMany();
+  try {
+    await Poll.deleteMany();
+  } catch (err) {
+    console.log(err);
+  }
 };

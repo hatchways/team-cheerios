@@ -290,5 +290,9 @@ exports.cancelRequest = async (req, res) => {
 };
 
 exports.deleteAll = async () => {
-  await Friends.deleteMany();
+  try {
+    await Friends.deleteMany();
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -50,5 +50,9 @@ exports.getFriendsInfo = async (req, res) => {
 };
 
 exports.deleteAll = async () => {
-  await User.deleteMany();
+  try {
+    await User.deleteMany();   
+  } catch (err) {
+    console.log(err);
+  }
 };

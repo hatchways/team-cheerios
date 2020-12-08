@@ -128,5 +128,9 @@ exports.removeNotification = async (req, res) => {
 };
 
 exports.deleteAll = async () => {
-  await Notification.deleteMany();
+  try {
+    await Notification.deleteMany();
+  } catch (err) {
+    console.log(err);
+  }
 };
