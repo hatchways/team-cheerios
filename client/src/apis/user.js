@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { SET_UNAUTHENTICATED, SET_USER } from "../contexts/types";
-import socket from "../utils/socket";
+import socket, { socketWithToken } from "../utils/socket";
 
 const TOKEN_KEY = "HatchwayToken";
 
@@ -32,7 +32,7 @@ export const loginUser = async (user) => {
   try {
     const res = await axios.post("/api/auth", user);
     setToken(res.data.token);
-    socket.emit("log in", res.data.user?._id);
+    socketWithToken(res.data.token).emit("log in", res.data.user?._id);
     return res.data.user;
   } catch (err) {
     console.error(err);
@@ -43,7 +43,7 @@ export const signup = async (user) => {
   try {
     const res = await axios.post("/api/users", user);
     setToken(res.data.token);
-    socket.emit("log in", res.data.user?._id);
+    socketWithToken(res.data.token).emit("log in", res.data.user?._id);
     return res.data.user;
   } catch (err) {
     console.error(err);
