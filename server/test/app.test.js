@@ -3,8 +3,6 @@ const { reset } = require("../db/reset");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const app = require("../app.js");
-const mongoose = require("mongoose");
-const Poll = require("../models/pollModel.js");
 
 const { expect } = chai;
 
@@ -17,11 +15,17 @@ chai.use(chaiHttp);
 // 3) Accept the request using friends token
 // 4) Create new friendslist
 // 5) Create new poll
-// 6) Edit poll (update poll)
-// 7) Get poll with data
-// 8) Get poll using id
-// 9) Get invited polls (using friends token)
+// 6) Get poll with data
+// 7) Get poll using id
+// 8) Get invited polls (using friends token)
+// 9) Edit poll (update poll)
 // 10) Delete poll
+
+const expectToBe = (body, actual) => {
+  expect(body).to.satisfy((arr) =>
+    arr.some((poll) => expect(poll).to.deep.include(actual))
+  );
+};
 
 reset()
   .then((res) => console.log(res))
@@ -31,7 +35,7 @@ reset()
       let friendToken;
       let friendId;
       let userId;
-
+      let pollId;
       const user = {
         name: "Red John",
         email: "john@john.com",
@@ -51,13 +55,9 @@ reset()
       const newPoll = {
         question: "Which one is better?",
         friendsListId: "",
+        images: [],
       };
-      const newQuestion = "Which shoes are better?";
-
-      const aFriendsPoll = {
-        question: "Which one is better?",
-        friendsListId: "",
-      };
+      const updatedQuestion = "Which shoes are better?";
 
       before((done) => {
         chai
@@ -66,7 +66,7 @@ reset()
           .send(user)
           .end((err, res) => {
             expect(err).to.be.null;
-            res.should.have.status(201);
+            expect(res).to.have.status(201);
             res.body.should.have.property("user");
             res.body.user.should.have.property("email").eql(user.email);
             res.body.should.have.property("token");
@@ -84,7 +84,7 @@ reset()
           .send(userFriend)
           .end((err, res) => {
             expect(err).to.be.null;
-            res.should.have.status(201);
+            expect(res).to.have.status(201);
             res.body.should.have.property("user");
             res.body.user.should.have.property("email").eql(userFriend.email);
             res.body.should.have.property("token");
@@ -102,7 +102,7 @@ reset()
           .set("x-auth-token", `${userToken}`)
           .end((err, res) => {
             expect(err).to.be.null;
-            res.should.have.status(200);
+            expect(res).to.have.status(200);
             done();
           });
       });
@@ -114,7 +114,7 @@ reset()
           .set("x-auth-token", `${friendToken}`)
           .end((err, res) => {
             expect(err).to.be.null;
-            res.should.have.status(200);
+            expect(res).to.have.status(200);
             newFriendsList.users.push(friendId);
             done();
           });
@@ -143,7 +143,7 @@ reset()
 
             res.should.have.status(200);
             expect(res.body).to.be.an("array");
-            //TODO: more comparisions. At the moment I'm only using this to get _id
+            //TODO: more comparisions
             expect(res.body).to.have.lengthOf(1);
             newPoll.friendsListId = res.body[0]._id;
             done();
@@ -163,15 +163,104 @@ reset()
           });
       });
 
-      it("Get my polls with 200", (done) => {
+      it("Get my polls", (done) => {
         chai
           .request(app)
           .get("/poll")
           .set("x-auth-token", `${userToken}`)
           .end((err, res) => {
             expect(err).to.be.null;
-            res.should.have.status(200);
-            expect(res.body).to.deep.include(newPoll);
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.lengthOf(1);
+            expectToBe(res.body, newPoll);
+            pollId = res.body[0]._id;
+            done();
+          });
+      });
+
+      it("Get poll by ID", (done) => {
+        chai
+          .request(app)
+          .get(`/poll/${pollId}`)
+          .set("x-auth-token", `${userToken}`)
+          .end((err, res) => {
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.lengthOf(1);
+            expect(res.body[0]).to.deep.include(newPoll);
+            done();
+          });
+      });
+
+      it("Get polls by user", (done) => {
+        chai
+          .request(app)
+          .get(`/poll/user/${userId}`)
+          .set("x-auth-token", `${userToken}`)
+          .end((err, res) => {
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            expectToBe(res.body, newPoll);
+            done();
+          });
+      });
+
+      it("Get my polls with user data", (done) => {
+        chai
+          .request(app)
+          .get("/poll/me/data")
+          .set("x-auth-token", `${userToken}`)
+          .end((err, res) => {
+            const users = res.body[0].friendsList.users;
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            expectToBe(res.body, newPoll);
+            expect(users[0]).to.include.all.keys("_id", "name", "image");
+            done();
+          });
+      });
+
+      it("Update poll", (done) => {
+        chai
+          .request(app)
+          .put(`/poll/${pollId}`)
+          .set("x-auth-token", `${userToken}`)
+          .send({question: updatedQuestion})
+          .end((err, res) => {
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            expect(res.body).to.include({
+              _id: pollId,
+              question : updatedQuestion, 
+            });
+            newPoll.question = updatedQuestion
+            done();
+          });
+      });
+
+      it("Get invited polls", (done) => {
+        chai
+          .request(app)
+          .get(`/poll/me/invited`)
+          .set("x-auth-token", `${friendToken}`)
+          .end((err, res) => {
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            expectToBe(res.body, newPoll);
+            done();
+          });
+      });
+
+      it("Delete polls", (done) => {
+        chai
+          .request(app)
+          .delete(`/poll/${pollId}`)
+          .set("x-auth-token", `${userToken}`)
+          .end((err, res) => {
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property("message");
+            expect(res.body.message).eql("Successfully deleted Poll");
             done();
           });
       });
