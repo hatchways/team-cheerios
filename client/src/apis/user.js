@@ -1,6 +1,10 @@
 import axios from "axios";
 
-import { SET_UNAUTHENTICATED, SET_USER } from "../contexts/types";
+import {
+  SET_ACTIVE_USERS,
+  SET_UNAUTHENTICATED,
+  SET_USER,
+} from "../contexts/types";
 import socket, { socketWithToken } from "../utils/socket";
 
 const TOKEN_KEY = "HatchwayToken";
@@ -19,6 +23,7 @@ export const checkLoggedIn = async (dispatch) => {
         payload: { user: { name, image, email, _id } },
       });
       socket.emit("log in", _id);
+      setActiveUsers(dispatch);
     } catch (err) {
       dispatch({ type: SET_UNAUTHENTICATED });
       console.error(err);
@@ -61,3 +66,11 @@ export const logout = (userId, dispatch) => {
   dispatch({ type: SET_UNAUTHENTICATED });
   socket.emit("log out", userId).disconnect();
 };
+
+export const setActiveUsers = (dispatch) =>
+  socket.on("online users", (data) => {
+    dispatch({
+      type: SET_ACTIVE_USERS,
+      payload: { activeUsers: new Set(data) },
+    });
+  });
