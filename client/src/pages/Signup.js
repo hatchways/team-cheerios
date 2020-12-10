@@ -123,11 +123,11 @@ export default function SignUp() {
       setValidError({ ...validError, retypePassErr: "Passwords do not match" });
       isErr = true;
     }
-    if (name.length < 3 || name.length > 10) {
+    if (name.length < 3 || name.length > 30) {
       setValidError({
         ...validError,
         nameErr:
-          "Name should be at least 3 characters long. Maximum length of 10 allowed",
+          "Name should be at least 3 characters long. Maximum length of 30 allowed",
       });
       isErr = true;
     }
