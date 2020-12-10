@@ -14,7 +14,6 @@ exports.reset = async () => {
   return {
     delUser,
     delFriends,
-    delFriends,
     delFriendsLists,
     delPolls,
     delVotes,
