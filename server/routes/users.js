@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
     user.password = await bcrypt.hash(user.password, salt);
     await user.save();
     const token = jwt.sign({ _id: user._id }, process.env.jwtPrivateKey);
-    res.send({ user, token });
+    res.status(201).send({ user, token });
   } catch (err) {
     console.log(err);
     res.status(400).send(err.toString());
