@@ -71,3 +71,11 @@ exports.changeMyChoice = async (req, res) => {
     res.status(400).json(err.toString());
   }
 };
+
+exports.deleteAll = async () => {
+  try {
+   await Vote.deleteMany();
+  } catch (err) {
+    console.log(err);
+  }
+};

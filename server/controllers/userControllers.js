@@ -48,3 +48,11 @@ exports.getFriendsInfo = async (req, res) => {
     res.status(404).json(err.toString());
   }
 };
+
+exports.deleteAll = async () => {
+  try {
+    await User.deleteMany();   
+  } catch (err) {
+    console.log(err);
+  }
+};
