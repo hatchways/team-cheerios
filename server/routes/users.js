@@ -22,30 +22,34 @@ router.get("/me", auth, async (req, res) => {
 });
 // To register new user
 router.post("/", async (req, res) => {
-  const validation_error = validate_request(req);
-  if (validation_error.error) {
-    res.status(400).send(validation_error.error.details[0].message);
-    return;
+  try {
+    const validation_error = validate_request(req);
+    if (validation_error.error) {
+      res.status(400).send(validation_error.error.details[0].message);
+      return;
+    }
+    let user = await User.findOne({ email: req.body.email });
+    if (user) return res.status(400).send("User already registered");
+    user = new User({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+    });
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+    await user.save();
+    const token = jwt.sign({ _id: user._id }, process.env.jwtPrivateKey);
+    res.send({ user, token });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(err.toString());
   }
-
-  let user = await User.findOne({ email: req.body.email });
-  if (user) return res.status(400).send("User already registered");
-  user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-  });
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(user.password, salt);
-  await user.save();
-  const token = jwt.sign({ _id: user._id }, process.env.jwtPrivateKey);
-  res.status(201).send({ user, token });
 });
 
 /* Input validation for user registration */
 const validate_request = (req) => {
   const schema = Joi.object({
-    name: Joi.string().min(3).max(50).required(),
+    name: Joi.string().min(3).max(30).required(),
     email: Joi.string().min(5).max(254).required().email(),
     password: Joi.string().min(8).max(1024).required(),
     isActive: Joi.boolean().default(true),
