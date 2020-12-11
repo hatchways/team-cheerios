@@ -27,6 +27,13 @@ const expectToBe = (body, actual) => {
   );
 };
 
+const checkUser = (body, email) => {
+  body.should.have.property("user");
+  body.user.should.have.property("email").eql(email);
+  body.should.have.property("token");
+  body.user.should.have.property("_id");
+};
+
 reset()
   .then((res) => console.log(res))
   .then(
@@ -67,10 +74,7 @@ reset()
           .end((err, res) => {
             expect(err).to.be.null;
             expect(res).to.have.status(201);
-            res.body.should.have.property("user");
-            res.body.user.should.have.property("email").eql(user.email);
-            res.body.should.have.property("token");
-            res.body.user.should.have.property("_id");
+            checkUser(res.body, user.email);
             userId = res.body.user._id;
             userToken = res.body.token;
             done();
@@ -85,10 +89,7 @@ reset()
           .end((err, res) => {
             expect(err).to.be.null;
             expect(res).to.have.status(201);
-            res.body.should.have.property("user");
-            res.body.user.should.have.property("email").eql(userFriend.email);
-            res.body.should.have.property("token");
-            res.body.user.should.have.property("_id");
+            checkUser(res.body, userFriend.email);
             friendId = res.body.user._id;
             friendToken = res.body.token;
             done();
@@ -225,15 +226,15 @@ reset()
           .request(app)
           .put(`/poll/${pollId}`)
           .set("x-auth-token", `${userToken}`)
-          .send({question: updatedQuestion})
+          .send({ question: updatedQuestion })
           .end((err, res) => {
             expect(err).to.be.null;
             expect(res).to.have.status(200);
             expect(res.body).to.include({
               _id: pollId,
-              question : updatedQuestion, 
+              question: updatedQuestion,
             });
-            newPoll.question = updatedQuestion
+            newPoll.question = updatedQuestion;
             done();
           });
       });
