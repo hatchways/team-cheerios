@@ -13,7 +13,7 @@ exports.addNewFriendsList = async (req, res) => {
       ...req.body,
     }).save();
 
-    res.json({
+    res.status(201).json({
       message: `FriendsList:${newFriendsList._id} created successfully`,
     });
   } catch (err) {
@@ -144,3 +144,12 @@ exports.deleteFriendsList = async (req, res) => {
     res.status(404).json(err.toString());
   }
 };
+
+
+exports.deleteAll = async () =>{
+    try {
+      await FriendsList.deleteMany();
+    } catch (err) {
+      console.log(err);
+    }
+}
