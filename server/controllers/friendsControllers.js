@@ -144,7 +144,7 @@ exports.followFriend = async (req, res) => {
     )
       throw new Error("Already follow/sent");
 
-    await Friends.update({ userId }, { $push: { sent: friendId } });
+    await Friends.updateOne({ userId }, { $push: { sent: friendId } });
 
     // change friend's followers status
     let followingFriends = await Friends.findOne({ userId: friendId });
@@ -156,7 +156,7 @@ exports.followFriend = async (req, res) => {
     )
       throw new Error("Something went wrong...");
 
-    await Friends.update({ userId: friendId }, { $push: { received: userId } });
+    await Friends.updateOne({ userId: friendId }, { $push: { received: userId } });
 
     res.json({ message: `Request sent to ${friendId} successfully` });
   } catch (err) {
@@ -174,13 +174,13 @@ exports.unfollowFriend = async (req, res) => {
     const myFriends = await Friends.findOne({ userId });
     if (!myFriends) throw new Error("Not following");
 
-    await Friends.update({ userId }, { $pull: { followings: friendId } });
+    await Friends.updateOne({ userId }, { $pull: { followings: friendId } });
 
     // remove user from friend's followers
     const followersFriends = await Friends.findOne({ userId: friendId });
     if (!followersFriends) throw new Error("Not follower");
 
-    await Friends.update(
+    await Friends.updateOne(
       { userId: friendId },
       { $pull: { followers: userId } }
     );
