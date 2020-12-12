@@ -10,7 +10,7 @@ import {
   Box,
 } from "@material-ui/core";
 
-import PollCard from "../ProfileView/PollCard";
+import PollCard from "../DashboardTop/PollCard";
 import { followFriend } from "../../apis/friends";
 import Dummy from "../../assets/dummy.png";
 
@@ -23,8 +23,8 @@ const useStyles = makeStyles(() => ({
     marginTop: "50px",
   },
   root: {
-    display:"flex",
-    flexDirection:"column",
+    display: "flex",
+    flexDirection: "column",
     flexGrow: 1,
     alignItems: "center",
     overflowY: "scroll",
@@ -66,7 +66,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Profile() {
+export default function PublicProfile() {
   const classes = useStyles();
   const { userId } = useParams();
   const [isAFriend, setIsAFriend] = React.useState(true);
@@ -99,7 +99,7 @@ export default function Profile() {
         <Grid container spacing={3}>
           <Grid item>
             {!data?.user.image ? (
-              <img src={Dummy} className={classes.img} alt = "User" />
+              <img src={Dummy} className={classes.img} alt="User" />
             ) : (
               <img src={data?.user.image} className={classes.img} alt="User" />
             )}

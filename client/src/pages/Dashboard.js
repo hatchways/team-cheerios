@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 
 import { NAVBAR_HEIGHT } from "../utils/constants";
 import DashboardLayout from "../components/DashboardLayout";
-import ProfileView from "../components/ProfileView";
+import DashboardTop from "../components/DashboardTop";
 import PollView from "../components/PollView";
 import Sidebar from "../components/Sidebar";
 
@@ -55,7 +55,7 @@ export default function Dashboard() {
           className={classes.rightPane}
         >
           <Switch>
-            <Route exact path="/dashboard" render={() => <ProfileView />} />
+            <Route exact path="/dashboard" render={() => <DashboardTop />} />
             <Route
               exact
               path="/dashboard/poll/:pollId"

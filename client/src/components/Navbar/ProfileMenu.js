@@ -6,7 +6,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 import { logout } from "../../apis/user";
 import { UserContext } from "../../contexts/UserContext";
-import Profile from "../ProfileOptions/Profile";
+import ProfileOptions from "../ProfileOptions";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,11 +19,12 @@ const useStyles = makeStyles(() =>
 
 export default function ProfileMenu({ anchorEl, handleClose }) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [openProfileOption, setOpenProfileOption] = React.useState(false);
   const { dispatch } = React.useContext(UserContext);
 
-  const handleCloseDialog = () => {
-    setOpen(false);
+  const handleOpenProfileOptions = () => {
+    setOpenProfileOption(true);
+    handleClose();
   };
 
   const handleLogout = () => {
@@ -53,7 +54,10 @@ export default function ProfileMenu({ anchorEl, handleClose }) {
           },
         }}
       >
-        <MenuItem className={classes.menuItem} onClick={() => setOpen(true)}>
+        <MenuItem
+          className={classes.menuItem}
+          onClick={handleOpenProfileOptions}
+        >
           Profile
         </MenuItem>
 
@@ -62,7 +66,10 @@ export default function ProfileMenu({ anchorEl, handleClose }) {
         </MenuItem>
       </Menu>
 
-      <Profile open={open} handleCloseDialog={handleCloseDialog} />
+      <ProfileOptions
+        open={openProfileOption}
+        handleCloseDialog={() => setOpenProfileOption(false)}
+      />
     </>
   );
 }
