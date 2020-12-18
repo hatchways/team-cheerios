@@ -5,7 +5,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 
-import { NAVBAR_HEIGHT } from "../utils/constants";
 import DashboardLayout from "../components/DashboardLayout";
 import DashboardTop from "../components/DashboardTop";
 import PollView from "../components/PollView";
@@ -14,7 +13,6 @@ import Sidebar from "../components/Sidebar";
 const useStyles = makeStyles(() => ({
   root: {
     background: "#FAFBFE",
-    height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
   },
   leftPane: {
     padding: "2.5rem",

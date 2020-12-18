@@ -15,6 +15,7 @@ const useStyles = makeStyles(() =>
     children: {
       display: "flex",
       marginTop: NAVBAR_HEIGHT,
+      height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
     },
   })
 );

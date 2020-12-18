@@ -25,7 +25,7 @@ const Paper = withStyles({
   root: {
     width: "100%",
     maxWidth: 500,
-    height: "100%",
+    height: "80vh",
   },
 })(MuiPaper);
 
