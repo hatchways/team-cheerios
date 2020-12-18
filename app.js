@@ -1,6 +1,6 @@
 const createError = require("http-errors");
 const express = require("express");
-const { join } = require("path");
+const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
@@ -22,7 +22,7 @@ app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(join(__dirname, "client","build")));
+app.use(express.static(path.join(__dirname, "client","build")));
 
 app.use("/api/users", users);
 app.use("/api/auth", auth);
@@ -35,7 +35,8 @@ app.use("/notification", notificationRouter);
 app.use(cors());
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build"));
+  console.log(req);
+  res.sendFile(path.join(__dirname + "/client/build/index.html"));
 });
 
 // catch 404 and forward to error handler
