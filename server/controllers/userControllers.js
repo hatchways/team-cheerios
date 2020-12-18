@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const Friends = require("../models/friendsModel");
 const Poll = require("../models/pollModel");
+const Vote = require("../models/voteModel");
 const mongoose = require("mongoose");
 
 exports.changeProfilePicture = async (req, res) => {
@@ -51,8 +52,61 @@ exports.getFriendsInfo = async (req, res) => {
 
 exports.deleteAll = async () => {
   try {
-    await User.deleteMany();   
+    await User.deleteMany();
   } catch (err) {
     console.log(err);
+  }
+};
+
+exports.getOpinions = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const myPolls = await Poll.find({ userId });
+    if (myPolls.length === 0) res.json({ message: "No Polls Found" });
+
+    let opinions = [];
+    for (const poll of myPolls) {
+      const votes = await Vote.aggregate([
+        { $match: { pollId: mongoose.Types.ObjectId(poll._id) } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: "$user" },
+        {
+          $lookup: {
+            from: "polls",
+            localField: "pollId",
+            foreignField: "_id",
+            as: "poll",
+          },
+        },
+        { $unwind: "$poll" },
+        {
+          $project: {
+            userId: 1,
+            pollId: 1,
+            voteFor: 1,
+            updatedAt: 1,
+            name: "$user.name",
+            image: "$user.image",
+            images: "$poll.images",
+          },
+        },
+      ]);
+
+      opinions.push(...votes);
+    }
+
+    opinions.sort((a, b) => b.updatedAt - a.updatedAt);
+
+    res.json(opinions);
+  } catch (err) {
+    console.error(err);
   }
 };

@@ -74,7 +74,7 @@ exports.changeMyChoice = async (req, res) => {
 
 exports.deleteAll = async () => {
   try {
-   await Vote.deleteMany();
+    await Vote.deleteMany();
   } catch (err) {
     console.log(err);
   }
