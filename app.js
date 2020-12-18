@@ -22,7 +22,7 @@ app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(join(__dirname, "public")));
+app.use(express.static(join(__dirname, "client","build")));
 
 app.use("/api/users", users);
 app.use("/api/auth", auth);
@@ -33,8 +33,9 @@ app.use("/friends-list", friendsListRouter);
 app.use("/friends", friendsRouter);
 app.use("/notification", notificationRouter);
 app.use(cors());
+
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build"));
+  res.sendFile(path.join(__dirname, "client", "build"));
 });
 
 // catch 404 and forward to error handler
