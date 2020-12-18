@@ -33,6 +33,9 @@ app.use("/friends-list", friendsListRouter);
 app.use("/friends", friendsRouter);
 app.use("/notification", notificationRouter);
 app.use(cors());
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build"));
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
