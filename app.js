@@ -51,4 +51,8 @@ app.use(function (err, req, res, next) {
   res.json({ error: err });
 });
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
+
 module.exports = app;
