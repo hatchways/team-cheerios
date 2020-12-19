@@ -1,9 +1,8 @@
 <p align="center">
-  <img width="460" height="300" src="./docs/assets/logo.png">
+  <img width="150" height="150" src="./docs/assets/logo.png">
 </p>
 
-> A social application that allows users to get instant feedback from their friends
-> [Demo](https://boiling-anchorage-18329.herokuapp.com/)
+> A social application that allows users to get instant feedback from their friends – [Demo](https://boiling-anchorage-18329.herokuapp.com/)
 
 ![app top](./docs/assets/dashboard-mock.png)
 
@@ -30,7 +29,7 @@
   - [Clone Repository](#clone-repository)
   - [Setup AWS-S3](#setup-aws-s3)
   - [Setup MongoDB Atlas](#setup-mongodb-atlas)
-  - [Create .env files](#create-.env-files)
+  - [Create .env files](#create-env-files)
   - [Run Locally](#run-locally)
 
 ## Features
@@ -98,14 +97,14 @@ git clone https://github.com/hatchways/team-cheerios.git
 
 ### Setup MongoDB Atlas
 
-Go to [MongoDb Atlas](https://account.mongodb.com/account/login) and create an cluster  
-If you never done it before check this: [tutorial](https://docs.atlas.mongodb.com/getting-started)  
-Copy the provided connection string
+- Go to [MongoDb Atlas](https://account.mongodb.com/account/login) and create an cluster
+  (If you never done it before check this: [tutorial](https://docs.atlas.mongodb.com/getting-started))
+- Copy the provided connection string
 
 ### Create `.env` files
 
-check .env.example file what might be in the `.env. file
-[server](./server/.env.example)
+check .env.example file what in the `.env` files  
+[server](./server/.env.example)  
 [client](./client/.env.example)
 
 ```
