@@ -21,9 +21,10 @@ const useStyles = makeStyles(() =>
       height: 40,
     },
     badge: {
-      width: 12,
-      height: 12,
-      borderRadius: 6,
+      right: "5%",
+      width: 14,
+      height: 14,
+      borderRadius: 7,
       border: "2px solid #FFFFFF",
       backgroundColor: "#48DF2A",
     },

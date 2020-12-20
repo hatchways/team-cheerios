@@ -21,14 +21,14 @@ export default function ProfileMenu({ anchorEl, handleClose }) {
   const classes = useStyles();
   const [openProfileOption, setOpenProfileOption] = React.useState(false);
   const { dispatch } = React.useContext(UserContext);
-
+  
   const handleOpenProfileOptions = () => {
     setOpenProfileOption(true);
     handleClose();
   };
 
   const handleLogout = () => {
-    logout(dispatch);
+    logout(state.user._id, dispatch);
     handleClose();
   };
 
