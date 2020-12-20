@@ -20,14 +20,14 @@ const useStyles = makeStyles(() =>
 export default function ProfileMenu({ anchorEl, handleClose }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const { dispatch } = React.useContext(UserContext);
+  const { state, dispatch } = React.useContext(UserContext);
 
   const handleCloseDialog = () => {
     setOpen(false);
   };
 
   const handleLogout = () => {
-    logout(dispatch);
+    logout(state.user._id, dispatch);
     handleClose();
   };
 

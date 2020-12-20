@@ -6,4 +6,11 @@ const socket = io(process.env.REACT_APP_BACKEND_ENDPOINT, {
   },
 });
 
+export const socketWithToken = (token) =>
+  io(process.env.REACT_APP_BACKEND_ENDPOINT, {
+    extraHeaders: {
+      "x-auth-token": token,
+    },
+  });
+
 export default socket;

@@ -1,9 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Badge from "@material-ui/core/Badge";
-import { Link } from "react-router-dom";
+
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
@@ -16,9 +17,10 @@ const useStyles = makeStyles(() =>
       height: 40,
     },
     badge: {
-      width: 12,
-      height: 12,
-      borderRadius: 6,
+      right: "5%",
+      width: 14,
+      height: 14,
+      borderRadius: 7,
       border: "2px solid #FFFFFF",
       backgroundColor: "#48DF2A",
     },
