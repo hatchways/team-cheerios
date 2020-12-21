@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Divider, Grid } from "@material-ui/core";
-import PollCard from "../ProfileView/PollCard";
+import PollCard from "../DashboardTop/PollCard";
 import { Link } from "react-router-dom";
 import { getInvitedPolls } from "../../apis/poll";
 
