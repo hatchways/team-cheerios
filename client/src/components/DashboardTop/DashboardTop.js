@@ -43,7 +43,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function ProfileView() {
+export default function DashboardTop() {
   const classes = useStyles();
   const [openFriendDialog, setOpenFriendDialog] = React.useState(false);
   const [openPollDialog, setOpenPollDialog] = React.useState(false);

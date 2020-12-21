@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Profile({ open, handleCloseDialog }) {
+export default function ProfileOptions({ open, handleCloseDialog }) {
   const {
     state: { user },
     dispatch,

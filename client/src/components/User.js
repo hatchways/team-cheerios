@@ -11,6 +11,10 @@ const useStyles = makeStyles(() =>
       display: "flex",
       alignItems: "center",
       height: 40,
+
+      "& a": {
+        textDecoration: "none",
+      },
     },
     avatar: {
       width: 40,
@@ -38,7 +42,7 @@ export default function User({ _id, name, image, active, ...rest }) {
 
   return (
     <div className={classes.root} style={rest?.style}>
-      <Link to={`/${_id}/profile`} style={{ textDecoration: "none" }}>
+      <Link to={`/${_id}/profile`}>
         <Badge
           invisible={!active}
           overlap="circle"
