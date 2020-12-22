@@ -1,8 +1,12 @@
 <p align="center">
-  <img width="150" height="150" src="./docs/assets/logo.png">
+  <img width="150" height="150" src="./docs/assets/logo.png" alt="logo">
 </p>
 
-> A social application that allows users to get instant feedback from their friends – [Demo](https://boiling-anchorage-18329.herokuapp.com/)
+<h1 align="center">Instant Feedback App</h1>
+
+<p align="center">
+  A social application that allows users to get instant feedback from their friends – <a href="https://boiling-anchorage-18329.herokuapp.com/">Website</a>
+</p>
 
 ![app top](./docs/assets/dashboard-mock.png)
 
@@ -95,6 +99,8 @@ git clone https://github.com/hatchways/team-cheerios.git
 
 ### Setup AWS-S3
 
+- Log in to AWS S3 and create a bucket
+
 ### Setup MongoDB Atlas
 
 - Go to [MongoDb Atlas](https://account.mongodb.com/account/login) and create an cluster
@@ -122,7 +128,7 @@ ATLAS_URI=mongodb+srv://<username>:<password>@cluster.name.mongodb.net/<dbname>?
 
 ### Run Locally
 
-- Server
+Server
 
 ```
 cd server
@@ -131,7 +137,7 @@ cd npm install
 cd npm run dev
 ```
 
-- Client
+Client
 
 ```
 cd client
