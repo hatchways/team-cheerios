@@ -24,7 +24,7 @@ router.post("/", auth, createNewPoll);
 router.put("/:id", auth, updatePoll);
 router.delete("/:id", auth, deletePoll);
 router.get("/me/data", auth, getMyPollsWithData);
-router.get("/me/invited",auth , getInvitedPolls);
+router.get("/me/invited", auth, getInvitedPolls);
 
 router.post("/:pollId/vote/:choice", auth, voteMyChoice);
 router.post("/:pollId/change/:choice", auth, changeMyChoice);

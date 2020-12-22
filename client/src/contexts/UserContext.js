@@ -8,6 +8,7 @@ import {
   SET_USER,
   SET_AUTHENTICATED,
   SET_UNAUTHENTICATED,
+  SET_ACTIVE_USERS,
 } from "./types";
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   user: {},
   token: null,
   error: null,
+  activeUsers: null,
 };
 
 export const UserContext = React.createContext(initialState);
@@ -32,6 +34,11 @@ const UserReducer = (state, action) => {
         authenticated: true,
         loading: false,
         ...action.payload,
+      };
+    case SET_ACTIVE_USERS:
+      return {
+        ...state,
+        activeUsers: action.payload.activeUsers,
       };
     case SET_AUTHENTICATED:
       return {
@@ -53,11 +60,14 @@ export const UserProvider = ({ children }) => {
 
   React.useEffect(() => {
     checkLoggedIn(dispatch);
+  }, []);
 
-    socket.emit("login");
+  React.useEffect(() => {
+    socket.connect();
 
     return () => {
-      socket.emit("logout");
+      socket.disconnect();
+      socket.close();
     };
   }, []);
 

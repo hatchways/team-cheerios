@@ -14,7 +14,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import MuiAlert from "@material-ui/lab/Alert";
 
-import { loginUser } from "../apis/user";
+import { loginUser, setActiveUsers } from "../apis/user";
 import Background from "../assets/login_bg.png";
 import Logo from "../components/Logo";
 import { SET_USER } from "../contexts/types";
@@ -120,6 +120,7 @@ export default function Login() {
                 user: { name, image, email, _id },
               },
             });
+            setActiveUsers(dispatch);
             history.push("/dashboard");
           } else {
             setOpen(true);

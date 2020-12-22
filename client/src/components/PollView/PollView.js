@@ -155,7 +155,7 @@ export default function PollView({ pollId }) {
           (friend, i) =>
             friend.voteFor && (
               <FriendVote
-                {...friend}
+                data={friend}
                 images={images}
                 key={`friend-poll-${i}`}
               />
