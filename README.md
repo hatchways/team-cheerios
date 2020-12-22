@@ -47,7 +47,7 @@
 ### Check Public Profile
 
 - When you click friend's name, you can see their public profile
-- You can see their polls, if you are invited to that poll
+- You can see their polls if you are following them
 <!-- ![public profile](./docs/assets/public-profile) -->
 
 ### Create A Friends List
@@ -132,16 +132,16 @@ Server
 
 ```
 cd server
-cd npm install
+npm install
 
-cd npm run dev
+npm run dev
 ```
 
 Client
 
 ```
 cd client
-cd npm install
+npm install
 
-cd npm run start
+npm run start
 ```
