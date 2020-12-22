@@ -20,8 +20,8 @@ const useStyles = makeStyles(() =>
 export default function ProfileMenu({ anchorEl, handleClose }) {
   const classes = useStyles();
   const [openProfileOption, setOpenProfileOption] = React.useState(false);
-  const { dispatch } = React.useContext(UserContext);
-  
+  const { state, dispatch } = React.useContext(UserContext);
+
   const handleOpenProfileOptions = () => {
     setOpenProfileOption(true);
     handleClose();
