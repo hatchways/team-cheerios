@@ -120,8 +120,11 @@ export default function Login() {
                 user: { name, image, email, _id },
               },
             });
-            setActiveUsers(dispatch);
             history.push("/dashboard");
+            import("../utils/socket").then((socket) => {
+              socket.socket.emit("log in", _id);
+            });
+            setActiveUsers(dispatch);
           } else {
             setOpen(true);
           }
