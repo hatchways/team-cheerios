@@ -5,7 +5,6 @@ const { addOnlineUser, removeOfflineUser, getOnlineUsers } = require("./user");
 module.exports = function (io) {
   io.use((socket, next) => {
     const token = socket.handshake.headers["x-auth-token"];
-
     jwt.verify(token, process.env.jwtPrivateKey, (err, decoded) => {
       if (err) return next(new Error("Authentication error"));
 
@@ -24,13 +23,15 @@ module.exports = function (io) {
 
     socket.on("log out", (userId) => {
       if (socket.userId === userId) removeOfflineUser(socket.id, userId);
-
       const onlineUsers = getOnlineUsers();
       io.emit("online users", onlineUsers);
+      return socket.disconnect();
     });
 
     socket.on("disconnect", () => {
       removeOfflineUser(socket.id, socket.userId);
+      const onlineUsers = getOnlineUsers();
+      io.emit("online users", onlineUsers);
       console.log(`${socket.id} disconnected`);
     });
   });

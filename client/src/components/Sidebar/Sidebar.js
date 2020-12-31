@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import { getFollowings } from "../../apis/friends";
 import User from "../User";
 import { UserContext } from "../../contexts/UserContext";
+import { setActiveUsers } from "../../apis/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,10 +30,16 @@ const useStyles = makeStyles((theme) => ({
 export default function Sidebar() {
   const classes = useStyles();
   const [friends, setFriends] = React.useState([]);
-  const { state } = React.useContext(UserContext);
+  const { state, dispatch } = React.useContext(UserContext);
 
   React.useEffect(() => {
     getFollowings().then((list) => setFriends(list));
+  }, []);
+
+  React.useEffect(() => {
+    setActiveUsers(dispatch);
+
+    // eslint-disable-next-line
   }, []);
 
   return (
