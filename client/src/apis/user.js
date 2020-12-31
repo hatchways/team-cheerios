@@ -50,7 +50,8 @@ export const signup = async (user) => {
   try {
     const res = await axios.post("/api/users", user);
     setToken(res.data.token);
-    importSocket().then((socket) => socket.emit("log in", res.data.user?._id));
+    const socket = await importSocket();
+    socket.emit("log in", _id);
     return res.data.user;
   } catch (err) {
     console.error(err);
