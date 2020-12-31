@@ -124,7 +124,6 @@ export default function Login() {
             import("../utils/socket").then((socket) => {
               socket.socket.emit("log in", _id);
             });
-            setActiveUsers(dispatch);
           } else {
             setOpen(true);
           }
