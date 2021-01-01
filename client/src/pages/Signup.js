@@ -13,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import MuiAlert from "@material-ui/lab/Alert";
 
 import Background from "../assets/login_bg.png";
-import { setActiveUsers, signup } from "../apis/user";
+import { signup } from "../apis/user";
 import Logo from "../components/Logo";
 import { SET_USER } from "../contexts/types";
 import { UserContext } from "../contexts/UserContext";
@@ -148,7 +148,6 @@ export default function SignUp() {
         .then((user) => {
           if (user) {
             const { name, image, email, _id } = user;
-            setActiveUsers(dispatch);
             dispatch({
               type: SET_USER,
               payload: {

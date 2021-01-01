@@ -26,7 +26,8 @@ export const checkLoggedIn = async (dispatch) => {
         type: SET_USER,
         payload: { user: { name, image, email, _id } },
       });
-      importSocket().then((socket) => socket.emit("log in", _id));
+      const socket = await importSocket();
+      socket.emit("log in", _id);
     } catch (err) {
       dispatch({ type: SET_UNAUTHENTICATED });
       console.error(err);
@@ -51,7 +52,7 @@ export const signup = async (user) => {
     const res = await axios.post("/api/users", user);
     setToken(res.data.token);
     const socket = await importSocket();
-    socket.emit("log in", _id);
+    socket.emit("log in", res.data.user?._id);
     return res.data.user;
   } catch (err) {
     console.error(err);
@@ -68,6 +69,7 @@ export const logout = (userId, dispatch) => {
   localStorage.removeItem(TOKEN_KEY);
   delete axios.defaults.headers.common["x-auth-token"];
   dispatch({ type: SET_UNAUTHENTICATED });
+  window.location.reload();
 };
 
 export const setActiveUsers = (dispatch) => {
