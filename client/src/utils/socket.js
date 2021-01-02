@@ -1,16 +1,8 @@
 import io from "socket.io-client";
 
-const socket = io({
+export const socket = io(process.env.REACT_APP_BACKEND_ENDPOINT, {
   extraHeaders: {
     "x-auth-token": localStorage.HatchwayToken,
   },
 });
 
-export const socketWithToken = (token) =>
-  io({
-    extraHeaders: {
-      "x-auth-token": token,
-    },
-  });
-
-export default socket;
