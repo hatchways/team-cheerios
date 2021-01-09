@@ -28,6 +28,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initValidError = {
+  passwordErr: "",
+  emailErr: "",
+  retypePassErr: "",
+  nameErr: "",
+};
+
 export default function SignUp() {
   const classes = useStyles();
   const [name, setName] = React.useState("");
@@ -37,45 +44,42 @@ export default function SignUp() {
   const [open, setOpen] = React.useState(false);
   const [reason, setReason] = React.useState("");
   const { dispatch } = React.useContext(UserContext);
-  const [validError, setValidError] = React.useState({
-    passwordErr: "",
-    emailErr: "",
-    retypePassErr: "",
-    nameErr: "",
-  });
+  const [validError, setValidError] = React.useState({ ...initValidError });
   const { passwordErr, emailErr, retypePassErr, nameErr } = validError;
   let history = useHistory();
 
-  const reset = () => {
-    setValidError({
-      passwordErr: "",
-      emailErr: "",
-      retypePassErr: "",
-      nameErr: "",
-    });
-  };
-
   const validate = () => {
-    reset();
-    let errorMessage = {};
+    // reset validError
+    setValidError({ ...initValidError });
+
+    let isErr = false;
+    let errorMessage = { ...initValidError };
 
     if (email.indexOf("@") === -1 || email === "" || email.length < 5) {
+      isErr = true;
       errorMessage.emailErr =
         "Please enter a valid email with at least 5 characters";
     }
     if (password.length < 5) {
+      isErr = true;
       errorMessage.passwordErr = "Password should be at least 8 characters";
     }
-    if (password !== rePassword && password !== "") {
+    if (rePassword.length < 7) {
+      isErr = true;
+      errorMessage.retypePassErr = "Password should be at least 8 characters";
+    }
+    if (password !== rePassword) {
+      isErr = true;
       errorMessage.retypePassErr = "Passwords do not match";
     }
     if (name.length < 3 || name.length > 30) {
+      isErr = true;
       errorMessage.nameErr =
         "Name should be at least 3 characters long. Maximum length of 30 allowed";
     }
 
     setValidError({ ...errorMessage });
-    return errorMessage === {};
+    return isErr;
   };
 
   const handleSignup = (e) => {
@@ -163,14 +167,14 @@ export default function SignUp() {
         margin="normal"
         required
         fullWidth
-        name="password"
+        name="password2"
         label="Re-type password"
         type="password"
         value={rePassword}
         id="password2"
         error={retypePassErr !== ""}
-        autoComplete="current-password"
         helperText={retypePassErr}
+        autoComplete="current-password"
         onChange={(e) => setRePassword(e.target.value)}
       />
       <Button
