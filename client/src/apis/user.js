@@ -48,15 +48,11 @@ export const loginUser = async (user) => {
 };
 
 export const signup = async (user) => {
-  try {
-    const res = await axios.post("/api/users", user);
-    setToken(res.data.token);
-    const socket = await importSocket();
-    socket.emit("log in", res.data.user?._id);
-    return res.data.user;
-  } catch (err) {
-    console.error(err);
-  }
+  const res = await axios.post("/api/users", user);
+  setToken(res.data?.token);
+  const socket = await importSocket();
+  socket.emit("log in", res.data.user?._id);
+  return res;
 };
 
 const setToken = (token) => {
